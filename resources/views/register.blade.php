@@ -1,201 +1,450 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - LokalFreelancer</title>
+
+    <title>Daftar - Freelance Lokal</title>
+
     <style>
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background-color: #fafafa;
-            color: #333;
+            background: #f8f2ed;
+            color: #4b2e20;
         }
 
-        .page-title {
-            padding: 35px 45px;
-            font-size: 18px;
-            color: #999;
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            height: 88px;
+            background: #754522;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 75px;
         }
 
-        .register-container {
-            width: 480px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .register-box {
-            background-color: white;
-            padding: 35px 25px 20px;
-            border: 1px solid #eee;
-            text-align: center;
-        }
         .logo {
-            font-size: 16px;
+            color: white;
+            font-size: 28px;
             font-weight: bold;
-            margin-bottom: 25px;
         }
 
-        .register-box h2 {
-            font-size: 16px;
-            margin-bottom: 10px;
+        .nav-menu {
+            display: flex;
+            gap: 40px;
         }
 
-        .register-box p {
-            font-size: 13px;
-            margin-bottom: 25px;
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 17px;
         }
 
-        .input-group {
-            margin-bottom: 13px;
+        .nav-menu a:hover {
+            opacity: 0.8;
         }
 
-        .input-group input {
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+            min-height: calc(100vh - 88px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+
+        /* =========================
+           REGISTER CARD
+        ========================= */
+
+        .register-card {
+            width: 480px;
+            background: white;
+            border: 1px solid #eaded5;
+            border-radius: 18px;
+            padding: 38px 45px;
+            box-shadow: 0 10px 30px rgba(75, 46, 32, 0.08);
+        }
+
+
+        .title {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .title h1 {
+            color: #754522;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .title p {
+            color: #8b7769;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .form-group input,
+        .form-group select {
             width: 100%;
-            height: 37px;
-            padding: 10px 20px;
-            border: 1px solid #aaa;
+            padding: 13px 14px;
+            border: 1px solid #dccabd;
+            border-radius: 8px;
+            background: #fffdfb;
+            font-size: 14px;
+            color: #4b2e20;
             outline: none;
         }
 
-        .role-title {
-            margin-top: 8px;
-            margin-bottom: 18px;
-            font-size: 13px;
-            font-weight: bold;
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #754522;
         }
 
-        .role {
-            display: flex;
-            justify-content: center;
-            gap: 50px;
-            margin-bottom: 20px;
-        }
 
-        .role label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: bold;
-        }
+        /* =========================
+           BUTTON
+        ========================= */
 
-        .role input {
-            width: 15px;
-            height: 15px;
-        }
-
-        .register-button {
-            width: 80%;
-            height: 39px;
-            background-color: white;
-            border: 1px solid #999;
+        .btn-daftar {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #754522;
+            color: white;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            margin-top: 8px;
         }
 
-        .login-link {
-            margin-top: 18px;
-            font-size: 11px;
+        .btn-daftar:hover {
+            background: #5d351b;
         }
 
-        .login-link a {
-            color: #333;
+
+        /* =========================
+           LOGIN LINK
+        ========================= */
+
+        .login-text {
+            text-align: center;
+            margin-top: 25px;
+            color: #8b7769;
+            font-size: 14px;
+        }
+
+        .login-text a {
+            color: #754522;
             font-weight: bold;
             text-decoration: none;
         }
+
+        .login-text a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* =========================
+           ERROR
+        ========================= */
+
+        .error-box {
+            background: #f9dfdc;
+            color: #a34d43;
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+
+        .error-box ul {
+            padding-left: 18px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .nav-menu {
+                gap: 15px;
+            }
+
+            .nav-menu a {
+                font-size: 14px;
+            }
+
+            .register-card {
+                width: 100%;
+                padding: 30px 25px;
+            }
+        }
+
     </style>
 </head>
 
+
 <body>
-    <div class="page-title">
-        Register
-    </div>
 
-    <!-- REGISTER -->
-    <div class="register-container">
-        <div class="register-box">
-            <div class="logo">
-                [logo]
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Freelance Lokal
+        </div>
+
+        <div class="nav-menu">
+
+            <a href="/">
+                Beranda
+            </a>
+
+            <a href="/login">
+                Login
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         REGISTER
+    ========================= -->
+
+    <div class="container">
+
+        <div class="register-card">
+
+
+            <div class="title">
+
+                <h1>Daftar Akun</h1>
+
+                <p>
+                    Buat akun untuk bergabung dengan Freelance Lokal
+                </p>
+
             </div>
 
-            <h2>
-                CREATE YOUR ACCOUNT
-            </h2>
-            <p>
-                Join our platform today
-            </p>
 
-            <div class="input-group">
-                <input
-                    type="text"
-                    placeholder="Full name"
-                >
-            </div>
+            <!-- ERROR -->
 
-            <div class="input-group">
-                <input
-                    type="email"
-                    placeholder="email"
-                >
-            </div>
+            @if ($errors->any())
 
-            <div class="input-group">
-                <input
-                    type="password"
-                    placeholder="Password"
-                >
-            </div>
+                <div class="error-box">
 
-            <!-- CONFIRM PASSWORD -->
-            <div class="input-group">
-                <input
-                    type="password"
-                    placeholder="confirm password"
-                >
-            </div>
+                    <ul>
 
-            <!-- PILIH ROLE -->
-            <div class="role-title">
-                I am a
-            </div>
+                        @foreach ($errors->all() as $error)
 
-            <div class="role">
-                <label>
+                            <li>
+                                {{ $error }}
+                            </li>
+
+                        @endforeach
+
+                    </ul>
+
+                </div>
+
+            @endif
+
+
+            <!-- FORM -->
+
+            <form action="/register" method="POST">
+
+                @csrf
+
+
+                <!-- NAMA -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Nama Lengkap
+                    </label>
+
                     <input
-                        type="radio"
-                        name="role"
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Masukkan nama lengkap"
+                        value="{{ old('name') }}"
+                        required
                     >
-                    Freelancer
-                </label>
 
-                <label>
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email
+                    </label>
+
                     <input
-                        type="radio"
-                        name="role"
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Masukkan email"
+                        value="{{ old('email') }}"
+                        required
                     >
-                    Client
-                </label>
-            </div>
 
-            <!-- BUTTON REGISTER -->
-            <button class="register-button">
-                Register
-            </button>
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Minimal 6 karakter"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- KONFIRMASI PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password_confirmation">
+                        Konfirmasi Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password_confirmation"
+                        name="password_confirmation"
+                        placeholder="Masukkan ulang password"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- ROLE -->
+
+                <div class="form-group">
+
+                    <label for="role">
+                        Daftar Sebagai
+                    </label>
+
+                    <select
+                        id="role"
+                        name="role"
+                        required
+                    >
+
+                        <option value="">
+                            -- Pilih Role --
+                        </option>
+
+                        <option value="client">
+                            Client
+                        </option>
+
+                        <option value="freelancer">
+                            Freelancer
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- BUTTON -->
+
+                <button
+                    type="submit"
+                    class="btn-daftar"
+                >
+                    Daftar
+                </button>
+
+            </form>
+
 
             <!-- LOGIN -->
-            <div class="login-link">
-                Already have an account?
-                <a href="#">
-                    Login
+
+            <div class="login-text">
+
+                Sudah punya akun?
+
+                <a href="/login">
+                    Login sekarang
                 </a>
+
             </div>
+
+
         </div>
+
     </div>
+
+
 </body>
+
 </html>

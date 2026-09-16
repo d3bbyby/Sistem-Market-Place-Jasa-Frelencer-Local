@@ -3,419 +3,435 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LokalFreelancer</title>
+    <title>Freelance Lokal</title>
+
     <style>
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
-            color: #333;
-            background-color: white;
+            background: #fffaf5;
+            color: #4b2e1f;
         }
 
         .navbar {
-            height: 70px;
+            background: white;
+            padding: 20px 60px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 0 60px;
-            border-bottom: 1px solid #ddd;
+            align-items: center;
+            border-bottom: 1px solid #eadbd0;
         }
 
         .logo {
-            font-size: 22px;
+            color: #6b4226;
+            font-size: 24px;
             font-weight: bold;
+            text-decoration: none;
         }
 
-        .menu {
+        .navbar-menu {
             display: flex;
             align-items: center;
             gap: 25px;
         }
 
-        .menu a {
+        .navbar-menu a {
+            color: #4b2e1f;
             text-decoration: none;
-            color: #333;
             font-size: 14px;
         }
 
-        .btn {
-            border: 1px solid #999;
-            border-radius: 20px;
-            padding: 8px 18px;
-            background-color: white;
+        .navbar-menu a:hover {
+            color: #6b4226;
+        }
+
+        .btn-login {
+            background: #6b4226;
+            color: white !important;
+            padding: 11px 20px;
+            border-radius: 8px;
+        }
+
+        .btn-login:hover {
+            background: #4b2e1f;
         }
 
         .hero {
+            min-height: 480px;
             display: flex;
-            min-height: 300px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .hero-left {
-            width: 55%;
-            padding: 60px;
-        }
-
-        .hero-left h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
-        }
-
-        .hero-left p {
-            color: #666;
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .search {
-            display: flex;
-            width: 100%;
-            max-width: 600px;
-        }
-
-        .search input {
-            flex: 1;
-            padding: 14px;
-            border: 1px solid #aaa;
-            border-radius: 6px 0 0 6px;
-            outline: none;
-        }
-
-        .search select {
-            padding: 14px;
-            border: 1px solid #aaa;
-            border-left: none;
-            background-color: white;
-        }
-
-        .search button {
-            padding: 0 25px;
-            border: 1px solid #aaa;
-            background-color: white;
-            border-radius: 0 6px 6px 0;
-        }
-
-        .hero-right {
-            width: 45%;
-            display: flex;
-            justify-content: center;
             align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            padding: 70px 8%;
         }
 
-        .illustration {
-            width: 80%;
-            height: 190px;
-            background-color: #f2f2f2;
-            border: 1px solid #ddd;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #888;
+        .hero-text {
+            max-width: 550px;
         }
 
-        /* ===== KEUNGGULAN ===== */
-        .benefit {
-            display: flex;
-            justify-content: space-around;
-            padding: 20px 60px;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
+        .hero-text h1 {
+            font-size: 46px;
+            line-height: 1.2;
+            margin: 0 0 20px;
+            color: #4b2e1f;
         }
 
-        .section {
-            padding: 35px 60px;
-            border-bottom: 1px solid #ddd;
+        .hero-text h1 span {
+            color: #a66a3f;
         }
 
-        .section-title {
-            font-size: 20px;
-            margin-bottom: 20px;
+        .hero-text p {
+            color: #806f63;
+            font-size: 17px;
+            line-height: 1.7;
+            margin-bottom: 30px;
         }
 
-        .category-list {
+        .hero-buttons {
             display: flex;
             gap: 15px;
-            justify-content: space-between;
+            flex-wrap: wrap;
         }
 
-        .category-card {
-            width: 16%;
-            min-height: 70px;
-            border: 1px solid #aaa;
-            border-radius: 12px;
+        .btn-primary,
+        .btn-secondary {
+            display: inline-block;
+            padding: 14px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: #6b4226;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4b2e1f;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6b4226;
+            border: 1px solid #6b4226;
+        }
+
+        .btn-secondary:hover {
+            background: #f5e9df;
+        }
+
+        .hero-image {
+            width: 400px;
+            height: 300px;
+            background: #eadbd0;
+            border-radius: 25px;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 10px;
+            padding: 30px;
         }
 
-        .category-card h3 {
-            font-size: 13px;
-            margin-bottom: 6px;
+        .hero-image h2 {
+            color: #6b4226;
+            font-size: 28px;
         }
 
-        .category-card p {
-            font-size: 11px;
-            color: #777;
+        .features {
+            background: white;
+            padding: 60px 8%;
+            text-align: center;
         }
 
-        /* ===== FREELANCER ===== */
-        .freelancer-list {
+        .features h2 {
+            color: #6b4226;
+            margin-bottom: 10px;
+        }
+
+        .features-description {
+            color: #806f63;
+            margin-bottom: 35px;
+        }
+
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .feature-card {
+            background: #fffaf5;
+            padding: 30px 20px;
+            border-radius: 15px;
+            border: 1px solid #eadbd0;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: #eadbd0;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 26px;
+        }
+
+        .feature-card h3 {
+            color: #6b4226;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: #806f63;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .category {
+            padding: 60px 8%;
+            text-align: center;
+        }
+
+        .category h2 {
+            color: #6b4226;
+            margin-bottom: 30px;
+        }
+
+        .category-list {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
         }
 
-        .freelancer-card {
-            width: 25%;
-            min-height: 140px;
-            border: 1px solid #aaa;
+        .category-card {
+            background: white;
+            border: 1px solid #eadbd0;
+            padding: 25px 15px;
             border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            color: #6b4226;
+            font-weight: bold;
         }
 
-        .profile {
-            width: 55px;
-            height: 55px;
-            border: 1px solid #999;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 10px;
-            flex-shrink: 0;
+        .category-card:hover {
+            background: #f5e9df;
         }
 
-        .freelancer-info {
-            flex: 1;
+        .cta {
+            background: #6b4226;
+            color: white;
+            text-align: center;
+            padding: 55px 20px;
         }
 
-        .freelancer-info h3 {
-            font-size: 14px;
-            margin-bottom: 6px;
+        .cta h2 {
+            margin-top: 0;
+            font-size: 30px;
         }
 
-        .freelancer-info p {
-            font-size: 12px;
-            margin-bottom: 5px;
+        .cta p {
+            margin-bottom: 25px;
         }
 
-        .profile-button {
-            font-size: 11px;
-            padding: 6px 10px;
-            border: 1px solid #999;
-            border-radius: 5px;
-            background-color: white;
+        .cta a {
+            display: inline-block;
+            background: white;
+            color: #6b4226;
+            padding: 13px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
         }
 
-        /* ===== FOOTER ===== */
-
-        footer {
-            height: 70px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #777;
+        .footer {
+            background: #4b2e1f;
+            color: white;
+            text-align: center;
+            padding: 20px;
             font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            .navbar {
+                padding: 20px 25px;
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            .navbar-menu {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 50px 25px;
+            }
+
+            .hero-text h1 {
+                font-size: 36px;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-image {
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .feature-list {
+                grid-template-columns: 1fr;
+            }
+
+            .category-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
+
 <body>
+
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="logo">
-            LokalFreelancer
-        </div>
+        <a href="/" class="logo">Freelance Lokal</a>
 
-        <div class="menu">
-            <a href="#">Beranda</a>
-            <a href="#">Freelancer</a>
-            <a href="#">Kategori</a>
-            <a href="#">Cara Kerja</a>
-            <a href="#">Tentang Kami</a>
-
-            <button class="btn">
-                Cari
-            </button>
-
-            <button class="btn">
-                Masuk
-            </button>
-
-            <button class="btn">
-                Daftar
-            </button>
+        <div class="navbar-menu">
+            <a href="/">Beranda</a>
+            <a href="/client/jasa">Cari Jasa</a>
+            <a href="/login" class="btn-login">Login</a>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero">
-        <div class="hero-left">
+        <div class="hero-text">
             <h1>
-                Temukan Jasa atau Freelancer
+                Temukan Jasa Freelancer
+                <span>Terbaik</span>
             </h1>
 
             <p>
-                Temukan freelancer lokal yang sesuai
-                dengan kebutuhan kamu.
+                Freelance Lokal adalah tempat untuk menemukan
+                berbagai jasa freelancer lokal yang terpercaya,
+                mudah, dan sesuai kebutuhan kamu.
             </p>
 
-            <div class="search">
-                <input
-                    type="text"
-                    placeholder="Cari jasa atau freelancer"
-                >
+            <div class="hero-buttons">
+                <a href="/client/jasa" class="btn-primary">
+                    Cari Jasa
+                </a>
 
-                <select>
-                    <option>Semua Kategori</option>
-                    <option>Desain Grafis</option>
-                    <option>Web Development</option>
-                    <option>Video Editing</option>
-                </select>
-
-                <button>
-                    Cari
-                </button>
+                <a href="/register" class="btn-secondary">
+                    Daftar Sekarang
+                </a>
             </div>
         </div>
 
-        <div class="hero-right">
-            <div class="illustration">
-                [ GAMBAR ]
+        <div class="hero-image">
+            <div>
+                <h2>Jasa Lokal<br>Untuk Kebutuhanmu</h2>
+                <p>Temukan freelancer sesuai keahlian yang kamu butuhkan.</p>
             </div>
         </div>
     </section>
 
-    <!-- KEUNGGULAN -->
-    <div class="benefit">
-        <p>✓ Freelancer Terverifikasi</p>
-        <p>✓ Pembayaran Aman</p>
-        <p>✓ Proses Cepat & Mudah</p>
-    </div>
+    <!-- Features -->
+    <section class="features">
+        <h2>Mengapa Memilih Freelance Lokal?</h2>
 
-    <!-- KATEGORI -->
-    <section class="section">
-        <h2 class="section-title">
-            Kategori Populer
-        </h2>
+        <p class="features-description">
+            Solusi mudah untuk mencari dan menawarkan jasa.
+        </p>
+
+        <div class="feature-list">
+
+            <div class="feature-card">
+                <div class="feature-icon">🔎</div>
+                <h3>Mudah Mencari Jasa</h3>
+                <p>
+                    Cari berbagai jasa freelancer sesuai
+                    kebutuhan dengan mudah.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3>Freelancer Terpercaya</h3>
+                <p>
+                    Temukan freelancer lokal dengan
+                    kemampuan dan keahlian yang sesuai.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💼</div>
+                <h3>Pasarkan Keahlianmu</h3>
+                <p>
+                    Tawarkan jasa dan dapatkan peluang
+                    pekerjaan dari client.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Kategori Jasa -->
+    <section class="category">
+        <h2>Kategori Jasa</h2>
 
         <div class="category-list">
+
             <div class="category-card">
-                <h3>Desain Grafis</h3>
-                <p>(Jumlah freelancer)</p>
+                Website
             </div>
 
             <div class="category-card">
-                <h3>Web Development</h3>
-                <p>(Jumlah freelancer)</p>
+                Desain Grafis
             </div>
 
             <div class="category-card">
-                <h3>Mobile Development</h3>
-                <p>(Jumlah freelancer)</p>
+                Editing Video
             </div>
 
             <div class="category-card">
-                <h3>Video Editing</h3>
-                <p>(Jumlah freelancer)</p>
+                Penulisan
             </div>
 
-            <div class="category-card">
-                <h3>Fotografi</h3>
-                <p>(Jumlah freelancer)</p>
-            </div>
-
-            <div class="category-card">
-                <h3>Penulisan</h3>
-                <p>(Jumlah freelancer)</p>
-            </div>
         </div>
     </section>
 
-    <!-- FREELANCER TERBAIK -->
-    <section class="section">
-        <h2 class="section-title">
-            Freelancer Terbaik
-        </h2>
+    <!-- Call To Action -->
+    <section class="cta">
+        <h2>Siap Menemukan Jasa yang Kamu Butuhkan?</h2>
 
-        <div class="freelancer-list">
-            <!-- Freelancer 1 -->
-            <div class="freelancer-card">
-                <div class="profile">
-                    Profil
-                </div>
+        <p>
+            Bergabung sekarang dan temukan berbagai jasa
+            freelancer lokal.
+        </p>
 
-                <div class="freelancer-info">
-                    <h3>Nama Freelancer</h3>
-                    <p>Web Developer</p>
-                    <p>⭐ 4.8</p>
-                    <p>Rp150.000</p>
-                    <button class="profile-button">
-                        Lihat Profil
-                    </button>
-                </div>
-            </div>
-
-            <!-- Freelancer 2 -->
-            <div class="freelancer-card">
-                <div class="profile">
-                    Profil
-                </div>
-
-                <div class="freelancer-info">
-                    <h3>Nama Freelancer</h3>
-                    <p>Desain Grafis</p>
-                    <p>⭐ 4.7</p>
-                    <p>Rp100.000</p>
-                    <button class="profile-button">
-                        Lihat Profil
-                    </button>
-                </div>
-            </div>
-
-            <!-- Freelancer 3 -->
-            <div class="freelancer-card">
-                <div class="profile">
-                    Profil
-                </div>
-
-                <div class="freelancer-info">
-                    <h3>Nama Freelancer</h3>
-                    <p>Video Editor</p>
-                    <p>⭐ 4.9</p>
-                    <p>Rp125.000</p>
-                    <button class="profile-button">
-                        Lihat Profil
-                    </button>
-                </div>
-            </div>
-
-            <!-- Freelancer 4 -->
-            <div class="freelancer-card">
-                <div class="profile">
-                    Profil
-                </div>
-                <div class="freelancer-info">
-                    <h3>Nama Freelancer</h3>
-                    <p>Fotografer</p>
-                    <p>⭐ 4.8</p>
-                    <p>Rp200.000</p>
-                    <button class="profile-button">
-                        Lihat Profil
-                    </button>
-                </div>
-            </div>
-        </div>
+        <a href="/register">
+            Mulai Sekarang
+        </a>
     </section>
-    <footer>
-        © 2026 LokalFreelancer
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>
+            © 2026 Freelance Lokal. Semua Hak Dilindungi.
+        </p>
     </footer>
+
 </body>
 </html>
