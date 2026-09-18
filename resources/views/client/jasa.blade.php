@@ -1,217 +1,484 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cari Jasa</title>
+
+    <title>Cari Freelancer - FreelanceHub</title>
 
     <style>
+
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #fffaf5;
-            color: #4b2e1f;
+            background: #f8f2ed;
+            color: #4b2e20;
         }
+
+        /* =========================
+           NAVBAR
+        ========================= */
 
         .navbar {
-            background: #6b4226;
-            color: white;
-            padding: 18px 60px;
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #eaded5;
+
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+
+            padding: 0 60px;
         }
 
-        .navbar h2 {
-            margin: 0;
+        .logo {
+            font-size: 26px;
+            font-weight: bold;
+            color: #754522;
         }
 
-        .navbar a {
-            color: white;
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-menu a {
             text-decoration: none;
-            margin-left: 25px;
+            color: #4b2e20;
+            font-size: 15px;
         }
+
+        .btn-dashboard {
+            background: #754522;
+            color: white !important;
+
+            padding: 11px 20px;
+            border-radius: 8px;
+        }
+
+
+        /* =========================
+           CONTENT
+        ========================= */
 
         .container {
             width: 90%;
-            max-width: 1100px;
-            margin: 40px auto;
+            max-width: 1200px;
+
+            margin: 0 auto;
+
+            padding: 45px 0;
         }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            color: #4b2e20;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #8b7769;
+            font-size: 15px;
+        }
+
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .search-box {
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            border: 1px solid #eaded5;
+
+            box-shadow: 0 5px 20px rgba(75, 46, 32, 0.05);
+
             margin-bottom: 30px;
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 32px;
-        }
-
-        .search-box {
+        .search-form {
             display: flex;
-            gap: 10px;
+            gap: 12px;
         }
 
-        .search-box input {
-            width: 250px;
-            padding: 12px;
-            border: 1px solid #d6c2b2;
+        .search-input {
+            flex: 1;
+
+            padding: 14px 16px;
+
+            border: 1px solid #d9c8bb;
+
             border-radius: 8px;
-            font-size: 14px;
+
+            font-size: 15px;
+
+            outline: none;
         }
 
-        .btn {
-            background: #6b4226;
-            color: white;
+        .search-input:focus {
+            border-color: #754522;
+        }
+
+        .search-button {
+            padding: 14px 25px;
+
             border: none;
-            padding: 12px 20px;
+
             border-radius: 8px;
-            text-decoration: none;
+
+            background: #754522;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
             cursor: pointer;
         }
 
-        .btn:hover {
-            background: #4b2e1f;
+        .search-button:hover {
+            background: #5d351b;
         }
 
-        .judul {
+
+        /* =========================
+           HASIL
+        ========================= */
+
+        .result-title {
+            font-size: 20px;
+
+            margin-bottom: 18px;
+        }
+
+
+        .freelancer-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+
+        /* =========================
+           CARD
+        ========================= */
+
+        .freelancer-card {
+
+            background: white;
+
+            border: 1px solid #eaded5;
+
+            border-radius: 15px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(75, 46, 32, 0.05);
+
+            transition: 0.2s;
+        }
+
+        .freelancer-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 25px
+                rgba(75, 46, 32, 0.10);
+        }
+
+
+        /* FOTO */
+
+        .profile-photo {
+
+            width: 65px;
+            height: 65px;
+
+            border-radius: 50%;
+
+            background: #eadbd0;
+
+            color: #754522;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+
+        .freelancer-card h3 {
+
+            font-size: 18px;
+
+            margin-bottom: 7px;
+
+            color: #4b2e20;
+        }
+
+
+        .role {
+
+            color: #8b7769;
+
+            font-size: 14px;
+
             margin-bottom: 20px;
         }
 
-        .jasa-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
+
+        .email {
+
+            font-size: 13px;
+
+            color: #8b7769;
+
+            margin-bottom: 20px;
         }
 
-        .card {
-            background: white;
-            border: 1px solid #eadbd0;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 4px 12px rgba(75, 46, 31, 0.08);
-        }
 
-        .card h3 {
-            margin-top: 0;
-            color: #6b4226;
-        }
+        .btn-lihat {
 
-        .card p {
-            color: #76665c;
-            line-height: 1.6;
-        }
+            display: block;
 
-        .harga {
+            text-align: center;
+
+            text-decoration: none;
+
+            padding: 11px;
+
+            border-radius: 8px;
+
+            border: 1px solid #754522;
+
+            color: #754522;
+
             font-weight: bold;
-            color: #6b4226 !important;
-            font-size: 18px;
+
+            font-size: 14px;
         }
 
-        @media (max-width: 700px) {
+        .btn-lihat:hover {
+
+            background: #754522;
+
+            color: white;
+        }
+
+
+        /* =========================
+           TIDAK ADA HASIL
+        ========================= */
+
+        .empty {
+
+            background: white;
+
+            border: 1px solid #eaded5;
+
+            border-radius: 15px;
+
+            padding: 50px;
+
+            text-align: center;
+
+            color: #8b7769;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .freelancer-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
             .navbar {
-                padding: 18px 25px;
+
+                padding: 0 20px;
+
+            }
+
+            .logo {
+
+                font-size: 21px;
+
+            }
+
+            .container {
+
+                width: 92%;
+
+            }
+
+            .search-form {
+
                 flex-direction: column;
-                gap: 15px;
+
             }
 
-            .navbar a {
-                margin: 0 8px;
-            }
+            .freelancer-grid {
 
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .search-box {
-                width: 100%;
-            }
-
-            .search-box input {
-                width: 100%;
-            }
-
-            .jasa-container {
                 grid-template-columns: 1fr;
+
             }
+
         }
+
     </style>
 </head>
 <body>
-
+    <!-- =========================
+         NAVBAR
+    ========================= -->
     <nav class="navbar">
-        <h2>Freelance Lokal</h2>
-
-        <div>
-            <a href="/client/dashboard">Dashboard</a>
-            <a href="/client/pesanan">Pesanan Saya</a>
-            <a href="/client/profil">Profil</a>
-            <a href="/logout">Logout</a>
+        <div class="logo">
+            FreelanceHub
+        </div>
+        <div class="nav-menu">
+            <a href="/">
+                Beranda
+            </a>
+            <a href="/client/dashboard" class="btn-dashboard">
+                Dashboard
+            </a>
         </div>
     </nav>
 
-    <main class="container">
 
-        <div class="header">
-            <h1>Cari Jasa Freelancer</h1>
+    <!-- =========================
+         CONTENT
+    ========================= -->
+    <div class="container">
+        <div class="page-title">
+            <h1>Cari Freelancer</h1>
+            <p>
+                Temukan freelancer sesuai kebutuhanmu.
+            </p>
+        </div>
 
-            <form class="search-box">
+        <!-- =========================
+             SEARCH BOX
+        ========================= -->
+        <div class="search-box">
+            <form
+                action="/client/jasa"
+                method="GET"
+                class="search-form"
+            >
                 <input
                     type="text"
-                    name="search"
-                    placeholder="Cari nama jasa..."
+                    name="q"
+                    class="search-input"
+                    placeholder="Cari nama freelancer..."
+                    value="{{ $query }}"
                 >
-
-                <button class="btn" type="submit">
+                <button
+                    type="submit"
+                    class="search-button"
+                >
                     Cari
                 </button>
             </form>
         </div>
 
-        <h2 class="judul">Daftar Jasa</h2>
 
-        <div class="jasa-container">
+        <!-- =========================
+             HASIL
+        ========================= -->
+        @if ($query)
+            <h2 class="result-title">
+                Hasil pencarian: "{{ $query }}"
+            </h2>
+        @else
+            <h2 class="result-title">
+                Freelancer Tersedia
+            </h2>
+        @endif
+        @if ($freelancers->count() > 0)
+            <div class="freelancer-grid">
+                @foreach ($freelancers as $freelancer)
+                    <div class="freelancer-card">
+                        <div class="profile-phot">
+                            {{ strtoupper(substr($freelancer->name, 0, 1)) }}
+                        </div>
+                        <h3>
+                            {{ $freelancer->name }}
+                        </h3>
+                        
+                        <div class="role">
+                            Freelancer
+                        </div>
+                    
+                        <div class="email">
+                            {{ $freelancer->email }}
+                        </div>
 
-            <div class="card">
-                <h3>Jasa Pembuatan Website</h3>
-                <p>Freelancer: Budi</p>
-                <p>
-                    Membuat website sederhana untuk toko,
-                    sekolah, atau usaha.
-                </p>
-                <p class="harga">Rp500.000</p>
+                        
 
-                <a href="/client/detail-jasa" class="btn">
-                    Lihat Detail
-                </a>
+                        <a
+                            href="#"
+                            class="btn-lihat"
+                            onclick="alert('Detail freelancer akan dibuat pada tahap berikutnya.')"
+                        >
+                            Lihat Profil
+                        </a>
+                    </div>
+                @endforeach
             </div>
-
-            <div class="card">
-                <h3>Jasa Desain Poster</h3>
-                <p>Freelancer: Sinta</p>
-                <p>
-                    Membuat desain poster untuk acara,
-                    promosi, dan media sosial.
+        @else
+            <div class="empty">
+                <h3>
+                    Freelancer tidak ditemukan
+                </h3>
+                <p style="margin-top: 10px;">
+                    Coba gunakan kata kunci lain.
                 </p>
-                <p class="harga">Rp100.000</p>
-
-                <a href="/client/detail-jasa" class="btn">
-                    Lihat Detail
-                </a>
             </div>
-
-        </div>
-
-    </main>
-
+        @endif
+    </div>
 </body>
 </html>

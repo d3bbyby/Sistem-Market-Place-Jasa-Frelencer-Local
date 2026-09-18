@@ -3,238 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Client</title>
+
+    <title>Profil Admin</title>
 
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: #fffaf5;
-            color: #4b2e1f;
+            background: #f8f5f2;
+            color: #4b3426;
         }
 
         .navbar {
-            background: #6b4226;
-            color: white;
-            padding: 18px 60px;
+            height: 70px;
+            background: #ffffff;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
 
-        .navbar h2 {
-            margin: 0;
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #6b4226;
         }
 
-        .navbar a {
-            color: white;
+        .back {
             text-decoration: none;
-            margin-left: 25px;
+            color: #6b4226;
+            font-weight: bold;
         }
 
         .container {
             width: 90%;
-            max-width: 900px;
-            margin: 40px auto;
+            max-width: 700px;
+            margin: 50px auto;
         }
 
-        .container h1 {
-            color: #6b4226;
+        .title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .title h1 {
+            font-size: 30px;
             margin-bottom: 8px;
         }
 
-        .subtitle {
-            color: #806f63;
-            margin-bottom: 30px;
+        .title p {
+            color: #8a7668;
         }
 
         .profile-card {
             background: white;
-            border: 1px solid #eadbd0;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(75, 46, 31, 0.08);
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #eadbd0;
+            border-radius: 18px;
+            padding: 35px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
         }
 
         .avatar {
-            width: 80px;
-            height: 80px;
-            background: #eadbd0;
-            color: #6b4226;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
             border-radius: 50%;
+            background: #6b4226;
+            color: white;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 32px;
+
+            font-size: 38px;
             font-weight: bold;
         }
 
-        .profile-header h2 {
-            margin: 0 0 8px;
+        .profile-name {
+            text-align: center;
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
 
-        .profile-header p {
-            margin: 0;
-            color: #806f63;
+        .profile-role {
+            text-align: center;
+            color: #9a6a45;
+            margin-bottom: 30px;
         }
 
-        .form-group {
-            margin-bottom: 20px;
+        .data-box {
+            background: #f8f5f2;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 15px;
         }
 
-        .form-group label {
+        .data-box small {
             display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
+            color: #8a7668;
+            margin-bottom: 5px;
         }
 
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #d6c2b2;
-            border-radius: 8px;
+        .data-box strong {
+            font-size: 16px;
+            color: #4b3426;
+        }
+
+        .status {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #388e3c;
+            padding: 6px 14px;
+            border-radius: 20px;
             font-size: 14px;
-            font-family: Arial, sans-serif;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #6b4226;
+            font-weight: bold;
         }
 
         .btn {
+            display: block;
+            width: 100%;
+            margin-top: 25px;
+            padding: 13px;
+            text-align: center;
+
             background: #6b4226;
             color: white;
-            border: none;
-            padding: 12px 22px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
+            text-decoration: none;
+
+            border-radius: 10px;
+            font-weight: bold;
         }
 
         .btn:hover {
-            background: #4b2e1f;
-        }
-
-        @media (max-width: 700px) {
-            .navbar {
-                padding: 18px 25px;
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .navbar a {
-                margin: 0 8px;
-            }
-
-            .container {
-                width: 92%;
-            }
-
-            .profile-card {
-                padding: 20px;
-            }
+            background: #8a5a38;
         }
     </style>
 </head>
+
 <body>
 
-    <nav class="navbar">
-        <h2>Freelance Lokal</h2>
+    <div class="navbar">
 
-        <div>
-            <a href="/client/dashboard">Dashboard</a>
-            <a href="/client/jasa">Cari Jasa</a>
-            <a href="/client/pesanan">Pesanan Saya</a>
-            <a href="/logout">Logout</a>
+        <div class="logo">
+            FreelanceLocal
         </div>
-    </nav>
 
-    <main class="container">
-        <h1>Profil Saya</h1>
-        <p class="subtitle">
-            Kelola informasi akun kamu.
-        </p>
+        <a href="/admin/dashboard" class="back">
+            ← Kembali ke Dashboard
+        </a>
+
+    </div>
+
+
+    <div class="container">
+
+        <div class="title">
+            <h1>Profil Admin</h1>
+            <p>Informasi akun administrator</p>
+        </div>
+
 
         <div class="profile-card">
 
-            <div class="profile-header">
-                <div class="avatar">C</div>
-
-                <div>
-                    <h2>Profil Client</h2>
-                    <p>Kelola data pribadi akun kamu</p>
-                </div>
+            <div class="avatar">
+                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
             </div>
 
-            <form action="#" method="POST">
-                @csrf
+            <div class="profile-name">
+                {{ Auth::user()->name }}
+            </div>
 
-                <div class="form-group">
-                    <label for="name">Nama Lengkap</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value="Nama Client"
-                        required
-                    >
-                </div>
+            <div class="profile-role">
+                {{ ucfirst(Auth::user()->role) }}
+            </div>
 
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="client@gmail.com"
-                        required
-                    >
-                </div>
 
-                <div class="form-group">
-                    <label for="role">Role</label>
-                    <input
-                        type="text"
-                        id="role"
-                        name="role"
-                        value="Client"
-                        readonly
-                    >
-                </div>
+            <div class="data-box">
+                <small>Nama Lengkap</small>
+                <strong>{{ Auth::user()->name }}</strong>
+            </div>
 
-                <div class="form-group">
-                    <label for="deskripsi">Deskripsi Diri</label>
-                    <textarea
-                        id="deskripsi"
-                        name="deskripsi"
-                        rows="4"
-                        placeholder="Tuliskan deskripsi singkat tentang diri kamu"
-                    ></textarea>
-                </div>
 
-                <button type="submit" class="btn">
-                    Simpan Perubahan
-                </button>
-            </form>
+            <div class="data-box">
+                <small>Email</small>
+                <strong>{{ Auth::user()->email }}</strong>
+            </div>
+
+
+            <div class="data-box">
+                <small>Role</small>
+                <strong>{{ ucfirst(Auth::user()->role) }}</strong>
+            </div>
+
+
+            <div class="data-box">
+                <small>Status Akun</small>
+
+                <span class="status">
+                    Aktif
+                </span>
+            </div>
+
+
+            <a href="/admin/dashboard" class="btn">
+                Kembali ke Dashboard
+            </a>
 
         </div>
-    </main>
+
+    </div>
 
 </body>
 </html>

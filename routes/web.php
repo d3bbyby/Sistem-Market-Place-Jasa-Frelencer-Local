@@ -52,6 +52,15 @@ Route::get('/client/dashboard', function () {
 
 
 // ==============================
+// PROFIL CLIENT
+// ==============================
+
+Route::get('/client/pengaturan', function () {
+    return view('client.profil');
+});
+
+
+// ==============================
 // DASHBOARD FREELANCER
 // ==============================
 
@@ -75,4 +84,33 @@ Route::get('/admin/dashboard', function () {
 
 Route::get('/freelancer/profil', function () {
     return view('freelancer.profil');
+});
+
+
+// ==============================
+// PENCARIAN FREELANCER / JASA
+// ==============================
+
+Route::get('/client/jasa', function (\Illuminate\Http\Request $request) {
+
+    $query = $request->input('q');
+
+    $freelancers = \App\Models\User::where('role', 'freelancer')
+        ->when($query, function ($q) use ($query) {
+            $q->where(function ($data) use ($query) {
+                $data->where('name', 'like', '%' . $query . '%')
+                     ->orWhere('email', 'like', '%' . $query . '%');
+            });
+        })
+        ->get();
+
+    return view('client.jasa', compact('freelancers', 'query'));
+});
+
+// ==============================
+// PROFIL ADMIN
+// ==============================
+
+Route::get('/admin/profil', function () {
+    return view('admin.profil');
 });

@@ -424,24 +424,22 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="layout">
-
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo">
                 FreelanceHub
             </div>
-
-            <p class="menu-title">Menu Utama</p>
-
+            <p class="menu-title">
+                Menu Utama
+            </p>
             <div class="menu">
                 <a href="/admin/dashboard" class="active">
                     <span class="menu-icon">▣</span>
                     Dashboard
                 </a>
-
                 <a href="/admin/pengguna">
                     <span class="menu-icon">♙</span>
                     Pengguna
@@ -451,36 +449,31 @@
                     <span class="menu-icon">♙</span>
                     Client
                 </a>
-
                 <a href="/admin/jasa">
                     <span class="menu-icon">▤</span>
                     Jasa
                 </a>
-
                 <a href="/admin/pesanan">
                     <span class="menu-icon">▧</span>
                     Pesanan
                 </a>
-
                 <a href="/admin/kategori">
                     <span class="menu-icon">▦</span>
                     Kategori
                 </a>
-
                 <a href="/admin/review">
                     <span class="menu-icon">☆</span>
                     Review dan Rating
                 </a>
-
                 <a href="/admin/laporan">
                     <span class="menu-icon">▥</span>
                     Laporan
                 </a>
-
-                <a href="/admin/pengaturan">
+                <a href="/admin/profil">
                     <span class="menu-icon">⚙</span>
                     Pengaturan
                 </a>
+
             </div>
 
             <div class="menu logout">
@@ -491,78 +484,132 @@
             </div>
         </aside>
 
-        <!-- MAIN -->
-        <main class="main">
 
-            <!-- TOPBAR -->
+        <main class="main">
             <header class="topbar">
                 <div class="page-title">
                     Dashboard Admin
                 </div>
-
                 <div class="profile">
                     <div class="profile-photo">
-                        A
+                        @auth
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        @else
+                            A
+                        @endauth
                     </div>
-
                     <div class="profile-info">
-                        <strong>Admin</strong>
-                        <span>Administrator</span>
+                        @auth
+                            <strong>
+                                {{ Auth::user()->name }}
+                            </strong>
+                            <span>
+                                {{ ucfirst(Auth::user()->role) }}
+                            </span>
+                        @else
+                            <strong>
+                                Admin
+                            </strong>
+                            <span>
+                                Administrator
+                            </span>
+                        @endauth
                     </div>
                 </div>
             </header>
 
-            <!-- CONTENT -->
+
             <section class="content">
 
                 <div class="welcome">
-                    <h1>Selamat Datang, Admin!</h1>
-                    <p>Kelola aktivitas dan data Freelance Lokal melalui halaman ini.</p>
+                    @auth
+                        <h1>
+                            Selamat Datang, {{ Auth::user()->name }}!
+                        </h1>
+                    @else
+                        <h1>
+                            Selamat Datang, Admin!
+                        </h1>
+                    @endauth
+                    <p>
+                        Kelola aktivitas dan data Freelance Lokal melalui halaman ini.
+                    </p>
                 </div>
 
-                <!-- STATISTIK -->
+
                 <div class="stats">
-
                     <div class="stat-card">
-                        <div class="stat-icon">♙</div>
-                        <h3>120</h3>
-                        <p>Total Pengguna</p>
+                        <div class="stat-icon">
+                            ♙
+                        </div>
+                        <h3>
+                            120
+                        </h3>
+                        <p>
+                            Total Pengguna
+                        </p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            ♧
+                        </div>
+                        <h3>
+                            45
+                        </h3>
+                        <p>
+                            Total Freelancer
+                        </p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            ♙
+                        </div>
+                        <h3>
+                            75
+                        </h3>
+                        <p>
+                            Total Client
+                        </p>
                     </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon">♧</div>
-                        <h3>45</h3>
-                        <p>Total Freelancer</p>
+
+                <div class="stat-card">
+                        <div class="stat-icon">
+                            ▤
+                        </div>
+                        <h3>
+                            86
+                        </h3>
+                        <p>
+                            Total Jasa
+                        </p>
                     </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon">♙</div>
-                        <h3>75</h3>
-                        <p>Total Client</p>
-                    </div>
 
                     <div class="stat-card">
-                        <div class="stat-icon">▤</div>
-                        <h3>86</h3>
-                        <p>Total Jasa</p>
+                        <div class="stat-icon">
+                            ▧
+                        </div>
+                        <h3>
+                            32
+                        </h3>
+                        <p>
+                            Total Pesanan
+                        </p>
                     </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">▧</div>
-                        <h3>32</h3>
-                        <p>Total Pesanan</p>
-                    </div>
-
                 </div>
+
 
                 <!-- PESANAN DAN PENGGUNA -->
                 <div class="dashboard-grid">
-
-                    <!-- PESANAN TERBARU -->
                     <div class="panel">
                         <div class="panel-header">
-                            <h2>Pesanan Terbaru</h2>
-                            <a href="/admin/pesanan">Lihat semua</a>
+                            <h2>
+                                Pesanan Terbaru
+                            </h2>
+                            <a href="/admin/pesanan">
+                                Lihat semua
+                            </a>
                         </div>
 
                         <div class="panel-body">
@@ -570,18 +617,33 @@
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Client</th>
-                                            <th>Jasa</th>
-                                            <th>Tanggal</th>
-                                            <th>Status</th>
+                                            <th>
+                                                Client
+                                            </th>
+                                            <th>
+                                                Jasa
+                                            </th>
+                                            <th>
+                                                Tanggal
+                                            </th>
+                                            <th>
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
 
+
                                     <tbody>
                                         <tr>
-                                            <td>Deby</td>
-                                            <td>Desain Logo</td>
-                                            <td>08 Sep 2026</td>
+                                            <td>
+                                                Deby
+                                            </td>
+                                            <td>
+                                                Desain Logo
+                                            </td>
+                                            <td>
+                                                08 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status pending">
                                                     Menunggu
@@ -590,9 +652,16 @@
                                         </tr>
 
                                         <tr>
-                                            <td>Andi</td>
-                                            <td>Website Laravel</td>
-                                            <td>07 Sep 2026</td>
+                                            <td>
+                                                Andi
+                                            </td>
+                                            <td>
+                                                Website Laravel
+                                            </td>
+                                            <td>
+                                                07 Sep 2026
+                                            </td>
+
                                             <td>
                                                 <span class="status process">
                                                     Diproses
@@ -600,21 +669,37 @@
                                             </td>
                                         </tr>
 
+
                                         <tr>
-                                            <td>Sinta</td>
-                                            <td>Editing Video</td>
-                                            <td>06 Sep 2026</td>
                                             <td>
+                                                Sinta
+                                            </td>
+                                            <td>
+                                                Editing Video
+                                            </td>
+                                            <td>
+                                                06 Sep 2026
+                                            </td>
+                                            <td>
+
                                                 <span class="status done">
                                                     Selesai
                                                 </span>
                                             </td>
                                         </tr>
 
+
                                         <tr>
-                                            <td>Rizky</td>
-                                            <td>Desain Poster</td>
-                                            <td>05 Sep 2026</td>
+                                            <td>
+                                                Rizky
+                                            </td>
+                                            <td>
+                                                Desain Poster
+                                            </td>
+                                            <td>
+                                                05 Sep 2026
+                                            </td>
+
                                             <td>
                                                 <span class="status pending">
                                                     Menunggu
@@ -627,72 +712,100 @@
                         </div>
                     </div>
 
-                    <!-- PENGGUNA TERBARU -->
+
                     <div class="panel">
                         <div class="panel-header">
-                            <h2>Pengguna Terbaru</h2>
-                            <a href="/admin/pengguna">Lihat semua</a>
+                            <h2>
+                                Pengguna Terbaru
+                            </h2>
+                            <a href="/admin/pengguna">
+                                Lihat semua
+                            </a>
                         </div>
+
 
                         <div class="panel-body">
+                            <div class="user-item">
+                                <div class="user-left">
+                                    <div class="user-photo">
+                                        D
+                                    </div>
+                                    <div>
+                                        <p class="user-name">
+                                            Deby
+                                        </p>
+                                        <p class="user-email">
+                                            deby@email.com
+                                        </p>
+                                    </div>
+                                </div>
+                                <span class="role">
+                                    Client
+                                </span>
+                            </div>
+
 
                             <div class="user-item">
                                 <div class="user-left">
-                                    <div class="user-photo">D</div>
+                                    <div class="user-photo">
+                                        A
+                                    </div>
                                     <div>
-                                        <p class="user-name">Deby</p>
-                                        <p class="user-email">deby@email.com</p>
+                                        <p class="user-name">
+                                            Andi
+                                        </p>
+                                        <p class="user-email">
+                                            andi@email.com
+                                        </p>
                                     </div>
                                 </div>
-
-                                <span class="role">Client</span>
+                                <span class="role">
+                                    Freelancer
+                                </span>
                             </div>
+
 
                             <div class="user-item">
                                 <div class="user-left">
-                                    <div class="user-photo">A</div>
+                                    <div class="user-photo">
+                                        S
+                                    </div>
                                     <div>
-                                        <p class="user-name">Andi</p>
-                                        <p class="user-email">andi@email.com</p>
+                                        <p class="user-name">
+                                            Sinta
+                                        </p>
+                                        <p class="user-email">
+                                            sinta@email.com
+                                        </p>
                                     </div>
                                 </div>
-
-                                <span class="role">Freelancer</span>
+                                <span class="role">
+                                    Client
+                                </span>
                             </div>
-
                             <div class="user-item">
                                 <div class="user-left">
-                                    <div class="user-photo">S</div>
+                                    <div class="user-photo">
+                                        R
+                                    </div>
                                     <div>
-                                        <p class="user-name">Sinta</p>
-                                        <p class="user-email">sinta@email.com</p>
+                                        <p class="user-name">
+                                            Rizky
+                                        </p>
+                                        <p class="user-email">
+                                            rizky@email.com
+                                        </p>
                                     </div>
                                 </div>
-
-                                <span class="role">Client</span>
+                                <span class="role">
+                                    Freelancer
+                                </span>
                             </div>
-
-                            <div class="user-item">
-                                <div class="user-left">
-                                    <div class="user-photo">R</div>
-                                    <div>
-                                        <p class="user-name">Rizky</p>
-                                        <p class="user-email">rizky@email.com</p>
-                                    </div>
-                                </div>
-
-                                <span class="role">Freelancer</span>
-                            </div>
-
                         </div>
                     </div>
-
                 </div>
-
             </section>
         </main>
-
     </div>
-
 </body>
 </html>

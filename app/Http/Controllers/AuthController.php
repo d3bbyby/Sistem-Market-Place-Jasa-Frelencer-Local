@@ -32,17 +32,17 @@ class AuthController extends Controller
 
             $role = Auth::user()->role;
 
-            // ADMIN
+            // Jika Admin
             if ($role == 'admin') {
                 return redirect('/admin/dashboard');
             }
 
-            // FREELANCER
+            // Jika Freelancer
             if ($role == 'freelancer') {
                 return redirect('/freelancer/dashboard');
             }
 
-            // CLIENT
+            // Jika Client
             return redirect('/client/dashboard');
         }
 
@@ -66,17 +66,23 @@ class AuthController extends Controller
             'role' => 'required|in:client,freelancer'
         ]);
 
-        User::create([
+        // Membuat akun baru
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role
         ]);
 
-        return redirect('/login')->with(
-            'success',
-            'Pendaftaran berhasil. Silakan login.'
-        );
+        // Login otomatis setelah register
+        Auth::login($user);
+
+        // Masuk dashboard sesuai role
+        if ($user->role == 'freelancer') {
+            return redirect('/freelancer/dashboard');
+        }
+
+        return redirect('/client/dashboard');
     }
 
 
@@ -89,6 +95,7 @@ class AuthController extends Controller
         Auth::logout();
 
         $request->session()->invalidate();
+
         $request->session()->regenerateToken();
 
         return redirect('/login');

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard Client - Freelance Lokal</title>
 
     <style>
@@ -445,51 +446,43 @@
     </style>
 </head>
 <body>
-
     <div class="layout">
-
-        <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="logo">FreelanceHub</div>
-
-            <p class="menu-title">Menu Utama</p>
-
+            <div class="logo">
+                FreelanceHub
+            </div>
+            <p class="menu-title">
+                Menu Utama
+            </p>
             <div class="menu">
                 <a href="/client/dashboard" class="active">
                     <span class="menu-icon">▣</span>
                     Dashboard
                 </a>
-
                 <a href="/client/jasa">
                     <span class="menu-icon">⌕</span>
                     Cari Freelancer
                 </a>
-
                 <a href="/client/pesanan">
                     <span class="menu-icon">▧</span>
                     Pesanan Saya
                 </a>
-
                 <a href="/client/chat">
                     <span class="menu-icon">▤</span>
                     Chat
                 </a>
-
                 <a href="/client/favorit">
                     <span class="menu-icon">♡</span>
                     Favorit
                 </a>
-
                 <a href="/client/review">
                     <span class="menu-icon">☆</span>
                     Review Saya
                 </a>
-
                 <a href="/client/pembayaran">
                     <span class="menu-icon">▣</span>
                     Pembayaran
                 </a>
-
                 <a href="/client/pengaturan">
                     <span class="menu-icon">⚙</span>
                     Pengaturan Akun
@@ -504,86 +497,155 @@
             </div>
         </aside>
 
-        <!-- MAIN -->
         <main class="main">
-
             <header class="topbar">
-                <div class="page-title">Dashboard Client</div>
+                <div class="page-title">
+                    Dashboard Client
+                </div>
 
                 <div class="profile">
-                    <div class="profile-photo">C</div>
-
+                    <div class="profile-photo">
+                        @auth
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        @else
+                            C
+                        @endauth
+                    </div>
                     <div class="profile-info">
-                        <strong>Client</strong>
-                        <span>Pelanggan</span>
+                        @auth
+                            <strong>
+                                {{ Auth::user()->name }}
+                            </strong>
+
+                            <span>
+                                {{ ucfirst(Auth::user()->role) }}
+                            </span>
+                        @else
+
+                            <strong>
+                                Client
+                            </strong>
+                            <span>
+                                Pelanggan
+                            </span>
+                        @endauth
                     </div>
                 </div>
             </header>
 
-            <section class="content">
 
+            <section class="content">
                 <div class="welcome">
-                    <h1>Selamat Datang, Client!</h1>
+                    @auth
+                        <h1>
+                            Selamat Datang, {{ Auth::user()->name }}!
+                        </h1>
+                    @else
+                        <h1>
+                            Selamat Datang, Client!
+                        </h1>
+                    @endauth
                     <p>
                         Temukan freelancer terbaik untuk membantu menyelesaikan kebutuhanmu.
                     </p>
                 </div>
 
-                <!-- STATISTIK -->
+
+    
                 <div class="stats">
-
                     <div class="stat-card">
-                        <div class="stat-icon">▧</div>
-                        <h3>12</h3>
-                        <p>Total Pesanan</p>
+
+                        <div class="stat-icon">
+                            ▧
+                        </div>
+                        <h3>
+                            12
+                        </h3>
+                        <p>
+                            Total Pesanan
+                        </p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            ↻
+                        </div>
+                        <h3>
+                            3
+                        </h3>
+                        <p>
+                            Pesanan Diproses
+                        </p>
                     </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon">↻</div>
-                        <h3>3</h3>
-                        <p>Pesanan Diproses</p>
-                    </div>
 
                     <div class="stat-card">
-                        <div class="stat-icon">✓</div>
-                        <h3>9</h3>
-                        <p>Pesanan Selesai</p>
+                        <div class="stat-icon">
+                            ✓
+                        </div>
+                        <h3>
+                            9
+                        </h3>
+                        <p>
+                            Pesanan Selesai
+                        </p>
                     </div>
+
 
                     <div class="stat-card">
-                        <div class="stat-icon">Rp</div>
-                        <h3>2,5 Jt</h3>
-                        <p>Total Pembayaran</p>
+                        <div class="stat-icon">
+                            Rp
+                        </div>
+                        <h3>
+                            2,5 Jt
+                        </h3>
+                        <p>
+                            Total Pembayaran
+                        </p>
                     </div>
-
                 </div>
 
-                <div class="dashboard-grid">
 
-                    <!-- PESANAN TERBARU -->
+                <div class="dashboard-grid">
                     <div class="panel">
                         <div class="panel-header">
-                            <h2>Pesanan Terbaru</h2>
-                            <a href="/client/pesanan">Lihat semua</a>
+                            <h2>
+                                Pesanan Terbaru
+                            </h2>
+                            <a href="/client/pesanan">
+                                Lihat semua
+                            </a>
                         </div>
-
                         <div class="panel-body">
                             <div class="table-wrapper">
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Freelancer</th>
-                                            <th>Jasa</th>
-                                            <th>Tanggal</th>
-                                            <th>Status</th>
+                                            <th>
+                                                Freelancer
+                                            </th>
+                                            <th>
+                                                Jasa
+                                            </th>
+                                            <th>
+                                                Tanggal
+                                            </th>
+                                            <th>
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         <tr>
-                                            <td>Andi Design</td>
-                                            <td>Desain Logo</td>
-                                            <td>08 Sep 2026</td>
+                                            <td>
+                                                Andi Design
+                                            </td>
+                                            <td>
+                                                Desain Logo
+                                            </td>
+                                            <td>
+                                                08 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status pending">
                                                     Menunggu
@@ -591,10 +653,17 @@
                                             </td>
                                         </tr>
 
+
                                         <tr>
-                                            <td>Sinta Web</td>
-                                            <td>Website Laravel</td>
-                                            <td>07 Sep 2026</td>
+                                            <td>
+                                            Sinta Web
+                                            </td>
+                                            <td>
+                                                Website Laravel
+                                            </td>
+                                            <td>
+                                                07 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status process">
                                                     Diproses
@@ -603,9 +672,15 @@
                                         </tr>
 
                                         <tr>
-                                            <td>Rizky Editor</td>
-                                            <td>Editing Video</td>
-                                            <td>05 Sep 2026</td>
+                                            <td>
+                                                Rizky Editor
+                                            </td>
+                                            <td>
+                                                Editing Video
+                                            </td>
+                                            <td>
+                                                05 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status done">
                                                     Selesai
@@ -618,106 +693,129 @@
                         </div>
                     </div>
 
-                    <!-- KOLOM KANAN -->
                     <div class="right-column">
-
-                        <!-- FREELANCER FAVORIT -->
                         <div class="panel">
                             <div class="panel-header">
-                                <h2>Freelancer Favorit</h2>
-                                <a href="/client/favorit">Lihat semua</a>
+                                <h2>
+                                    Freelancer Favorit
+                                </h2>
+                                <a href="/client/favorit">
+                                    Lihat semua
+                                </a>
                             </div>
-
                             <div class="panel-body">
-
                                 <div class="favorite-item">
-                                    <div class="avatar">A</div>
-
+                                    <div class="avatar">
+                                        A
+                                    </div>
                                     <div class="item-info">
-                                        <strong>Andi Design</strong>
-                                        <span>Desain Grafis</span>
+                                        <strong>
+                                            Andi Design
+                                        </strong>
+                                        <span>
+                                            Desain Grafis
+                                        </span>
                                     </div>
 
                                     <a href="/client/jasa" class="item-link">
                                         Lihat
                                     </a>
                                 </div>
-
                                 <div class="favorite-item">
-                                    <div class="avatar">S</div>
-
-                                    <div class="item-info">
-                                        <strong>Sinta Web</strong>
-                                        <span>Web Developer</span>
+                                    <div class="avatar">
+                                        S
                                     </div>
-
+                                    <div class="item-info">
+                                        <strong>
+                                            Sinta Web
+                                        </strong>
+                                        <span>
+                                            Web Developer
+                                        </span>
+                                    </div>
                                     <a href="/client/jasa" class="item-link">
                                         Lihat
                                     </a>
                                 </div>
 
+
                                 <div class="favorite-item">
-                                    <div class="avatar">R</div>
-
-                                    <div class="item-info">
-                                        <strong>Rizky Editor</strong>
-                                        <span>Video Editor</span>
+                                    <div class="avatar">
+                                        R
                                     </div>
-
+                                    <div class="item-info">
+                                        <strong>
+                                            Rizky Editor
+                                        </strong>
+                                        <span>
+                                            Video Editor
+                                        </span>
+                                    </div>
                                     <a href="/client/jasa" class="item-link">
                                         Lihat
                                     </a>
                                 </div>
-
                             </div>
                         </div>
 
-                        <!-- AKTIVITAS TERBARU -->
+
                         <div class="panel">
                             <div class="panel-header">
-                                <h2>Aktivitas Terbaru</h2>
+                                <h2>
+                                    Aktivitas Terbaru
+                                </h2>
                             </div>
 
                             <div class="panel-body">
-
                                 <div class="activity-item">
-                                    <div class="activity-icon">✓</div>
-
+                                    <div class="activity-icon">
+                                        ✓
+                                    </div>
                                     <div class="item-info">
-                                        <strong>Pesanan telah selesai</strong>
-                                        <span>Desain logo - 2 jam lalu</span>
+                                        <strong>
+                                            Pesanan telah selesai
+                                        </strong>
+
+                                        <span>
+                                            Desain logo - 2 jam lalu
+                                        </span>
                                     </div>
                                 </div>
 
                                 <div class="activity-item">
-                                    <div class="activity-icon">★</div>
-
+                                    <div class="activity-icon">
+                                        ★
+                                    </div>
                                     <div class="item-info">
-                                        <strong>Review berhasil diberikan</strong>
-                                        <span>Website Laravel - Kemarin</span>
+                                        <strong>
+                                            Review berhasil diberikan
+                                        </strong>
+                                        <span>
+                                            Website Laravel - Kemarin
+                                        </span>
                                     </div>
                                 </div>
+
 
                                 <div class="activity-item">
-                                    <div class="activity-icon">▧</div>
-
+                                    <div class="activity-icon">
+                                        ▧
+                                    </div>
                                     <div class="item-info">
-                                        <strong>Pesanan baru dibuat</strong>
-                                        <span>Editing video - 2 hari lalu</span>
+                                        <strong>
+                                            Pesanan baru dibuat
+                                        </strong>
+                                        <span>
+                                            Editing video - 2 hari lalu
+                                        </span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
-
                     </div>
-
                 </div>
-
             </section>
         </main>
-
     </div>
-
 </body>
 </html>

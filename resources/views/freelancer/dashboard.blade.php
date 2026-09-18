@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Dashboard Freelancer - Freelance Lokal</title>
 
     <style>
@@ -460,57 +462,48 @@
     </style>
 </head>
 <body>
-
     <div class="layout">
-
-        <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="logo">FreelanceHub</div>
-
-            <p class="menu-title">Menu Utama</p>
-
+            <div class="logo">
+                FreelanceHub
+            </div>
+            <p class="menu-title">
+                Menu Utama
+            </p>
             <div class="menu">
                 <a href="/freelancer/dashboard" class="active">
                     <span class="menu-icon">▣</span>
                     Dashboard
                 </a>
-
                 <a href="/freelancer/profil">
                     <span class="menu-icon">♙</span>
                     Profil Saya
                 </a>
-
                 <a href="/freelancer/jasa">
                     <span class="menu-icon">▤</span>
                     Jasa Saya
                 </a>
-
                 <a href="/freelancer/pesanan">
                     <span class="menu-icon">▧</span>
                     Pesanan Masuk
                 </a>
-
                 <a href="/freelancer/proyek">
                     <span class="menu-icon">▦</span>
                     Proyek Saya
                 </a>
-
                 <a href="/freelancer/portofolio">
                     <span class="menu-icon">▧</span>
                     Portofolio
                 </a>
-
                 <a href="/freelancer/rating">
                     <span class="menu-icon">☆</span>
                     Rating
                 </a>
-
                 <a href="/freelancer/pendapatan">
                     <span class="menu-icon">Rp</span>
                     Pendapatan
                 </a>
-
-                <a href="/freelancer/pengaturan">
+                <a href="/freelancer/profil">
                     <span class="menu-icon">⚙</span>
                     Pengaturan Akun
                 </a>
@@ -524,108 +517,193 @@
             </div>
         </aside>
 
-        <!-- MAIN -->
+
+        
         <main class="main">
-
             <header class="topbar">
-                <div class="page-title">Dashboard Freelancer</div>
+                <div class="page-title">
+                    Dashboard Freelancer
+                </div>
 
+                
                 <div class="profile">
-                    <div class="profile-photo">F</div>
-
+                    <div class="profile-photo">
+                        @auth
+                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                        @else
+                            F
+                        @endauth
+                    </div>
                     <div class="profile-info">
-                        <strong>Freelancer</strong>
-                        <span>Penyedia Jasa</span>
+                        @auth
+                            <strong>
+                                {{ Auth::user()->name }}
+                            </strong>
+                            <span>
+                                {{ ucfirst(Auth::user()->role) }}
+                            </span>
+                        @else
+                            <strong>
+                                Freelancer
+                            </strong>
+                            <span>
+                                Penyedia Jasa
+                            </span>
+                        @endauth
                     </div>
                 </div>
             </header>
 
             <section class="content">
 
+
+                
                 <div class="welcome">
-                    <h1>Selamat Datang, Freelancer!</h1>
+                    @auth
+                        <h1>
+                            Selamat Datang, {{ Auth::user()->name }}!
+                        </h1>
+                    @else
+                        <h1>
+                            Selamat Datang, Freelancer!
+                        </h1>
+                    @endauth
                     <p>
                         Kelola jasa, pesanan, dan portofolio kamu melalui halaman ini.
                     </p>
                 </div>
 
-                <!-- STATISTIK -->
+
+                
                 <div class="stats">
-
                     <div class="stat-card">
-                        <div class="stat-icon">▤</div>
-                        <h3>8</h3>
-                        <p>Total Jasa</p>
+                        <div class="stat-icon">
+                            ▤
+                        </div>
+                        <h3>
+                            8
+                        </h3>
+                        <p>
+                            Total Jasa
+                        </p>
                     </div>
 
                     <div class="stat-card">
-                        <div class="stat-icon">✓</div>
-                        <h3>24</h3>
-                        <p>Pesanan Selesai</p>
+                        <div class="stat-icon">
+                            ✓
+                        </div>
+                        <h3>
+                            24
+                        </h3>
+                        <p>
+                            Pesanan Selesai
+                        </p>
                     </div>
+
 
                     <div class="stat-card">
-                        <div class="stat-icon">☆</div>
-                        <h3>4.8</h3>
-                        <p>Total Rating</p>
+                        <div class="stat-icon">
+                            ☆
+                        </div>
+                        <h3>
+                            4.8
+                        </h3>
+                        <p>
+                            Total Rating
+                        </p>
                     </div>
+
 
                     <div class="stat-card">
-                        <div class="stat-icon">Rp</div>
-                        <h3>4,8 Jt</h3>
-                        <p>Total Pendapatan</p>
+                        <div class="stat-icon">
+                            Rp
+                        </div>
+                        <h3>
+                            4,8 Jt
+                        </h3>
+                        <p>
+                            Total Pendapatan
+                        </p>
                     </div>
-
                 </div>
 
-                <div class="dashboard-grid">
 
-                    <!-- PESANAN MASUK -->
+                <div class="dashboard-grid">
                     <div class="panel">
                         <div class="panel-header">
-                            <h2>Pesanan Masuk</h2>
-                            <a href="/freelancer/pesanan">Lihat semua</a>
+                            <h2>
+                                Pesanan Masuk
+                            </h2>
+                            <a href="/freelancer/pesanan">
+                                Lihat semua
+                            </a>
                         </div>
+
 
                         <div class="panel-body">
                             <div class="table-wrapper">
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Client</th>
-                                            <th>Jasa</th>
-                                            <th>Tanggal</th>
-                                            <th>Status</th>
+                                            <th>
+                                                Client
+                                            </th>
+                                            <th>
+                                                Jasa
+                                            </th>
+                                            <th>
+                                                Tanggal
+                                            </th>
+
+                                            <th>
+                                                Status
+                                            </th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         <tr>
-                                            <td>Deby</td>
-                                            <td>Desain Logo</td>
-                                            <td>08 Sep 2026</td>
+                                            <td>
+                                                Deby
+                                            </td>
+                                            <td>
+                                                Desain Logo
+                                            </td>
+                                            <td>
+                                                08 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status pending">
                                                     Menunggu
                                                 </span>
                                             </td>
                                         </tr>
-
                                         <tr>
-                                            <td>Andi</td>
-                                            <td>Website Laravel</td>
-                                            <td>07 Sep 2026</td>
+                                            <td>
+                                                Andi
+                                            </td>
+                                            <td>
+                                                Website Laravel
+                                            </td>
+                                            <td>
+                                                07 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status process">
                                                     Diproses
                                                 </span>
                                             </td>
                                         </tr>
-
                                         <tr>
-                                            <td>Sinta</td>
-                                            <td>Editing Video</td>
-                                            <td>06 Sep 2026</td>
+                                            <td>
+                                                Sinta
+                                            </td>
+                                            <td>
+                                                Editing Video
+                                            </td>
+                                            <td>
+                                                06 Sep 2026
+                                            </td>
                                             <td>
                                                 <span class="status done">
                                                     Selesai
@@ -638,21 +716,31 @@
                         </div>
                     </div>
 
-                    <!-- JASA SAYA -->
+
+                    
                     <div class="panel">
                         <div class="panel-header">
-                            <h2>Jasa Saya</h2>
-                            <a href="/freelancer/jasa">Lihat semua</a>
+                            <h2>
+                                Jasa Saya
+                            </h2>
+                            <a href="/freelancer/jasa">
+                                Lihat semua
+                            </a>
                         </div>
 
+
                         <div class="panel-body">
-
                             <div class="service-item">
-                                <div class="service-image">▤</div>
-
+                                <div class="service-image">
+                                    ▤
+                                </div>
                                 <div class="item-info">
-                                    <strong>Desain Logo</strong>
-                                    <span>Rp150.000 · 12 pesanan</span>
+                                    <strong>
+                                        Desain Logo
+                                    </strong>
+                                    <span>
+                                        Rp150.000 · 12 pesanan
+                                    </span>
                                 </div>
 
                                 <a href="/freelancer/jasa" class="item-link">
@@ -660,12 +748,36 @@
                                 </a>
                             </div>
 
-                            <div class="service-item">
-                                <div class="service-image">⌘</div>
 
+                            <div class="service-item">
+                                <div class="service-image">
+                                    ⌘
+                                </div>
                                 <div class="item-info">
-                                    <strong>Website Laravel</strong>
-                                    <span>Rp750.000 · 8 pesanan</span>
+                                    <strong>
+                                        Website Laravel
+                                    </strong>
+                                    <span>
+                                        Rp750.000 · 8 pesanan
+                                    </span>
+                                </div>
+                                <a href="/freelancer/jasa" class="item-link">
+                                    Detail
+                                </a>
+                            </div>
+
+
+                            <div class="service-item">
+                                <div class="service-image">
+                                    ▣
+                                </div>
+                                <div class="item-info">
+                                    <strong>
+                                        Editing Video
+                                    </strong>
+                                    <span>
+                                        Rp250.000 · 6 pesanan
+                                    </span>
                                 </div>
 
                                 <a href="/freelancer/jasa" class="item-link">
@@ -673,70 +785,71 @@
                                 </a>
                             </div>
 
-                            <div class="service-item">
-                                <div class="service-image">▣</div>
-
-                                <div class="item-info">
-                                    <strong>Editing Video</strong>
-                                    <span>Rp250.000 · 6 pesanan</span>
-                                </div>
-
-                                <a href="/freelancer/jasa" class="item-link">
-                                    Detail
-                                </a>
-                            </div>
 
                             <a href="/freelancer/jasa/tambah" class="button">
                                 + Tambah Jasa
                             </a>
-
                         </div>
                     </div>
 
-                    <!-- AKTIVITAS TERBARU -->
-                    <div class="panel">
+
+            
+                <div class="panel">
                         <div class="panel-header">
-                            <h2>Aktivitas Terbaru</h2>
+                            <h2>
+                                Aktivitas Terbaru
+                            </h2>
                         </div>
+
 
                         <div class="panel-body">
-
                             <div class="activity-item">
-                                <div class="activity-icon">✓</div>
-
+                                <div class="activity-icon">
+                                    ✓
+                                </div>
                                 <div class="item-info">
-                                    <strong>Pesanan selesai</strong>
-                                    <span>Desain logo - 2 jam lalu</span>
+                                    <strong>
+                                        Pesanan selesai
+                                    </strong>
+                                    <span>
+                                        Desain logo - 2 jam lalu
+                                    </span>
                                 </div>
                             </div>
 
                             <div class="activity-item">
-                                <div class="activity-icon">☆</div>
-
+                                <div class="activity-icon">
+                                    ☆
+                                </div>
                                 <div class="item-info">
-                                    <strong>Mendapat rating baru</strong>
-                                    <span>Rating 5 dari Deby - Kemarin</span>
+                                    <strong>
+                                        Mendapat rating baru
+                                    </strong>
+                                    <span>
+                                        Rating 5 dari Deby - Kemarin
+                                    </span>
                                 </div>
                             </div>
+
 
                             <div class="activity-item">
-                                <div class="activity-icon">▧</div>
-
+                                <div class="activity-icon">
+                                    ▧
+                                </div>
                                 <div class="item-info">
-                                    <strong>Pesanan baru masuk</strong>
-                                    <span>Website Laravel - 2 hari lalu</span>
+                                    <strong>
+                                        Pesanan baru masuk
+                                    </strong>
+                                    <span>
+                                        Website Laravel - 2 hari lalu
+                                    </span>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
                 </div>
-
             </section>
         </main>
-
     </div>
-
 </body>
 </html>
