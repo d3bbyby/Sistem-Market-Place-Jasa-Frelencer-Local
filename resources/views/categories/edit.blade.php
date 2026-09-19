@@ -1,0 +1,1 @@
+@include('categories.form', ['formAction' => route('categories.update', $category), 'formMethod' => 'PUT', 'heading' => 'Edit Kategori'])

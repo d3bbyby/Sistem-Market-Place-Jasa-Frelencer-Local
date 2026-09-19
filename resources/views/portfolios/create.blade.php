@@ -1,0 +1,1 @@
+@include('portfolios.form', ['portfolio' => null, 'formAction' => route('portfolios.store'), 'formMethod' => 'POST', 'heading' => 'Tambah Portofolio'])

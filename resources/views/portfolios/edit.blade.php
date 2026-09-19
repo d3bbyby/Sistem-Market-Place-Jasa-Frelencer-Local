@@ -1,0 +1,1 @@
+@include('portfolios.form', ['formAction' => route('portfolios.update', $portfolio), 'formMethod' => 'PUT', 'heading' => 'Edit Portofolio'])

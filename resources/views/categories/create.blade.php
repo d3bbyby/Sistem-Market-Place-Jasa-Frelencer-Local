@@ -1,0 +1,1 @@
+@include('categories.form', ['category' => null, 'formAction' => route('categories.store'), 'formMethod' => 'POST', 'heading' => 'Tambah Kategori'])

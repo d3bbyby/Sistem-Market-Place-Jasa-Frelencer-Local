@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('client_id')->constrained('users')->restrictOnDelete();
+            $table->foreignId('service_id')->constrained('services')->restrictOnDelete();
+            $table->enum('status', ['MENUNGGU', 'DIPROSES', 'SUBMITTED', 'REVISI', 'SELESAI'])
+                ->default('MENUNGGU');
+            $table->string('work_result_file')->nullable();
+            $table->text('revision_notes')->nullable();
             $table->timestamps();
         });
     }

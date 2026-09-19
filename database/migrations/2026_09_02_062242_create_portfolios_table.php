@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('portfolios', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('service_id')->constrained('services')->cascadeOnDelete();
+            $table->string('file_path');
+            $table->string('caption');
             $table->timestamps();
         });
     }
