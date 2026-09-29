@@ -12,7 +12,11 @@
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+<<<<<<< HEAD
         "laravel/boost": "^2.9",
+=======
+        "laravel/breeze": "^2.4",
+>>>>>>> ac707d7 (Set up crud)
         "laravel/pail": "^1.2.5",
         "laravel/pao": "^1.0.6",
         "laravel/pint": "^1.27",

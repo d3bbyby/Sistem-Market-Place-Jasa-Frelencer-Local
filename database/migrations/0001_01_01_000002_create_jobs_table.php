@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 `<?php
+=======
+<?php
+>>>>>>> ac707d7 (Set up crud)
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;

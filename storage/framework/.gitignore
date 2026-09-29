@@ -2,7 +2,10 @@ compiled.php
 config.php
 down
 events.scanned.php
+<<<<<<< HEAD
 lsp-*.php
+=======
+>>>>>>> ac707d7 (Set up crud)
 maintenance.php
 routes.php
 routes.scanned.php
