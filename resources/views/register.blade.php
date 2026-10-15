@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Daftar - Freelance Lokal</title>
+    <title>Daftar - FreelanceHub</title>
 
     <style>
+        :root {
+            --purple: #7047EB;
+            --purple-dark: #5030B5;
+            --lavender: #F0EBFF;
+            --text: #30264B;
+            --muted: #89829E;
+            --border: #E7E1F4;
+            --white: #FFFFFF;
+        }
 
         * {
             margin: 0;
@@ -17,434 +25,529 @@
         }
 
         body {
-            background: #f8f2ed;
-            color: #4b2e20;
+            min-height: 100vh;
+            background: #FAF9FF;
+            color: var(--text);
         }
 
-        /* =========================
-           NAVBAR
-        ========================= */
+        a {
+            text-decoration: none;
+        }
 
-        .navbar {
-            height: 88px;
-            background: #754522;
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+        }
+
+        .visual {
+            padding: 45px 9%;
+            background: linear-gradient(145deg, #EDE7FF, #FFF0E7 72%, #FFF9E7);
             display: flex;
-            align-items: center;
+            flex-direction: column;
             justify-content: space-between;
-            padding: 0 75px;
+            position: relative;
+            overflow: hidden;
         }
 
         .logo {
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .nav-menu {
             display: flex;
-            gap: 40px;
-        }
-
-        .nav-menu a {
-            color: white;
-            text-decoration: none;
-            font-size: 17px;
-        }
-
-        .nav-menu a:hover {
-            opacity: 0.8;
-        }
-
-
-        /* =========================
-           CONTAINER
-        ========================= */
-
-        .container {
-            min-height: calc(100vh - 88px);
-            display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 40px 20px;
+            gap: 11px;
+            color: var(--purple);
+            font-size: 23px;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
         }
 
-
-        /* =========================
-           REGISTER CARD
-        ========================= */
-
-        .register-card {
-            width: 480px;
-            background: white;
-            border: 1px solid #eaded5;
-            border-radius: 18px;
-            padding: 38px 45px;
-            box-shadow: 0 10px 30px rgba(75, 46, 32, 0.08);
-        }
-
-
-        .title {
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .title h1 {
-            color: #754522;
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .title p {
-            color: #8b7769;
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-
-        /* =========================
-           FORM
-        ========================= */
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 8px;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dccabd;
-            border-radius: 8px;
-            background: #fffdfb;
-            font-size: 14px;
-            color: #4b2e20;
-            outline: none;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #754522;
-        }
-
-
-        /* =========================
-           BUTTON
-        ========================= */
-
-        .btn-daftar {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 8px;
-            background: #754522;
+        .logo-icon {
+            width: 39px;
+            height: 39px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #9878FF, #623BDE);
             color: white;
-            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-content {
+            max-width: 445px;
+            margin: 50px auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .visual-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.75);
+            color: var(--purple);
+            padding: 10px 14px;
+            border-radius: 25px;
+            font-size: 12px;
             font-weight: bold;
-            cursor: pointer;
+            margin-bottom: 22px;
+        }
+
+        .visual-content h1 {
+            font-size: clamp(34px, 4vw, 51px);
+            line-height: 1.16;
+            letter-spacing: -1.4px;
+            margin-bottom: 20px;
+        }
+
+        .visual-content h1 span {
+            color: var(--purple);
+        }
+
+        .visual-content p {
+            color: #756C8E;
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .benefits {
+            margin-top: 32px;
+        }
+
+        .benefit {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 17px;
+            color: #625976;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .benefit-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: white;
+            color: var(--purple);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-footer {
+            color: #817795;
+            font-size: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .decor {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .decor-one {
+            width: 240px;
+            height: 240px;
+            right: -90px;
+            top: 12%;
+            background: #9878FF22;
+        }
+
+        .decor-two {
+            width: 180px;
+            height: 180px;
+            bottom: -60px;
+            left: -60px;
+            background: #8AE3C145;
+        }
+
+        .form-side {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 35px 8%;
+        }
+
+        .form-box {
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .mobile-logo {
+            display: none;
+        }
+
+        .form-heading {
+            margin-bottom: 23px;
+        }
+
+        .form-heading .tag {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--purple);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .form-heading h2 {
+            font-size: 30px;
+            margin-bottom: 9px;
+        }
+
+        .form-heading p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .message {
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            background: #FFF0F1;
+            color: #B42332;
+        }
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            height: 46px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 0 13px;
+            background: #FFFEFF;
+            color: var(--text);
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px #7047EB17;
+        }
+
+        .field input::placeholder {
+            color: #B0A9C0;
+        }
+
+        .field-error {
+            display: block;
+            color: #B42332;
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        .role-note {
+            background: #F5F1FF;
+            border-radius: 9px;
+            padding: 11px 12px;
+            color: #786B99;
+            font-size: 11px;
+            line-height: 1.6;
             margin-top: 8px;
         }
 
-        .btn-daftar:hover {
-            background: #5d351b;
-        }
-
-
-        /* =========================
-           LOGIN LINK
-        ========================= */
-
-        .login-text {
-            text-align: center;
-            margin-top: 25px;
-            color: #8b7769;
+        .submit {
+            width: 100%;
+            height: 49px;
+            margin-top: 5px;
+            border: none;
+            border-radius: 11px;
+            color: white;
+            background: linear-gradient(135deg, #8464F7, #6842E6);
+            box-shadow: 0 7px 18px #7047EB25;
             font-size: 14px;
-        }
-
-        .login-text a {
-            color: #754522;
             font-weight: bold;
-            text-decoration: none;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .login-text a:hover {
-            text-decoration: underline;
+        .submit:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #7955F0, #5030B5);
         }
 
-
-        /* =========================
-           ERROR
-        ========================= */
-
-        .error-box {
-            background: #f9dfdc;
-            color: #a34d43;
-            border-radius: 8px;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            font-size: 13px;
+        .login-link {
+            margin-top: 19px;
+            color: var(--muted);
+            font-size: 12px;
+            text-align: center;
         }
 
-        .error-box ul {
-            padding-left: 18px;
+        .login-link a {
+            color: var(--purple);
+            font-weight: bold;
         }
 
+        .back-home {
+            display: inline-block;
+            color: #887F9F;
+            font-size: 12px;
+            margin-top: 19px;
+        }
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
+        .back-home:hover {
+            color: var(--purple);
+        }
 
-        @media (max-width: 600px) {
-
-            .navbar {
-                padding: 0 20px;
+        @media (max-width: 850px) {
+            .page {
+                grid-template-columns: 1fr;
             }
 
-            .logo {
-                font-size: 22px;
+            .visual {
+                display: none;
             }
 
-            .nav-menu {
-                gap: 15px;
+            .form-side {
+                min-height: 100vh;
+                padding: 30px 7%;
             }
 
-            .nav-menu a {
-                font-size: 14px;
+            .form-box {
+                max-width: 470px;
             }
 
-            .register-card {
-                width: 100%;
-                padding: 30px 25px;
+            .mobile-logo {
+                display: flex;
+                margin-bottom: 30px;
             }
         }
 
+        @media (max-width: 480px) {
+            .form-side {
+                padding: 25px 6%;
+            }
+
+            .form-heading h2 {
+                font-size: 27px;
+            }
+        }
     </style>
 </head>
 
-
 <body>
 
+<div class="page">
 
-    <!-- =========================
-         NAVBAR
-    ========================= -->
+    <section class="visual">
+        <div class="decor decor-one"></div>
+        <div class="decor decor-two"></div>
 
-    <nav class="navbar">
+        <a href="/" class="logo">
+            <span class="logo-icon">F</span>
+            FreelanceHub
+        </a>
 
-        <div class="logo">
-            Freelance Lokal
-        </div>
+        <div class="visual-content">
+            <div class="visual-badge">✦ Mulai perjalananmu</div>
 
-        <div class="nav-menu">
+            <h1>
+                Banyak peluang, <span>satu langkah awal.</span>
+            </h1>
 
-            <a href="/">
-                Beranda
-            </a>
+            <p>
+                Buat akun FreelanceHub dan temukan peluang baru.
+                Bergabunglah sebagai Client untuk mencari jasa,
+                atau sebagai Freelancer untuk menawarkan keahlianmu.
+            </p>
 
-            <a href="/login">
-                Login
-            </a>
-
-        </div>
-
-    </nav>
-
-
-    <!-- =========================
-         REGISTER
-    ========================= -->
-
-    <div class="container">
-
-        <div class="register-card">
-
-
-            <div class="title">
-
-                <h1>Daftar Akun</h1>
-
-                <p>
-                    Buat akun untuk bergabung dengan Freelance Lokal
-                </p>
-
-            </div>
-
-
-            <!-- ERROR -->
-
-            @if ($errors->any())
-
-                <div class="error-box">
-
-                    <ul>
-
-                        @foreach ($errors->all() as $error)
-
-                            <li>
-                                {{ $error }}
-                            </li>
-
-                        @endforeach
-
-                    </ul>
-
+            <div class="benefits">
+                <div class="benefit">
+                    <span class="benefit-icon">✓</span>
+                    Temukan layanan sesuai kebutuhan
                 </div>
 
+                <div class="benefit">
+                    <span class="benefit-icon">✦</span>
+                    Tampilkan keahlian dan portofoliomu
+                </div>
+
+                <div class="benefit">
+                    <span class="benefit-icon">↗</span>
+                    Bangun kolaborasi dengan talenta lokal
+                </div>
+            </div>
+        </div>
+
+        <div class="visual-footer">
+            FreelanceHub · Marketplace Jasa Freelancer Lokal
+        </div>
+    </section>
+
+
+    <section class="form-side">
+        <div class="form-box">
+
+            <a href="/" class="logo mobile-logo">
+                <span class="logo-icon">F</span>
+                FreelanceHub
+            </a>
+
+            <div class="form-heading">
+                <div class="tag">Buat akun baru</div>
+                <h2>Gabung bersama kami ✨</h2>
+                <p>
+                    Isi informasi berikut untuk memulai menggunakan FreelanceHub.
+                </p>
+            </div>
+
+            @if ($errors->any())
+                <div class="message error-message">
+                    <strong>Periksa kembali data kamu:</strong>
+
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
+                </div>
             @endif
 
+            @if (session('error'))
+                <div class="message error-message">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-            <!-- FORM -->
-
-            <form action="/register" method="POST">
-
+            <form action="{{ url('/register') }}" method="POST">
                 @csrf
 
-
-                <!-- NAMA -->
-
-                <div class="form-group">
-
-                    <label for="name">
-                        Nama Lengkap
-                    </label>
+                <div class="field">
+                    <label for="name">Nama Lengkap</label>
 
                     <input
                         type="text"
                         id="name"
                         name="name"
-                        placeholder="Masukkan nama lengkap"
                         value="{{ old('name') }}"
+                        placeholder="Masukkan nama lengkap"
+                        autocomplete="name"
+                        maxlength="255"
                         required
                     >
 
+                    @error('name')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
-
-                <!-- EMAIL -->
-
-                <div class="form-group">
-
-                    <label for="email">
-                        Email
-                    </label>
+                <div class="field">
+                    <label for="email">Alamat Email</label>
 
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        placeholder="Masukkan email"
                         value="{{ old('email') }}"
+                        placeholder="nama@email.com"
+                        autocomplete="email"
                         required
                     >
 
+                    @error('email')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
+                <div class="field">
+                    <label for="role">Daftar Sebagai</label>
 
-                <!-- PASSWORD -->
+                    <select id="role" name="role" required>
+                        <option value="">Pilih jenis akun</option>
 
-                <div class="form-group">
+                        <option
+                            value="client"
+                            {{ old('role') === 'client' ? 'selected' : '' }}
+                        >
+                            Client — mencari jasa
+                        </option>
 
-                    <label for="password">
-                        Password
-                    </label>
+                        <option
+                            value="freelancer"
+                            {{ old('role') === 'freelancer' ? 'selected' : '' }}
+                        >
+                            Freelancer — menawarkan jasa
+                        </option>
+                    </select>
+
+                    @error('role')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+
+                    <div class="role-note">
+                        Pilih Client untuk memesan jasa atau Freelancer
+                        untuk menawarkan keahlianmu. Akun Admin tidak
+                        dibuat melalui formulir ini.
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="password">Password</label>
 
                     <input
                         type="password"
                         id="password"
                         name="password"
                         placeholder="Minimal 6 karakter"
+                        autocomplete="new-password"
+                        minlength="6"
                         required
                     >
 
+                    @error('password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
-
-                <!-- KONFIRMASI PASSWORD -->
-
-                <div class="form-group">
-
-                    <label for="password_confirmation">
-                        Konfirmasi Password
-                    </label>
+                <div class="field">
+                    <label for="password_confirmation">Konfirmasi Password</label>
 
                     <input
                         type="password"
                         id="password_confirmation"
                         name="password_confirmation"
                         placeholder="Masukkan ulang password"
+                        autocomplete="new-password"
+                        minlength="6"
                         required
                     >
-
                 </div>
 
-
-                <!-- ROLE -->
-
-                <div class="form-group">
-
-                    <label for="role">
-                        Daftar Sebagai
-                    </label>
-
-                    <select
-                        id="role"
-                        name="role"
-                        required
-                    >
-
-                        <option value="">
-                            -- Pilih Role --
-                        </option>
-
-                        <option value="client">
-                            Client
-                        </option>
-
-                        <option value="freelancer">
-                            Freelancer
-                        </option>
-
-                    </select>
-
-                </div>
-
-
-                <!-- BUTTON -->
-
-                <button
-                    type="submit"
-                    class="btn-daftar"
-                >
-                    Daftar
+                <button type="submit" class="submit">
+                    Buat Akun →
                 </button>
-
             </form>
 
-
-            <!-- LOGIN -->
-
-            <div class="login-text">
-
+            <div class="login-link">
                 Sudah punya akun?
-
-                <a href="/login">
-                    Login sekarang
-                </a>
-
+                <a href="{{ url('/login') }}">Masuk di sini</a>
             </div>
 
+            <a href="/" class="back-home">← Kembali ke halaman utama</a>
 
         </div>
+    </section>
 
-    </div>
-
+</div>
 
 </body>
-
 </html>
