@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesanan Saya</title>
+    <title>Pesanan Saya - FreelanceHub</title>
 
     <style>
         * {
@@ -13,17 +13,18 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: #fffaf5;
-            color: #4b2e1f;
+            background: #FAF9FF;
+            color: #30264B;
         }
 
         .navbar {
-            background: #6b4226;
+            background: #7047EB;
             color: white;
             padding: 18px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 4px 15px rgba(80, 48, 181, 0.12);
         }
 
         .navbar h2 {
@@ -34,6 +35,11 @@
             color: white;
             text-decoration: none;
             margin-left: 25px;
+            font-size: 14px;
+        }
+
+        .navbar a:hover {
+            color: #EDE7FF;
         }
 
         .container {
@@ -44,11 +50,11 @@
 
         .container h1 {
             margin-bottom: 10px;
-            color: #6b4226;
+            color: #30264B;
         }
 
         .subtitle {
-            color: #806f63;
+            color: #837B99;
             margin-bottom: 30px;
         }
 
@@ -56,8 +62,8 @@
             background: white;
             padding: 25px;
             border-radius: 15px;
-            border: 1px solid #eadbd0;
-            box-shadow: 0 4px 12px rgba(75, 46, 31, 0.08);
+            border: 1px solid #E7E1F4;
+            box-shadow: 0 4px 16px rgba(80, 48, 181, 0.06);
             overflow-x: auto;
         }
 
@@ -68,15 +74,22 @@
         }
 
         th {
-            background: #6b4226;
+            background: #7047EB;
             color: white;
             padding: 15px;
             text-align: left;
+            font-size: 13px;
         }
 
         td {
             padding: 15px;
-            border-bottom: 1px solid #eadbd0;
+            border-bottom: 1px solid #EDE8F7;
+            font-size: 14px;
+            color: #625976;
+        }
+
+        tbody tr:hover {
+            background: #FAF8FF;
         }
 
         tr:last-child td {
@@ -84,24 +97,29 @@
         }
 
         .status {
-            background: #fff0d9;
-            color: #9a641e;
+            display: inline-block;
+            background: #FFF1DC;
+            color: #9A641E;
             padding: 7px 12px;
             border-radius: 20px;
             font-size: 13px;
+            font-weight: bold;
+            white-space: nowrap;
         }
 
         .btn {
-            background: #6b4226;
+            display: inline-block;
+            background: #7047EB;
             color: white;
             padding: 9px 15px;
             border-radius: 7px;
             text-decoration: none;
             font-size: 14px;
+            transition: 0.2s;
         }
 
         .btn:hover {
-            background: #4b2e1f;
+            background: #5030B5;
         }
 
         @media (max-width: 700px) {
@@ -125,10 +143,11 @@
         }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar">
-        <h2>Freelance Lokal</h2>
+        <h2>FreelanceHub</h2>
 
         <div>
             <a href="/client/dashboard">Dashboard</a>
@@ -140,6 +159,7 @@
 
     <main class="container">
         <h1>Pesanan Saya</h1>
+
         <p class="subtitle">
             Lihat dan pantau status pesanan jasa kamu.
         </p>
@@ -163,9 +183,11 @@
                         <td>Jasa Pembuatan Website</td>
                         <td>Budi</td>
                         <td>Rp500.000</td>
+
                         <td>
                             <span class="status">Menunggu</span>
                         </td>
+
                         <td>
                             <a href="/client/detail-jasa" class="btn">
                                 Detail

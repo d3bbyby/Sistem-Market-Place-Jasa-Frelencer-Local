@@ -9,91 +9,76 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // ==============================
-    // LOGIN
-    // ==============================
-
     public function login(Request $request)
     {
-        $data = $request->validate([
+        $validated = $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|string',
         ]);
 
-        if (Auth::attempt(
-            [
-                'email' => $request->email,
-                'password' => $request->password,
-            ],
-            $request->has('remember')
-        )) {
+        $remember = $request->boolean('remember');
 
-            $request->session()->regenerate();
+        if (!Auth::attempt($validated, $remember)) {
+            return back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Email atau password salah.');
+        }
 
-            $role = Auth::user()->role;
+        $request->session()->regenerate();
 
-            // Jika Admin
-            if ($role == 'admin') {
-                return redirect('/admin/dashboard');
-            }
+        $user = Auth::user();
+        $role = strtolower(trim((string) $user->role));
 
-            // Jika Freelancer
-            if ($role == 'freelancer') {
-                return redirect('/freelancer/dashboard');
-            }
+        if ($role === 'admin' || $role === 'administrator') {
+            return redirect('/admin/dashboard');
+        }
 
-            // Jika Client
+        if ($role === 'freelancer') {
+            return redirect('/freelancer/dashboard');
+        }
+
+        if ($role === 'client') {
             return redirect('/client/dashboard');
         }
 
-        return back()->with(
-            'error',
-            'Email atau password salah.'
-        );
-    }
+        Auth::logout();
 
-    // ==============================
-    // REGISTER
-    // ==============================
+        return redirect('/login')
+            ->with('error', 'Role akun tidak dikenali.');
+    }
 
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed',
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
             'role' => 'required|in:client,freelancer',
         ]);
 
-        // Membuat akun baru
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
         ]);
 
-        // Login otomatis setelah register
         Auth::login($user);
 
-        // Masuk dashboard sesuai role
-        if ($user->role == 'freelancer') {
+        $request->session()->regenerate();
+
+        if ($user->role === 'freelancer') {
             return redirect('/freelancer/dashboard');
         }
 
         return redirect('/client/dashboard');
     }
 
-    // ==============================
-    // LOGOUT
-    // ==============================
-
     public function logout(Request $request)
     {
         Auth::logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/login');

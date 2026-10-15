@@ -3,275 +3,504 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Freelance Lokal</title>
+
+    <title>Masuk - FreelanceHub</title>
 
     <style>
+        :root {
+            --purple: #7047EB;
+            --purple-dark: #5030B5;
+            --lavender: #F0EBFF;
+            --text: #30264B;
+            --muted: #89829E;
+            --border: #E7E1F4;
+            --white: #FFFFFF;
+        }
+
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: Arial, sans-serif;
         }
 
         body {
-            margin: 0;
-            background: #f8f1eb;
-            color: #4b2e20;
+            min-height: 100vh;
+            background: #FAF9FF;
+            color: var(--text);
         }
 
-        .navbar {
-            background: #754522;
-            color: white;
-            padding: 28px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .navbar h2 {
-            margin: 0;
-            font-size: 28px;
-        }
-
-        .navbar a {
-            color: white;
+        a {
             text-decoration: none;
-            margin-left: 35px;
-            font-size: 18px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 555px;
+        .page {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .visual {
+            padding: 45px 9%;
+            background: linear-gradient(145deg, #EDE7FF, #FFF0E7 72%, #FFF9E7);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            color: var(--purple);
+            font-size: 23px;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-icon {
+            width: 39px;
+            height: 39px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, #9878FF, #623BDE);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visual-content {
+            max-width: 490px;
             margin: 50px auto;
-            padding: 0 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        .card {
-            background: white;
-            padding: 45px;
-            border-radius: 22px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        }
-
-        h1 {
-            text-align: center;
-            margin: 0 0 15px;
-            font-size: 40px;
-            color: #754522;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #806b5d;
-            margin-bottom: 38px;
-            font-size: 18px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
+        .visual-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.75);
+            color: var(--purple);
+            padding: 10px 14px;
+            border-radius: 25px;
+            font-size: 12px;
             font-weight: bold;
-            font-size: 18px;
+            margin-bottom: 22px;
         }
 
-        input,
-        select {
+        .visual-content h1 {
+            font-size: clamp(34px, 4vw, 52px);
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 20px;
+        }
+
+        .visual-content h1 span {
+            color: var(--purple);
+        }
+
+        .visual-content p {
+            color: #756C8E;
+            font-size: 15px;
+            line-height: 1.9;
+        }
+
+        .visual-cards {
+            margin-top: 35px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .visual-card {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid white;
+            border-radius: 16px;
+            padding: 17px;
+        }
+
+        .visual-card span {
+            display: block;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .visual-card strong {
+            font-size: 13px;
+        }
+
+        .visual-footer {
+            color: #817795;
+            font-size: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .decor {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .decor-one {
+            width: 240px;
+            height: 240px;
+            right: -95px;
+            top: 15%;
+            background: #9878FF22;
+        }
+
+        .decor-two {
+            width: 180px;
+            height: 180px;
+            bottom: -60px;
+            left: -65px;
+            background: #FFB99F45;
+        }
+
+        .form-side {
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 45px 8%;
+        }
+
+        .form-box {
             width: 100%;
-            padding: 16px;
-            margin-bottom: 24px;
-            border: 1px solid #ddc8b7;
-            border-radius: 10px;
-            font-size: 16px;
-            background: #fff;
+            max-width: 420px;
         }
 
-        input:focus,
-        select:focus {
+        .mobile-logo {
+            display: none;
+        }
+
+        .form-heading {
+            margin-bottom: 28px;
+        }
+
+        .form-heading .tag {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--purple);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .form-heading h2 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .form-heading p {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .message {
+            padding: 13px 15px;
+            border-radius: 10px;
+            margin-bottom: 17px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .error-message {
+            background: #FFF0F1;
+            color: #B42332;
+        }
+
+        .field {
+            margin-bottom: 19px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 9px;
+        }
+
+        .field input {
+            width: 100%;
+            height: 49px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 0 14px;
+            background: #FFFEFF;
+            color: var(--text);
+            font-size: 14px;
             outline: none;
-            border-color: #754522;
+            transition: 0.2s;
+        }
+
+        .field input:focus {
+            border-color: var(--purple);
+            box-shadow: 0 0 0 3px #7047EB17;
+        }
+
+        .field input::placeholder {
+            color: #B0A9C0;
+        }
+
+        .field-error {
+            display: block;
+            color: #B42332;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .remember-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 23px;
+            font-size: 12px;
         }
 
         .remember {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            font-size: 15px;
+            gap: 8px;
+            color: #766E8A;
         }
 
         .remember input {
-            width: 17px;
-            height: 17px;
-            margin: 0;
+            accent-color: var(--purple);
+            width: 15px;
+            height: 15px;
         }
 
-        .remember label {
-            margin: 0;
-            font-size: 15px;
-            font-weight: normal;
+        .forgot {
+            color: var(--purple);
+            font-weight: bold;
         }
 
-        button {
+        .submit {
             width: 100%;
-            padding: 16px;
-            background: #754522;
-            color: white;
+            height: 50px;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 11px;
+            color: white;
+            background: linear-gradient(135deg, #8464F7, #6842E6);
+            box-shadow: 0 7px 18px #7047EB25;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        button:hover {
-            background: #5d351b;
+        .submit:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #7955F0, #5030B5);
         }
 
-        .register {
+        .register-link {
+            margin-top: 25px;
+            color: var(--muted);
+            font-size: 13px;
             text-align: center;
-            margin-top: 30px;
-            color: #806b5d;
-            font-size: 17px;
         }
 
-        .register a {
-            color: #754522;
+        .register-link a {
+            color: var(--purple);
             font-weight: bold;
-            text-decoration: none;
         }
 
-        .error {
-            background: #f8d7da;
-            color: #842029;
-            padding: 13px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .back-home {
+            display: inline-block;
+            color: #887F9F;
+            font-size: 12px;
+            margin-top: 25px;
         }
 
-        .success {
-            background: #d1e7dd;
-            color: #0f5132;
-            padding: 13px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+        .back-home:hover {
+            color: var(--purple);
         }
 
-        @media (max-width: 600px) {
-            .navbar {
-                padding: 22px;
+        @media (max-width: 800px) {
+            .page {
+                grid-template-columns: 1fr;
             }
 
-            .navbar h2 {
-                font-size: 22px;
+            .visual {
+                display: none;
             }
 
-            .navbar a {
-                margin-left: 12px;
-                font-size: 15px;
+            .form-side {
+                min-height: 100vh;
+                padding: 35px 7%;
             }
 
-            .card {
-                padding: 30px 25px;
+            .mobile-logo {
+                display: flex;
+                margin-bottom: 40px;
             }
 
-            h1 {
-                font-size: 32px;
+            .form-heading h2 {
+                font-size: 29px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .remember-row {
+                align-items: flex-start;
+            }
+
+            .form-side {
+                padding: 28px 6%;
             }
         }
     </style>
 </head>
+
 <body>
 
-    <nav class="navbar">
-        <h2>Freelance Lokal</h2>
+<div class="page">
 
-        <div>
-            <a href="/">Beranda</a>
-            <a href="/register">Daftar</a>
-        </div>
-    </nav>
+    <section class="visual">
+        <div class="decor decor-one"></div>
+        <div class="decor decor-two"></div>
 
-    <div class="container">
-        <div class="card">
+        <a href="/" class="logo">
+            <span class="logo-icon">F</span>
+            FreelanceHub
+        </a>
 
-            <h1>Selamat Datang</h1>
-            <p class="subtitle">
-                Login untuk melanjutkan ke Freelance Lokal
+        <div class="visual-content">
+            <div class="visual-badge">✦ Selamat datang kembali</div>
+
+            <h1>
+                Saatnya melanjutkan <span>ide hebatmu.</span>
+            </h1>
+
+            <p>
+                Masuk ke akun FreelanceHub untuk menemukan jasa,
+                mengelola pesanan, atau melanjutkan perjalananmu
+                sebagai freelancer lokal.
             </p>
 
+            <div class="visual-cards">
+                <div class="visual-card">
+                    <span>🎨</span>
+                    <strong>Temukan Kreativitas</strong>
+                </div>
+
+                <div class="visual-card">
+                    <span>🤝</span>
+                    <strong>Bangun Kolaborasi</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="visual-footer">
+            FreelanceHub · Marketplace Jasa Freelancer Lokal
+        </div>
+    </section>
+
+
+    <section class="form-side">
+        <div class="form-box">
+
+            <a href="/" class="logo mobile-logo">
+                <span class="logo-icon">F</span>
+                FreelanceHub
+            </a>
+
+            <div class="form-heading">
+                <div class="tag">Masuk ke akun</div>
+                <h2>Halo lagi! 👋</h2>
+                <p>
+                    Masukkan email dan password untuk melanjutkan
+                    ke akun kamu.
+                </p>
+            </div>
+
             @if (session('error'))
-                <div class="error">
+                <div class="message error-message">
                     {{ session('error') }}
                 </div>
             @endif
 
-            @if (session('success'))
-                <div class="success">
-                    {{ session('success') }}
-                </div>
-            @endif
-
             @if ($errors->any())
-                <div class="error">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
+                <div class="message error-message">
+                    @foreach ($errors->all() as $error)
+                        <div>{{ $error }}</div>
+                    @endforeach
                 </div>
             @endif
 
-            <form action="/login" method="POST">
+            <form action="{{ url('/login') }}" method="POST">
                 @csrf
 
-                <label for="email">Email</label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value="{{ old('email') }}"
-                    placeholder="Masukkan email"
-                    required
-                >
+                <div class="field">
+                    <label for="email">Alamat Email</label>
 
-                <label for="password">Password</label>
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Masukkan password"
-                    required
-                >
-
-                <label for="role">Login Sebagai</label>
-                <select id="role" name="role" required>
-                    <option value="">-- Pilih Role --</option>
-                    <option value="client">Client</option>
-                    <option value="freelancer">Freelancer</option>
-                </select>
-
-                <div class="remember">
                     <input
-                        type="checkbox"
-                        id="remember"
-                        name="remember"
-                        value="1"
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ old('email') }}"
+                        placeholder="nama@email.com"
+                        autocomplete="email"
+                        required
+                        autofocus
                     >
 
-                    <label for="remember">
-                        Ingat saya
-                    </label>
+                    @error('email')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
                 </div>
 
-                <button type="submit">Login</button>
+                <div class="field">
+                    <label for="password">Password</label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Masukkan password"
+                        autocomplete="current-password"
+                        required
+                    >
+
+                    @error('password')
+                        <span class="field-error">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="remember-row">
+                    <label class="remember">
+                        <input type="checkbox" name="remember" value="1">
+                        Ingat saya
+                    </label>
+
+                    <a href="{{ url('/forgot-password') }}" class="forgot">
+                        Lupa password?
+                    </a>
+                </div>
+
+                <button type="submit" class="submit">
+                    Masuk ke Akun →
+                </button>
             </form>
 
-            <p class="register">
+            <div class="register-link">
                 Belum punya akun?
-                <a href="/register">Daftar sekarang</a>
-            </p>
+                <a href="{{ url('/register') }}">Daftar sekarang</a>
+            </div>
+
+            <a href="/" class="back-home">← Kembali ke halaman utama</a>
 
         </div>
-    </div>
+    </section>
+
+</div>
 
 </body>
 </html>
