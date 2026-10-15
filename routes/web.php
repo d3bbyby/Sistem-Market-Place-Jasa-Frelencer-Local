@@ -18,39 +18,52 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('landing');
-});
+})->name('home');
 
 
 // ==================================================
-// AUTHENTICATION
+// ROUTE BAWAAN LARAVEL
 // ==================================================
 
-// Pertahankan route bawaan Laravel untuk fitur autentikasi lain.
 require __DIR__ . '/auth.php';
 
-// Gunakan halaman login dan register milik proyek.
+
+// ==================================================
+// LOGIN, REGISTER, LOGOUT
+// ==================================================
+
 Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])
+    ->name('login.submit');
+
 
 Route::get('/register', function () {
     return view('register');
 })->name('register');
 
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])
+    ->name('register.submit');
 
-Route::get('/logout', [AuthController::class, 'logout']);
+
+Route::get('/logout', [AuthController::class, 'logout'])
+    ->name('logout');
 
 
 // ==================================================
-// DASHBOARD REDIRECT SETELAH LOGIN
+// DASHBOARD REDIRECT
 // ==================================================
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    $role = strtolower(trim((string) ($user->role ?? '')));
+
+    if (!$user) {
+        return redirect('/login');
+    }
+
+    $role = strtolower(trim((string) $user->role));
 
     if (in_array($role, ['admin', 'administrator'])) {
         return redirect('/admin/dashboard');
@@ -60,15 +73,16 @@ Route::get('/dashboard', function () {
         return redirect('/freelancer/dashboard');
     }
 
-    // Client merupakan tujuan default jika role bukan admin
-    // atau freelancer.
-    return redirect('/client/dashboard');
+    if ($role === 'client') {
+        return redirect('/client/dashboard');
+    }
 
+    abort(403, 'Role akun tidak dikenali.');
 })->middleware('auth')->name('dashboard');
 
 
 // ==================================================
-// PROFIL LARAVEL
+// PROFIL BAWAAN LARAVEL
 // ==================================================
 
 Route::middleware('auth')->group(function () {
@@ -88,12 +102,14 @@ Route::middleware('auth')->group(function () {
 // ==================================================
 
 // Dashboard Client
+
 Route::get('/client/dashboard', function () {
     return view('client.dashboard');
 })->name('client.dashboard');
 
 
-// Cari Freelancer
+// Cari Freelancer / Cari Jasa
+
 Route::get('/client/jasa', function (Request $request) {
     $query = $request->input('q');
 
@@ -107,31 +123,37 @@ Route::get('/client/jasa', function (Request $request) {
         ->get();
 
     return view('client.jasa', compact('freelancers', 'query'));
-
 })->name('client.jasa');
 
 
 // Detail Jasa
-Route::view('/client/detail-jasa', 'client.detail_jasa')
-    ->name('client.detail_jasa');
+
+Route::get('/client/detail-jasa', function () {
+    return view('client.detail_jasa');
+})->name('client.detail_jasa');
 
 
 // Pesanan Saya
-Route::view('/client/pesanan', 'client.pesanan')
-    ->name('client.pesanan');
+
+Route::get('/client/pesanan', function () {
+    return view('client.pesanan');
+})->name('client.pesanan');
 
 
-// Profil dan Pengaturan Akun Client
+// Profil dan Pengaturan Client
+
+Route::get('/client/profil', function () {
+    return view('client.profil');
+})->name('client.profil');
+
+Route::get('/client/pengaturan', function () {
+    return view('client.profil');
+})->name('client.pengaturan');
+
+
+// Menyimpan perubahan nama dan email Client
+
 Route::middleware('auth')->group(function () {
-    Route::get('/client/profil', function () {
-        return view('client.profil');
-    })->name('client.profil');
-
-    Route::get('/client/pengaturan', function () {
-        return view('client.profil');
-    })->name('client.pengaturan');
-
-    // Menyimpan perubahan nama dan email.
     $updateClientProfile = function (Request $request) {
         $user = $request->user();
 
@@ -144,16 +166,15 @@ Route::middleware('auth')->group(function () {
         $user->email = $data['email'];
         $user->save();
 
-        return redirect('/client/pengaturan')
+        return redirect('/client/profil')
             ->with('success', 'Profil berhasil diperbarui!');
     };
 
-    Route::put('/client/pengaturan', $updateClientProfile)
-        ->name('client.pengaturan.update');
-
-    // Mendukung form profil lama.
     Route::put('/client/profil', $updateClientProfile)
         ->name('client.profil.update');
+
+    Route::put('/client/pengaturan', $updateClientProfile)
+        ->name('client.pengaturan.update');
 });
 
 
@@ -162,57 +183,64 @@ Route::middleware('auth')->group(function () {
 // ==================================================
 
 // Dashboard Freelancer
+
 Route::get('/freelancer/dashboard', function () {
     return view('freelancer.dashboard');
 })->name('freelancer.dashboard');
 
 
 // Profil Freelancer
+
 Route::get('/freelancer/profil', function () {
     return view('freelancer.profil');
 })->name('freelancer.profil');
 
-// Alias pengaturan ke halaman profil yang tersedia.
+
+// Pengaturan Freelancer
+
 Route::get('/freelancer/pengaturan', function () {
     return view('freelancer.profil');
 })->name('freelancer.pengaturan');
 
 
-// Kelola Jasa
-Route::get('/freelancer/jasa', function () {
-    return view('freelancer.kelola_jasa');
-})->name('freelancer.jasa');
+// Redirect ke CRUD Jasa yang sudah ada
 
+Route::redirect('/freelancer/jasa', '/jasa')
+    ->name('freelancer.jasa');
 
-// Tambah Jasa
-Route::get('/freelancer/jasa/tambah', function () {
-    return view('freelancer.tambah_jasa');
-})->name('freelancer.jasa.create');
+Route::redirect('/freelancer/portofolio', '/portfolios')
+    ->name('freelancer.portofolio');
 
-// Alias untuk alamat lama.
-Route::redirect(
-    '/freelancer/kelola-jasa/tambah',
-    '/freelancer/jasa/tambah'
-);
+Route::redirect('/freelancer/kelola-jasa/tambah', '/jasa/create')
+    ->name('freelancer.jasa.create');
 
 
 // Pesanan Freelancer
-Route::view('/freelancer/pesanan', 'freelancer.pesanan')
-    ->name('freelancer.pesanan');
+
+Route::get('/freelancer/pesanan', function () {
+    return view('freelancer.pesanan');
+})->name('freelancer.pesanan');
 
 
-// Portofolio Freelancer
-Route::view('/freelancer/portofolio', 'freelancer.portofolio')
-    ->name('freelancer.portofolio');
+// Halaman tambah jasa versi Blade
+
+Route::get('/freelancer/jasa/tambah', function () {
+    return view('freelancer.tambah_jasa');
+})->name('freelancer.tambah_jasa');
 
 
 // ==================================================
 // ADMIN ROUTES
 // ==================================================
 
+// Dashboard Admin
+
 Route::get('/admin/dashboard', function () {
     return view('admin.dashboard');
 })->name('admin.dashboard');
+
+
+// Profil Admin
 
 Route::get('/admin/profil', function () {
     return view('admin.profil');
@@ -221,7 +249,6 @@ Route::get('/admin/profil', function () {
 
 // ==================================================
 // CRUD USER
-// PERTAHANKAN CONTROLLER TEMANMU
 // ==================================================
 
 Route::resource('users', UserController::class);
