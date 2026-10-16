@@ -781,7 +781,7 @@
                     Jasa
                 </a>
 
-                <a href="/admin/pesanan">
+                <a href="{{ route('admin.orders.index') }}">
                     <span class="menu-icon">▧</span>
                     Pesanan
                 </a>
@@ -952,7 +952,7 @@
 
                         <div class="panel-header">
                             <h2>Pesanan Terbaru</h2>
-                            <a href="/admin/pesanan">Lihat semua →</a>
+                            <a href="{{ route('admin.orders.index') }}">Lihat semua →</a>
                         </div>
 
                         <div class="panel-body">

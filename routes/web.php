@@ -6,7 +6,10 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\FreelancerController;
+use App\Http\Controllers\FreelancerOrderController;
+use App\Http\Controllers\ClientOrderController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -129,15 +132,19 @@ Route::get('/client/jasa', function (Request $request) {
 // Detail Jasa
 
 Route::get('/client/detail-jasa', function () {
-    return view('client.detail_jasa');
+    $service = \App\Models\Service::first();
+
+    if (!$service) {
+        abort(404, 'Belum ada jasa yang tersedia.');
+    }
+
+    return view('client.detail_jasa', compact('service'));
 })->name('client.detail_jasa');
 
 
 // Pesanan Saya
 
-Route::get('/client/pesanan', function () {
-    return view('client.pesanan');
-})->name('client.pesanan');
+// Halaman pesanan client ditangani oleh ClientOrderController.
 
 
 // Profil dan Pengaturan Client
@@ -293,4 +300,46 @@ Route::prefix('admin')
 
         Route::patch('/freelancers/{user}/reject', [FreelancerController::class, 'reject'])
             ->name('freelancers.reject');
+
+        // Kelola pesanan admin
+        Route::get('/orders', [OrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+
+    });
+
+// ==================================================
+// PESANAN FREELANCER
+// ==================================================
+
+Route::middleware('auth')
+    ->prefix('freelancer')
+    ->name('freelancer.')
+    ->group(function () {
+        Route::get('/orders', [FreelancerOrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::patch('/orders/{order}/status', [FreelancerOrderController::class, 'updateStatus'])
+            ->name('orders.updateStatus');
+    });
+
+
+// ==================================================
+// PESANAN CLIENT
+// ==================================================
+
+Route::middleware('auth')
+    ->prefix('client')
+    ->name('client.')
+    ->group(function () {
+        Route::get('/pesanan', [ClientOrderController::class, 'index'])
+            ->name('orders.index');
+
+        Route::get('/jasa/{service}', [ClientOrderController::class, 'showService'])
+            ->name('orders.service');
+
+        Route::post('/jasa/{service}/pesan', [ClientOrderController::class, 'store'])
+            ->name('orders.store');
     });

@@ -51,23 +51,29 @@
             margin: 0 15px 12px;
         }
 
-        .menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-            color: #6c5a4d;
-            padding: 13px 15px;
-            border-radius: 9px;
-            margin-bottom: 6px;
-            font-size: 14px;
-            transition: 0.3s;
-        }
+       .menu a {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 12px;
+    text-decoration: none;
+    color: #6c5a4d;
+    padding: 13px 15px;
+    border-radius: 9px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    transition: 0.3s;
+    white-space: nowrap;
+}
 
-        .menu a:hover,
-        .menu a.active {
-            background: #754522;
-            color: white;
+.menu-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    min-width: 20px;
+    flex-shrink: 0;
+}
         }
 
         .menu-icon {
@@ -483,9 +489,9 @@
                     <span class="menu-icon">▤</span>
                     Jasa Saya
                 </a>
-                <a href="/freelancer/pesanan">
+                <a href="{{ route('freelancer.orders.index') }}">
                     <span class="menu-icon">▧</span>
-                    Pesanan Masuk
+                     <span>Pesanan Masuk</span>
                 </a>
                 <a href="/freelancer/proyek">
                     <span class="menu-icon">▦</span>
