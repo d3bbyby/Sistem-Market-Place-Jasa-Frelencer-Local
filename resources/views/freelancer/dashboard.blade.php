@@ -16,8 +16,8 @@
         }
 
         body {
-            background: #f8f2ed;
-            color: #4b2e20;
+            background: #F7F6FF;
+            color: #30264B;
         }
 
         .layout {
@@ -28,7 +28,7 @@
         .sidebar {
             width: 250px;
             background: white;
-            border-right: 1px solid #e5d8ce;
+            border-right: 1px solid #E9E5F5;
             padding: 25px 18px;
             position: fixed;
             left: 0;
@@ -39,41 +39,47 @@
         .logo {
             font-size: 24px;
             font-weight: bold;
-            color: #754522;
+            color: #7047EB;
             padding: 0 15px;
             margin-bottom: 35px;
         }
 
         .menu-title {
             font-size: 12px;
-            color: #9b887b;
+            color: #89829E;
             text-transform: uppercase;
             margin: 0 15px 12px;
         }
 
-       .menu a {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    gap: 12px;
-    text-decoration: none;
-    color: #6c5a4d;
-    padding: 13px 15px;
-    border-radius: 9px;
-    margin-bottom: 6px;
-    font-size: 14px;
-    transition: 0.3s;
-    white-space: nowrap;
-}
+        .menu a {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
+            gap: 12px;
+            text-decoration: none;
+            color: #5D5577;
+            padding: 13px 15px;
+            border-radius: 9px;
+            margin-bottom: 6px;
+            font-size: 14px;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
 
-.menu-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    min-width: 20px;
-    flex-shrink: 0;
-}
+        .menu a:hover,
+        .menu a.active {
+            background: #7047EB;
+            color: white;
+        }
+
+        .menu-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            min-width: 20px;
+            flex-shrink: 0;
+        }
         }
 
         .menu-icon {
@@ -89,11 +95,11 @@
         }
 
         .logout a {
-            color: #a34d43;
+            color: #D94E60;
         }
 
         .logout a:hover {
-            background: #a34d43;
+            background: #D94E60;
             color: white;
         }
 
@@ -106,7 +112,7 @@
         .topbar {
             height: 78px;
             background: white;
-            border-bottom: 1px solid #e5d8ce;
+            border-bottom: 1px solid #E9E5F5;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -116,7 +122,7 @@
         .page-title {
             font-size: 22px;
             font-weight: bold;
-            color: #4b2e20;
+            color: #30264B;
         }
 
         .profile {
@@ -128,8 +134,8 @@
         .profile-photo {
             width: 40px;
             height: 40px;
-            background: #ead8ca;
-            color: #754522;
+            background: #EDE7FF;
+            color: #7047EB;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -148,7 +154,7 @@
 
         .profile-info span {
             font-size: 12px;
-            color: #9b887b;
+            color: #89829E;
         }
 
         .content {
@@ -162,11 +168,11 @@
         .welcome h1 {
             font-size: 28px;
             margin-bottom: 8px;
-            color: #754522;
+            color: #7047EB;
         }
 
         .welcome p {
-            color: #8b7769;
+            color: #89829E;
             font-size: 14px;
         }
 
@@ -179,7 +185,7 @@
 
         .stat-card {
             background: white;
-            border: 1px solid #eaded5;
+            border: 1px solid #E9E5F5;
             border-radius: 14px;
             padding: 22px;
             min-height: 135px;
@@ -191,8 +197,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #f2e5db;
-            color: #754522;
+            background: #EDE7FF;
+            color: #7047EB;
             border-radius: 10px;
             margin-bottom: 15px;
             font-size: 18px;
@@ -201,11 +207,11 @@
         .stat-card h3 {
             font-size: 24px;
             margin-bottom: 5px;
-            color: #4b2e20;
+            color: #30264B;
         }
 
         .stat-card p {
-            color: #8b7769;
+            color: #89829E;
             font-size: 13px;
         }
 
@@ -217,7 +223,7 @@
 
         .panel {
             background: white;
-            border: 1px solid #eaded5;
+            border: 1px solid #E9E5F5;
             border-radius: 14px;
             overflow: hidden;
         }
@@ -227,16 +233,16 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 22px;
-            border-bottom: 1px solid #eee4dd;
+            border-bottom: 1px solid #F0ECF8;
         }
 
         .panel-header h2 {
             font-size: 17px;
-            color: #4b2e20;
+            color: #30264B;
         }
 
         .panel-header a {
-            color: #754522;
+            color: #7047EB;
             font-size: 13px;
             text-decoration: none;
             font-weight: bold;
@@ -258,16 +264,16 @@
         th {
             text-align: left;
             font-size: 12px;
-            color: #9b887b;
+            color: #89829E;
             padding: 12px 10px;
-            border-bottom: 1px solid #eee4dd;
+            border-bottom: 1px solid #F0ECF8;
         }
 
         td {
             padding: 15px 10px;
             font-size: 13px;
-            border-bottom: 1px solid #f1e9e3;
-            color: #5e4a3d;
+            border-bottom: 1px solid #F1EDF8;
+            color: #5D5577;
         }
 
         tr:last-child td {
@@ -283,18 +289,18 @@
         }
 
         .status.pending {
-            background: #fff1d6;
-            color: #9a6718;
+            background: #FFF3D6;
+            color: #996C0D;
         }
 
         .status.process {
-            background: #e3efff;
-            color: #346da8;
+            background: #E4F4FF;
+            color: #2479B5;
         }
 
         .status.done {
-            background: #dff3e7;
-            color: #287447;
+            background: #E0F8EC;
+            color: #17835A;
         }
 
         .service-item,
@@ -303,7 +309,7 @@
             align-items: center;
             gap: 12px;
             padding: 14px 0;
-            border-bottom: 1px solid #f1e9e3;
+            border-bottom: 1px solid #F1EDF8;
         }
 
         .service-item:last-child,
@@ -314,8 +320,8 @@
         .service-image {
             width: 48px;
             height: 48px;
-            background: #ead8ca;
-            color: #754522;
+            background: #EDE7FF;
+            color: #7047EB;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -336,11 +342,11 @@
 
         .item-info span {
             font-size: 11px;
-            color: #9b887b;
+            color: #89829E;
         }
 
         .item-link {
-            color: #754522;
+            color: #7047EB;
             text-decoration: none;
             font-size: 12px;
             font-weight: bold;
@@ -353,8 +359,8 @@
         .activity-icon {
             width: 32px;
             height: 32px;
-            background: #f2e5db;
-            color: #754522;
+            background: #EDE7FF;
+            color: #7047EB;
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -364,7 +370,7 @@
 
         .button {
             display: inline-block;
-            background: #754522;
+            background: #7047EB;
             color: white;
             padding: 10px 15px;
             border-radius: 8px;
@@ -375,7 +381,7 @@
         }
 
         .button:hover {
-            background: #5d351b;
+            background: #5030B5;
         }
 
         @media (max-width: 1200px) {
