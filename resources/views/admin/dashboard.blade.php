@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Admin - FreelanceHub</title>
 
-    
+
 <style>
     * {
         box-sizing: border-box;
@@ -766,17 +766,17 @@
                     Dashboard
                 </a>
 
-                <a href="/admin/pengguna">
+                <a href="/users">
                     <span class="menu-icon">♙</span>
                     Pengguna
                 </a>
 
-                <a href="/admin/client">
+                <a href="/users">
                     <span class="menu-icon">♧</span>
                     Client
                 </a>
 
-                <a href="/admin/jasa">
+                <a href="/jasa">
                     <span class="menu-icon">▤</span>
                     Jasa
                 </a>
@@ -786,9 +786,14 @@
                     Pesanan
                 </a>
 
-                <a href="/admin/kategori">
+                <a href="/categories">
                     <span class="menu-icon">▦</span>
                     Kategori
+                </a>
+
+                <a href="{{ route('admin.freelancers.index') }}">
+                    <span class="menu-icon">✓</span>
+                    Verifikasi Freelancer
                 </a>
 
                 <a href="/admin/review">
@@ -810,10 +815,13 @@
 
             <!-- LOGOUT -->
             <div class="menu logout">
-                <a href="/logout">
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                    @csrf
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
                     <span class="menu-icon">↪</span>
                     Logout
-                </a>
+                    </a>
+                </form>
             </div>
 
         </aside>

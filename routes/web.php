@@ -1,345 +1,169 @@
 <?php
 
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\FreelancerController;
-use App\Http\Controllers\FreelancerOrderController;
-use App\Http\Controllers\ClientOrderController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-// ==================================================
+// ==============================
 // LANDING PAGE
-// ==================================================
+// ==============================
 
 Route::get('/', function () {
     return view('landing');
-})->name('home');
+});
 
-
-// ==================================================
-// ROUTE BAWAAN LARAVEL
-// ==================================================
-
-require __DIR__ . '/auth.php';
-
-
-// ==================================================
-// LOGIN, REGISTER, LOGOUT
-// ==================================================
+// ==============================
+// LOGIN
+// ==============================
 
 Route::get('/login', function () {
     return view('login');
 })->name('login');
 
-Route::post('/login', [AuthController::class, 'login'])
-    ->name('login.submit');
+Route::post('/login', [AuthController::class, 'login']);
 
+// ==============================
+// REGISTER
+// ==============================
 
 Route::get('/register', function () {
     return view('register');
-})->name('register');
-
-Route::post('/register', [AuthController::class, 'register'])
-    ->name('register.submit');
-
-
-Route::get('/logout', [AuthController::class, 'logout'])
-    ->name('logout');
-
-
-// ==================================================
-// DASHBOARD REDIRECT
-// ==================================================
-
-Route::get('/dashboard', function () {
-    $user = auth()->user();
-
-    if (!$user) {
-        return redirect('/login');
-    }
-
-    $role = strtolower(trim((string) $user->role));
-
-    if (in_array($role, ['admin', 'administrator'])) {
-        return redirect('/admin/dashboard');
-    }
-
-    if ($role === 'freelancer') {
-        return redirect('/freelancer/dashboard');
-    }
-
-    if ($role === 'client') {
-        return redirect('/client/dashboard');
-    }
-
-    abort(403, 'Role akun tidak dikenali.');
-})->middleware('auth')->name('dashboard');
-
-
-// ==================================================
-// PROFIL BAWAAN LARAVEL
-// ==================================================
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
 });
 
+Route::post('/register', [AuthController::class, 'register']);
 
-// ==================================================
-// CLIENT ROUTES
-// ==================================================
+// ==============================
+// LOGOUT
+// ==============================
 
-// Dashboard Client
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// ==============================
+// DASHBOARD CLIENT
+// ==============================
 
 Route::get('/client/dashboard', function () {
     return view('client.dashboard');
-})->name('client.dashboard');
+});
 
+// ==============================
+// PROFIL CLIENT
+// ==============================
 
-// Cari Freelancer / Cari Jasa
+Route::get('/client/pengaturan', function () {
+    return view('client.profil');
+});
+
+// ==============================
+// DASHBOARD FREELANCER
+// ==============================
+
+Route::get('/freelancer/dashboard', function () {
+    return view('freelancer.dashboard');
+});
+
+// ==============================
+// DASHBOARD ADMIN
+// ==============================
+
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+});
+
+// ==============================
+// PROFIL FREELANCER
+// ==============================
+
+Route::get('/freelancer/profil', function () {
+    return view('freelancer.profil');
+});
+
+// ==============================
+// PENCARIAN FREELANCER / JASA
+// ==============================
 
 Route::get('/client/jasa', function (Request $request) {
     $query = $request->input('q');
 
     $freelancers = User::where('role', 'freelancer')
+        ->with(['services.category'])
+        ->whereHas('services')
         ->when($query, function ($q) use ($query) {
             $q->where(function ($data) use ($query) {
-                $data->where('name', 'like', '%' . $query . '%')
-                     ->orWhere('email', 'like', '%' . $query . '%');
+                $data->where('name', 'like', '%'.$query.'%')
+                    ->orWhere('email', 'like', '%'.$query.'%')
+                    ->orWhereHas('services', function ($services) use ($query) {
+                        $services->where('title', 'like', '%'.$query.'%')
+                            ->orWhereHas('category', function ($categories) use ($query) {
+                                $categories->where('category_name', 'like', '%'.$query.'%');
+                            });
+                    });
             });
         })
         ->get();
 
     return view('client.jasa', compact('freelancers', 'query'));
-})->name('client.jasa');
-
-
-// Detail Jasa
-
-Route::get('/client/detail-jasa', function () {
-    $service = \App\Models\Service::first();
-
-    if (!$service) {
-        abort(404, 'Belum ada jasa yang tersedia.');
-    }
-
-    return view('client.detail_jasa', compact('service'));
-})->name('client.detail_jasa');
-
-
-// Pesanan Saya
-
-// Halaman pesanan client ditangani oleh ClientOrderController.
-
-
-// Profil dan Pengaturan Client
-
-Route::get('/client/profil', function () {
-    return view('client.profil');
-})->name('client.profil');
-
-Route::get('/client/pengaturan', function () {
-    return view('client.profil');
-})->name('client.pengaturan');
-
-
-// Menyimpan perubahan nama dan email Client
-
-Route::middleware('auth')->group(function () {
-    $updateClientProfile = function (Request $request) {
-        $user = $request->user();
-
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
-        ]);
-
-        $user->name = $data['name'];
-        $user->email = $data['email'];
-        $user->save();
-
-        return redirect('/client/profil')
-            ->with('success', 'Profil berhasil diperbarui!');
-    };
-
-    Route::put('/client/profil', $updateClientProfile)
-        ->name('client.profil.update');
-
-    Route::put('/client/pengaturan', $updateClientProfile)
-        ->name('client.pengaturan.update');
 });
 
-
-// ==================================================
-// FREELANCER ROUTES
-// ==================================================
-
-// Dashboard Freelancer
-
-Route::get('/freelancer/dashboard', function () {
-    return view('freelancer.dashboard');
-})->name('freelancer.dashboard');
-
-
-// Profil Freelancer
-
-Route::get('/freelancer/profil', function () {
-    return view('freelancer.profil');
-})->name('freelancer.profil');
-
-
-// Pengaturan Freelancer
-
-Route::get('/freelancer/pengaturan', function () {
-    return view('freelancer.profil');
-})->name('freelancer.pengaturan');
-
-
-// Redirect ke CRUD Jasa yang sudah ada
-
-Route::redirect('/freelancer/jasa', '/jasa')
-    ->name('freelancer.jasa');
-
-Route::redirect('/freelancer/portofolio', '/portfolios')
-    ->name('freelancer.portofolio');
-
-Route::redirect('/freelancer/kelola-jasa/tambah', '/jasa/create')
-    ->name('freelancer.jasa.create');
-
-
-// Pesanan Freelancer
-
-Route::get('/freelancer/pesanan', function () {
-    return view('freelancer.pesanan');
-})->name('freelancer.pesanan');
-
-
-// Halaman tambah jasa versi Blade
-
-Route::get('/freelancer/jasa/tambah', function () {
-    return view('freelancer.tambah_jasa');
-})->name('freelancer.tambah_jasa');
-
-
-// ==================================================
-// ADMIN ROUTES
-// ==================================================
-
-// Dashboard Admin
-
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-})->name('admin.dashboard');
-
-
-// Profil Admin
+// ==============================
+// PROFIL ADMIN
+// ==============================
 
 Route::get('/admin/profil', function () {
     return view('admin.profil');
-})->name('admin.profil');
+});
 
+Route::middleware('auth')->group(function () {
+    Route::get('/client/pesanan', [OrderController::class, 'clientIndex'])
+        ->name('client.orders.index');
+    Route::get('/client/jasa/{service}', [OrderController::class, 'showService'])
+        ->name('client.orders.service');
+    Route::post('/client/jasa/{service}/pesan', [OrderController::class, 'store'])
+        ->name('client.orders.store');
+    Route::patch('/client/orders/{order}/status', [OrderController::class, 'updateStatus'])
+        ->name('client.orders.updateStatus');
 
-// ==================================================
-// CRUD USER
-// ==================================================
+    Route::get('/freelancer/pesanan', [OrderController::class, 'freelancerIndex'])
+        ->name('freelancer.orders.index');
+    Route::patch('/freelancer/orders/{order}/status', [OrderController::class, 'updateStatus'])
+        ->name('freelancer.orders.updateStatus');
+    Route::get('/orders/{order}/deliverable', [OrderController::class, 'downloadDeliverable'])
+        ->name('orders.deliverable');
 
+    Route::get('/admin/orders', [OrderController::class, 'adminIndex'])
+        ->name('admin.orders.index');
+    Route::patch('/admin/orders/{order}/status', [OrderController::class, 'adminUpdateStatus'])
+        ->name('admin.orders.updateStatus');
+    Route::get('/admin/freelancers', [OrderController::class, 'freelancers'])
+        ->name('admin.freelancers.index');
+    Route::patch('/admin/freelancers/{user}/verification', [OrderController::class, 'updateFreelancerVerification'])
+        ->name('admin.freelancers.updateVerification');
+});
+
+Route::redirect('/freelancer/jasa', '/jasa')->name('freelancer.jasa');
+Route::redirect('/freelancer/portofolio', '/portfolios')->name('freelancer.portofolio');
+Route::redirect('/freelancer/kelola-jasa/tambah', '/jasa/create')->name('freelancer.jasa.create');
+
+Route::resource('categories', KategoriController::class)->except('show');
+Route::resource('jasa', JasaController::class)->except('show');
+Route::resource('portfolios', PortfolioController::class)->except('show');
 Route::resource('users', UserController::class);
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-// ==================================================
-// CRUD KATEGORI
-// ==================================================
-
-Route::resource('categories', KategoriController::class)
-    ->except('show');
-
-
-// ==================================================
-// CRUD JASA
-// ==================================================
-
-Route::resource('jasa', JasaController::class)
-    ->except('show');
-
-
-// ==================================================
-// CRUD PORTOFOLIO
-// ==================================================
-
-Route::resource('portfolios', PortfolioController::class)
-    ->except('show');
-
-
-// ==================================================
-// ADMIN - VERIFIKASI FREELANCER
-// ==================================================
-
-Route::prefix('admin')
-    ->name('admin.')
-    ->group(function () {
-        Route::get('/freelancers', [FreelancerController::class, 'index'])
-            ->name('freelancers.index');
-
-        Route::patch('/freelancers/{user}/verify', [FreelancerController::class, 'verify'])
-            ->name('freelancers.verify');
-
-        Route::patch('/freelancers/{user}/reject', [FreelancerController::class, 'reject'])
-            ->name('freelancers.reject');
-
-        // Kelola pesanan admin
-        Route::get('/orders', [OrderController::class, 'index'])
-            ->name('orders.index');
-
-        Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
-            ->name('orders.updateStatus');
-
-    });
-
-// ==================================================
-// PESANAN FREELANCER
-// ==================================================
-
-Route::middleware('auth')
-    ->prefix('freelancer')
-    ->name('freelancer.')
-    ->group(function () {
-        Route::get('/orders', [FreelancerOrderController::class, 'index'])
-            ->name('orders.index');
-
-        Route::patch('/orders/{order}/status', [FreelancerOrderController::class, 'updateStatus'])
-            ->name('orders.updateStatus');
-    });
-
-
-// ==================================================
-// PESANAN CLIENT
-// ==================================================
-
-Route::middleware('auth')
-    ->prefix('client')
-    ->name('client.')
-    ->group(function () {
-        Route::get('/pesanan', [ClientOrderController::class, 'index'])
-            ->name('orders.index');
-
-        Route::get('/jasa/{service}', [ClientOrderController::class, 'showService'])
-            ->name('orders.service');
-
-        Route::post('/jasa/{service}/pesan', [ClientOrderController::class, 'store'])
-            ->name('orders.store');
-    });
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
+});

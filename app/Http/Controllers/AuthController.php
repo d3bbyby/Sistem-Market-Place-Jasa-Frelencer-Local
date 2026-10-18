@@ -18,7 +18,7 @@ class AuthController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (!Auth::attempt($validated, $remember)) {
+        if (! Auth::attempt($validated, $remember)) {
             return back()
                 ->withInput($request->only('email'))
                 ->with('error', 'Email atau password salah.');
@@ -81,6 +81,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/');
     }
 }

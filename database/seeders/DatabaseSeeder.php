@@ -5,10 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Hash;
-=======
->>>>>>> ac707d7 (Set up crud)
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,7 +22,6 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
-<<<<<<< HEAD
 
         User::updateOrCreate(
             ['email' => 'freelancer@example.com'],
@@ -35,7 +31,5 @@ class DatabaseSeeder extends Seeder
                 'role' => 'freelancer',
             ],
         );
-=======
->>>>>>> ac707d7 (Set up crud)
     }
 }

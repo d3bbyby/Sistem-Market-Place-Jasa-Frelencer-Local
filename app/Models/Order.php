@@ -12,6 +12,8 @@ class Order extends Model
         'service_id',
         'total_price',
         'status',
+        'work_result_file',
+        'revision_notes',
     ];
 
     public function client(): BelongsTo
@@ -21,6 +23,6 @@ class Order extends Model
 
     public function service(): BelongsTo
     {
-        return $this->belongsTo(Service::class, 'service_id');
+        return $this->belongsTo(Service::class);
     }
 }

@@ -480,9 +480,6 @@
                         Ingat saya
                     </label>
 
-                    <a href="{{ url('/forgot-password') }}" class="forgot">
-                        Lupa password?
-                    </a>
                 </div>
 
                 <button type="submit" class="submit">

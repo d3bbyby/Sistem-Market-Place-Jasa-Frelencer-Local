@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $heading }}</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f8f3ee; }
+        body { font-family: Arial, sans-serif; background: #F7F6FF; color: #30264B; }
         .container { max-width: 600px; margin: 40px auto; padding: 20px; }
-        form { background: #fff; padding: 24px; border-radius: 8px; }
+        form { background: #fff; padding: 28px; border: 1px solid #E9E5F5; border-radius: 14px; box-shadow: 0 8px 24px rgba(48,38,75,.04); }
         label { display: block; font-weight: bold; margin: 14px 0 6px; }
-        input, select { width: 100%; box-sizing: border-box; padding: 10px; }
-        .button { background: #6b4f3a; color: #fff; border: 0; border-radius: 5px; padding: 10px 15px; margin-top: 20px; }
+        input, select { width: 100%; box-sizing: border-box; padding: 11px 12px; margin-top: 6px; border: 1px solid #E9E5F5; border-radius: 8px; color: #30264B; font: inherit; }
+        input:focus, select:focus { outline: 2px solid #D9CCFF; border-color: #7047EB; }
+        .button { background: #7047EB; color: #fff; border: 0; border-radius: 8px; padding: 11px 16px; margin-top: 20px; cursor: pointer; }
+        .button:hover { background: #5030B5; }
         .errors { color: #b91c1c; }
+        @media (max-width: 640px) { .container { margin: 20px auto; padding: 16px; } form { padding: 20px; } }
     </style>
 </head>
 <body>

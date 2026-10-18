@@ -522,10 +522,13 @@
             </div>
 
             <div class="menu logout">
-                <a href="/logout">
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                    @csrf
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
                     <span class="menu-icon">↪</span>
                     Logout
-                </a>
+                    </a>
+                </form>
             </div>
         </aside>
 

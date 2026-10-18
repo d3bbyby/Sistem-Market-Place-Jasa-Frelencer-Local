@@ -311,7 +311,7 @@
                     name="q"
                     class="search-input"
                     placeholder="Cari nama freelancer..."
-                    value="{{ $query }}"
+                    value="{{ $query ?? '' }}"
                 >
 
                 <button
@@ -360,13 +360,22 @@
                             {{ $freelancer->email }}
                         </div>
 
-                        <a
-                            href="#"
-                            class="btn-lihat"
-                            onclick="alert('Detail freelancer akan dibuat pada tahap berikutnya.'); return false;"
-                        >
-                            Lihat Profil
-                        </a>
+                        @foreach ($freelancer->services as $service)
+                            <div style="border-top: 1px solid #E7E1F4; padding: 16px 0;">
+                                <h4 style="margin-bottom: 7px; color: #30264B;">
+                                    {{ $service->title }}
+                                </h4>
+                                <p style="font-size: 13px; color: #837B99; margin-bottom: 8px;">
+                                    {{ $service->category?->category_name ?? 'Tanpa kategori' }}
+                                </p>
+                                <p style="font-weight: bold; color: #7047EB; margin-bottom: 12px;">
+                                    Rp{{ number_format((float) $service->price, 0, ',', '.') }}
+                                </p>
+                                <a href="{{ route('client.orders.service', $service) }}" class="btn-lihat">
+                                    Detail dan Pesan
+                                </a>
+                            </div>
+                        @endforeach
 
                     </div>
 

@@ -15,40 +15,77 @@
         }
 
         body {
-            background: #f8f5f2;
-            color: #4b3426;
+            background: #F7F6FF;
+            color: #30264B;
         }
 
-        .navbar {
-            height: 70px;
-            background: #ffffff;
+        .workspace {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 50px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            inset: 0 auto 0 0;
+            width: 250px;
+            padding: 25px 18px;
+            background: #fff;
+            border-right: 1px solid #E9E5F5;
         }
 
         .logo {
-            font-size: 22px;
+            padding: 0 15px;
+            margin-bottom: 35px;
+            font-size: 24px;
             font-weight: bold;
-            color: #6b4226;
+            color: #7047EB;
         }
 
-        .back {
+        .menu-title {
+            margin: 0 15px 12px;
+            color: #89829E;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 6px;
+            padding: 13px 15px;
+            border-radius: 9px;
+            color: #5D5577;
             text-decoration: none;
-            color: #6b4226;
-            font-weight: bold;
+            font-size: 14px;
+            transition: background .2s, color .2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #7047EB;
+            color: #fff;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        .profile-main {
+            flex: 1;
+            min-width: 0;
+            margin-left: 250px;
+            padding: 35px;
         }
 
         .container {
-            width: 90%;
+            width: 100%;
             max-width: 700px;
-            margin: 50px auto;
+            margin: 0 auto;
         }
 
         .title {
-            text-align: center;
             margin-bottom: 30px;
         }
 
@@ -58,14 +95,15 @@
         }
 
         .title p {
-            color: #8a7668;
+            color: #89829E;
         }
 
         .profile-card {
             background: white;
             border-radius: 18px;
             padding: 35px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            border: 1px solid #E9E5F5;
+            box-shadow: 0 8px 24px rgba(48, 38, 75, 0.04);
         }
 
         .avatar {
@@ -73,7 +111,7 @@
             height: 100px;
             margin: 0 auto 20px;
             border-radius: 50%;
-            background: #6b4226;
+            background: #7047EB;
             color: white;
 
             display: flex;
@@ -93,12 +131,12 @@
 
         .profile-role {
             text-align: center;
-            color: #9a6a45;
+            color: #89829E;
             margin-bottom: 30px;
         }
 
         .data-box {
-            background: #f8f5f2;
+            background: #F7F6FF;
             border-radius: 12px;
             padding: 16px 20px;
             margin-bottom: 15px;
@@ -106,13 +144,13 @@
 
         .data-box small {
             display: block;
-            color: #8a7668;
+            color: #89829E;
             margin-bottom: 5px;
         }
 
         .data-box strong {
             font-size: 16px;
-            color: #4b3426;
+            color: #30264B;
         }
 
         .status {
@@ -132,7 +170,7 @@
             padding: 13px;
             text-align: center;
 
-            background: #6b4226;
+            background: #7047EB;
             color: white;
             text-decoration: none;
 
@@ -141,68 +179,105 @@
         }
 
         .btn:hover {
-            background: #8a5a38;
+            background: #5030B5;
+        }
+
+        @media (max-width: 760px) {
+            .workspace {
+                display: block;
+            }
+
+            .sidebar {
+                position: static;
+                width: 100%;
+                padding: 18px;
+            }
+
+            .menu {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+
+            .menu a {
+                margin: 0;
+            }
+
+            .profile-main {
+                margin-left: 0;
+                padding: 24px 16px;
+            }
+
+            .profile-card {
+                padding: 24px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="navbar">
-        <div class="logo">
-            FreelanceLocal
-        </div>
-        <a href="/freelancer/dashboard" class="back">
-            ← Kembali ke Dashboard
-        </a>
-    </div>
+    <div class="workspace">
+        <aside class="sidebar">
+            <div class="logo">FreelanceHub</div>
+            <p class="menu-title">Menu Utama</p>
+            <nav class="menu">
+                <a href="/freelancer/dashboard"><span class="menu-icon">▣</span>Dashboard</a>
+                <a href="/freelancer/profil" class="active"><span class="menu-icon">♙</span>Profil Saya</a>
+                <a href="/freelancer/jasa"><span class="menu-icon">▤</span>Jasa Saya</a>
+                <a href="/freelancer/pesanan"><span class="menu-icon">▧</span>Pesanan Masuk</a>
+                <a href="/freelancer/portofolio"><span class="menu-icon">▧</span>Portofolio</a>
+                <form method="POST" action="{{ route('logout') }}" style="display: contents;">
+                    @csrf
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
+                        <span class="menu-icon">↪</span>Logout
+                    </a>
+                </form>
+            </nav>
+        </aside>
 
+        <main class="profile-main">
+            <div class="container">
+                <div class="title">
+                    <h1>Profil Saya</h1>
+                    <p>Informasi akun freelancer</p>
+                </div>
+                <div class="profile-card">
+                    <div class="avatar">
+                        {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    </div>
 
-    <div class="container">
-        <div class="title">
-            <h1>Profil Saya</h1>
-            <p>Informasi akun freelancer</p>
-        </div>
-        <div class="profile-card">
-            <div class="avatar">
-                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    <div class="profile-name">
+                        {{ Auth::user()->name }}
+                    </div>
+
+                    <div class="profile-role">
+                        {{ ucfirst(Auth::user()->role) }}
+                    </div>
+
+                    <div class="data-box">
+                        <small>Nama Lengkap</small>
+                        <strong>{{ Auth::user()->name }}</strong>
+                    </div>
+
+                    <div class="data-box">
+                        <small>Email</small>
+                        <strong>{{ Auth::user()->email }}</strong>
+                    </div>
+
+                    <div class="data-box">
+                        <small>Role</small>
+                        <strong>{{ ucfirst(Auth::user()->role) }}</strong>
+                    </div>
+
+                    <div class="data-box">
+                        <small>Status Akun</small>
+                        <span class="status">Aktif</span>
+                    </div>
+
+                    <a href="/freelancer/dashboard" class="btn">Kembali ke Dashboard</a>
+                </div>
             </div>
-
-            <div class="profile-name">
-                {{ Auth::user()->name }}
-            </div>
-
-            <div class="profile-role">
-                {{ ucfirst(Auth::user()->role) }}
-            </div>
-
-
-            <div class="data-box">
-                <small>Nama Lengkap</small>
-                <strong>{{ Auth::user()->name }}</strong>
-            </div>
-
-            <div class="data-box">
-                <small>Email</small>
-                <strong>{{ Auth::user()->email }}</strong>
-            </div>
-
-            <div class="data-box">
-                <small>Role</small>
-                <strong>{{ ucfirst(Auth::user()->role) }}</strong>
-            </div>
-
-            <div class="data-box">
-                <small>Status Akun</small>
-                <span class="status">
-                    Aktif
-                </span>
-            </div>
-
-
-            <a href="/freelancer/dashboard" class="btn">
-                Kembali ke Dashboard
-            </a>
-        </div>
+        </main>
     </div>
 </body>
 </html>

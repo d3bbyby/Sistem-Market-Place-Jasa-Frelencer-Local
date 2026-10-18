@@ -767,11 +767,11 @@
                     Dashboard
                 </a>
 
-                <a href="{{ route('client.jasa') }}">
+                <a href="/client/jasa">
                     <span class="menu-icon">⌕</span>
                      Cari Freelancer
                 </a>
-                
+
                 <a href="/client/pesanan">
                     <span class="menu-icon">▧</span>
                     Pesanan Saya
@@ -797,7 +797,7 @@
                     Pembayaran
                 </a>
 
-                <a href="{{ route('client.pengaturan') }}">
+                <a href="/client/pengaturan">
                     <span class="menu-icon">⚙</span>
                      Pengaturan Akun
                 </a>
@@ -805,10 +805,13 @@
             </div>
 
             <div class="menu logout">
-                <a href="/logout">
+                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                    @csrf
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
                     <span class="menu-icon">↪</span>
                     Logout
-                </a>
+                    </a>
+                </form>
             </div>
 
         </aside>

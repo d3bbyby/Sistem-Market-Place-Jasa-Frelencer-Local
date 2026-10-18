@@ -122,6 +122,20 @@
             background: #5030B5;
         }
 
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            background: #EAF8EF;
+            color: #28643A;
+        }
+
+        .error {
+            color: #A3344D;
+            font-size: 13px;
+            margin: 8px 0;
+        }
+
         @media (max-width: 700px) {
             .navbar {
                 padding: 18px 25px;
@@ -153,7 +167,10 @@
             <a href="/client/dashboard">Dashboard</a>
             <a href="/client/jasa">Cari Jasa</a>
             <a href="/client/profil">Profil</a>
-            <a href="/logout">Logout</a>
+            <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                @csrf
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
+            </form>
         </div>
     </nav>
 
@@ -163,6 +180,15 @@
         <p class="subtitle">
             Lihat dan pantau status pesanan jasa kamu.
         </p>
+
+        @if (session('success'))
+            <div class="alert">{{ session('success') }}</div>
+        @endif
+        @if ($errors->any())
+            <div class="alert" role="alert" style="background: #FFF1DC; color: #805515;">
+                {{ $errors->first() }}
+            </div>
+        @endif
 
         <div class="table-box">
             <table>
@@ -178,22 +204,45 @@
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>Jasa Pembuatan Website</td>
-                        <td>Budi</td>
-                        <td>Rp500.000</td>
-
-                        <td>
-                            <span class="status">Menunggu</span>
-                        </td>
-
-                        <td>
-                            <a href="/client/detail-jasa" class="btn">
-                                Detail
-                            </a>
-                        </td>
-                    </tr>
+                    @forelse ($orders as $order)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $order->service?->title ?? 'Jasa telah dihapus' }}</td>
+                            <td>{{ $order->service?->freelancer?->name ?? '-' }}</td>
+                            <td>Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}</td>
+                            <td><span class="status">{{ $order->status }}</span></td>
+                            <td>
+                                @if ($order->service)
+                                    <a href="{{ route('client.orders.service', $order->service) }}" class="btn">Detail</a>
+                                @endif
+                                @if ($order->work_result_file)
+                                    <a href="{{ route('orders.deliverable', $order) }}" class="btn">Unduh Hasil</a>
+                                @endif
+                                @if ($order->status === 'SUBMITTED')
+                                    <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="status" value="SELESAI">
+                                        <button class="btn" type="submit">Selesaikan</button>
+                                    </form>
+                                    <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="status" value="REVISI">
+                                        <input name="revision_notes" value="{{ old('revision_notes') }}" maxlength="2000" required placeholder="Jelaskan revisi yang diminta" aria-label="Catatan revisi" style="max-width: 220px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
+                                        <button class="btn" type="submit">Minta Revisi</button>
+                                    </form>
+                                    @error('revision_notes')
+                                        <p class="error">{{ $message }}</p>
+                                    @enderror
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" style="text-align: center; padding: 35px;">Kamu belum memiliki pesanan.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
