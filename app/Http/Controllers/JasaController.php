@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Service;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class JasaController extends Controller
@@ -63,8 +64,13 @@ class JasaController extends Controller
         return redirect()->route('jasa.index')->with('success', 'Jasa berhasil diperbarui!');
     }
 
-    public function destroy(Service $jasa)
+    public function destroy(Service $jasa): RedirectResponse
     {
+        if ($jasa->orders()->exists()) {
+            return redirect()->route('jasa.index')
+                ->with('error', 'Jasa tidak dapat dihapus karena sudah memiliki pesanan.');
+        }
+
         $jasa->delete();
 
         return redirect()->route('jasa.index')->with('success', 'Jasa berhasil dihapus!');

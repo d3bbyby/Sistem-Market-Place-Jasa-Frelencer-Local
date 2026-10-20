@@ -43,6 +43,7 @@
         .empty-mark { margin: 0 auto 14px; width: 52px; height: 52px; display: grid; place-items: center; border-radius: 50%; background: #F0EBFF; color: var(--accent); font-size: 24px; }
         .empty p { color: var(--muted); }
         .alert { margin-bottom: 18px; padding: 13px 16px; border-radius: 7px; background: #dff4e6; color: #21613a; }
+        .alert-error { background: #fde8e7; color: #9f1d16; }
         @media (max-width: 760px) { .sidebar { display: none; } .main { padding: 22px 16px; } .topbar { margin-bottom: 30px; } .stats { grid-template-columns: 1fr; } .heading { align-items: flex-start; flex-direction: column; } }
     </style>
 </head>
@@ -62,6 +63,7 @@
     <main class="main">
         <div class="topbar"><span>Workspace / Jasa Saya</span><div class="profile"><span class="avatar">F</span> Freelancer</div></div>
         @if (session('success')) <div class="alert">{{ session('success') }}</div> @endif
+        @if (session('error')) <div class="alert alert-error">{{ session('error') }}</div> @endif
         <div class="heading"><div><h1>Jasa Saya</h1><p class="subtitle">Atur layanan yang ingin kamu tawarkan kepada klien.</p></div><a class="button" href="{{ route('jasa.create') }}">+ Tambah Jasa</a></div>
         <div class="stats"><div class="stat"><strong>{{ $jasa->count() }}</strong><span>Total jasa aktif</span></div><div class="stat"><strong>{{ $jasa->pluck('category_id')->unique()->count() }}</strong><span>Kategori digunakan</span></div><div class="stat"><strong>{{ $jasa->pluck('freelancer_id')->unique()->count() }}</strong><span>Freelancer terdaftar</span></div></div>
         <div class="toolbar">{{ $jasa->count() }} layanan ditemukan</div>
