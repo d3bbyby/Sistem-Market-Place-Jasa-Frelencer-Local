@@ -19,7 +19,7 @@ class ClientOrderController extends Controller
         return view('client.pesanan', compact('orders'));
     }
 
-    // Menampilkan detail jasa sebelum memesan
+    // Menampilkan detail jasa
     public function showService(Service $service)
     {
         $service->load('freelancer');
@@ -30,14 +30,28 @@ class ClientOrderController extends Controller
     // Menyimpan pesanan baru
     public function store(Request $request, Service $service)
     {
-        // Pastikan yang memesan adalah client
+        // Hanya client yang boleh memesan
         abort_unless(
             auth()->check() && auth()->user()->role === 'client',
             403,
             'Hanya client yang dapat memesan jasa.'
         );
 
-        // Harga diambil dari database, bukan dari input pengguna
+        // Periksa apakah freelancer sudah diverifikasi admin
+        $freelancer = $service->freelancer;
+
+        if (
+            !$freelancer ||
+            $freelancer->role !== 'freelancer' ||
+            $freelancer->verification_status !== 'verified'
+        ) {
+            return back()->with(
+                'error',
+                'Jasa belum dapat dipesan karena freelancer belum diverifikasi admin.'
+            );
+        }
+
+        // Membuat pesanan jika freelancer sudah verified
         Order::create([
             'client_id' => auth()->id(),
             'service_id' => $service->id,

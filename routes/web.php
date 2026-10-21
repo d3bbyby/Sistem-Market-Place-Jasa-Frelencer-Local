@@ -167,3 +167,27 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::put('/password', [PasswordController::class, 'update'])->name('password.update');
 });
+
+// DEBUG SEMENTARA
+Route::get('/debug-login', function (Request $request) {
+    return response()->json([
+        'authenticated' => auth()->check(),
+        'user_id' => auth()->id(),
+        'role' => auth()->user()?->role,
+        'session_id' => $request->session()->getId(),
+        'has_login_key' => collect(array_keys($request->session()->all()))
+            ->contains(fn ($key) => str_starts_with($key, 'login_web_')),
+        'has_cookie' => $request->hasCookie(config('session.cookie')),
+    ]);
+});
+
+// Route Admin dengan pengaman Middleware Login & Cek Role Admin
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        // Cek sederhana apakah user adalah admin
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Unauthorized action.');
+        }
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+});
