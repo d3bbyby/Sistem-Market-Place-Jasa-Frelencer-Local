@@ -49,6 +49,18 @@ class JasaControllerTest extends TestCase
         $this->assertModelMissing($service);
     }
 
+    public function test_service_listing_displays_fallbacks_for_missing_relationships(): void
+    {
+        $service = $this->createService();
+        $service->setRelation('freelancer', null);
+        $service->setRelation('category', null);
+
+        $response = $this->view('jasa.index', ['jasa' => collect([$service])]);
+
+        $response->assertSee('Freelancer tidak tersedia')
+            ->assertSee('Tanpa kategori');
+    }
+
     private function createService(): Service
     {
         $freelancer = User::factory()->create(['role' => 'freelancer']);

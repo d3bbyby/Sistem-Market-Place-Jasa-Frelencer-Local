@@ -9,10 +9,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('verification_status')
-                ->default('pending');
-        });
+        if (! Schema::hasColumn('users', 'verification_status')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->string('verification_status')->default('pending');
+            });
+        }
     }
 
     public function down(): void
@@ -22,4 +23,3 @@ return new class extends Migration
         });
     }
 };
-
