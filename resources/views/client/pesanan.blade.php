@@ -209,7 +209,12 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $order->service?->title ?? 'Jasa telah dihapus' }}</td>
                             <td>{{ $order->service?->freelancer?->name ?? '-' }}</td>
-                            <td>Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}</td>
+                            <td>
+                                @if ($order->package)
+                                    <span style="display: block; font-size: 12px; color: #837B99;">Paket {{ ucfirst($order->package) }}</span>
+                                @endif
+                                Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}
+                            </td>
                             <td><span class="status">{{ $order->status }}</span></td>
                             <td>
                                 @if ($order->service)

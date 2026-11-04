@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $heading }}</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: Arial, sans-serif; background: #F7F6FF; color: #30264B; }
         .container { max-width: 600px; margin: 40px auto; padding: 20px; }

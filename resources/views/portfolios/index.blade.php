@@ -3,27 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portofolio - FreelanceHub</title>
-    <style>
-        :root { --ink: #18212b; --muted: #718096; --line: #e6e9ed; --accent: #d97745; --dark: #17232b; }
-        * { box-sizing: border-box; } body { margin: 0; color: var(--ink); background: radial-gradient(circle at 90% 0%, #fce7d9 0, transparent 30%), #f4f6f4; font-family: Arial, sans-serif; }
-        .app { display: flex; min-height: 100vh; } .sidebar { width: 238px; padding: 28px 18px; background: var(--dark); color: #fff; } .brand { padding: 0 14px 30px; font-size: 21px; font-weight: 700; } .eyebrow { padding: 0 14px 10px; color: #8fa0a8; font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; } .nav a { display: block; padding: 12px 14px; margin: 4px 0; color: #cbd5d9; border-radius: 8px; text-decoration: none; font-size: 14px; } .nav a:hover, .nav a.active { background: #30424a; color: white; }
-        .main { flex: 1; padding: 30px clamp(22px, 5vw, 70px); } .topbar, .heading, .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; } .topbar { margin-bottom: 42px; color: var(--muted); font-size: 14px; } .profile { display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 700; } .avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #f1c6ad; color: #71391f; } h1 { margin: 0; font-size: clamp(28px, 4vw, 42px); letter-spacing: -1px; } .subtitle { margin: 9px 0 0; color: var(--muted); } .button { display: inline-block; border: 0; border-radius: 7px; padding: 12px 16px; color: white; background: #a94d25; text-decoration: none; font-size: 14px; cursor: pointer; } .stats { display: grid; grid-template-columns: repeat(2, 220px); gap: 14px; margin: 30px 0; } .stat, .card, .empty { background: #fff; border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgba(24,33,43,.04); } .stat { padding: 18px 20px; } .stat strong { display: block; font-size: 27px; } .stat span { color: var(--muted); font-size: 13px; } .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; } .card { padding: 22px; } .preview { height: 116px; display: grid; place-items: center; border-radius: 8px; background: linear-gradient(135deg, #f8d8c5, #e9eff0); color: #a94d25; font-size: 32px; font-weight: 700; } .card h2 { margin: 18px 0 8px; font-size: 19px; } .card p { color: var(--muted); line-height: 1.5; font-size: 14px; } .edit { color: #a94d25; text-decoration: none; font-size: 13px; font-weight: 700; } .delete { border: 0; background: none; color: #b42318; cursor: pointer; font-size: 13px; } .empty { padding: 48px 24px; text-align: center; grid-column: 1 / -1; } .empty p { color: var(--muted); } .alert { margin-bottom: 18px; padding: 13px 16px; border-radius: 7px; background: #dff4e6; color: #21613a; } @media (max-width: 760px) { .sidebar { display: none; } .main { padding: 22px 16px; } .heading { align-items: flex-start; flex-direction: column; } .stats { grid-template-columns: 1fr 1fr; } }
-        :root { --ink: #30264B; --muted: #89829E; --line: #E9E5F5; --accent: #7047EB; --dark: #fff; }
-        body { background: #F7F6FF; }
-        .sidebar { width: 250px; background: #fff; border-right: 1px solid var(--line); }
-        .brand { color: var(--accent); font-size: 24px; }
-        .eyebrow { color: var(--muted); }
-        .nav a { color: #5D5577; transition: background .2s, color .2s; }
-        .nav a:hover, .nav a.active { background: var(--accent); color: #fff; }
-        .avatar { background: #F0EBFF; color: var(--accent); }
-        .button { background: var(--accent); border-radius: 8px; }
-        .button:hover { background: #5030B5; }
-        .stat, .card, .empty { border-radius: 14px; box-shadow: 0 8px 24px rgba(48,38,75,.04); }
-        .preview { background: linear-gradient(135deg, #F0EBFF, #E5DEFF); color: var(--accent); }
-        .edit { color: var(--accent); }
-        @media (max-width: 760px) { .sidebar { display: block; width: 100%; min-height: auto; padding: 18px; } .nav { display: flex; flex-wrap: wrap; gap: 4px; } .nav a { margin: 0; } .app { display: block; } .main { padding: 22px 16px; } .topbar { margin-bottom: 30px; } }
-    </style>
+    <title>Portofolio Saya - FreelanceHub</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body><div class="app"><aside class="sidebar"><div class="brand">FreelanceHub</div><div class="eyebrow">Workspace</div><nav class="nav"><a href="/freelancer/dashboard">Dashboard</a><a href="{{ route('jasa.index') }}">Jasa Saya</a><a class="active" href="{{ route('portfolios.index') }}">Portofolio</a><a href="{{ route('categories.index') }}">Kategori</a><a href="/freelancer/profil">Profil Saya</a></nav></aside><main class="main"><div class="topbar"><span>Workspace / Portofolio</span><div class="profile"><span class="avatar">F</span> Freelancer</div></div>@if(session('success'))<div class="alert">{{ session('success') }}</div>@endif<div class="heading"><div><h1>Portofolio</h1><p class="subtitle">Tampilkan karya terbaik untuk membangun kepercayaan klien.</p></div><a class="button" href="{{ route('portfolios.create') }}">+ Tambah Karya</a></div><div class="stats"><div class="stat"><strong>{{ $portfolios->count() }}</strong><span>Total karya</span></div><div class="stat"><strong>{{ $portfolios->pluck('service_id')->unique()->count() }}</strong><span>Jasa terkait</span></div></div><div class="grid">@forelse($portfolios as $portfolio)<article class="card"><div class="preview">KARYA</div><h2>{{ $portfolio->caption }}</h2><p>{{ $portfolio->service->title }}</p><p>{{ $portfolio->file_path }}</p><div class="card-footer"><a class="edit" href="{{ route('portfolios.edit', $portfolio) }}">Edit karya</a><form action="{{ route('portfolios.destroy', $portfolio) }}" method="POST" onsubmit="return confirm('Hapus portofolio ini?')">@csrf @method('DELETE')<button class="delete" type="submit">Hapus</button></form></div></article>@empty<div class="empty"><h2>Belum ada portofolio</h2><p>Tambahkan karya pertama agar klien bisa melihat kemampuanmu.</p><a class="button" href="{{ route('portfolios.create') }}">Tambah Karya Pertama</a></div>@endforelse</div></main></div></body>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+<main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
+    <nav class="flex flex-wrap items-center justify-between gap-4">
+        <a class="text-xl font-extrabold tracking-tight text-violet-700" href="{{ route('freelancer.dashboard') }}">FreelanceHub</a>
+        <div class="flex flex-wrap gap-4 text-sm font-semibold text-slate-600">
+            <a class="hover:text-violet-700" href="{{ route('jasa.index') }}">Jasa Saya</a>
+            <a class="text-violet-700" href="{{ route('portfolios.index') }}">Portofolio</a>
+            <a class="hover:text-violet-700" href="{{ route('freelancer.dashboard') }}">Dashboard</a>
+        </div>
+    </nav>
+
+    @if (session('success'))
+        <div class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800" role="status">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+        <div class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800" role="alert">{{ session('error') }}</div>
+    @endif
+
+    <header class="mt-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-violet-700">Profil freelancer</p>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Portofolio Saya</h1>
+            <p class="mt-3 max-w-2xl text-slate-600">Tampilkan hasil karya terbaik untuk membantu klien memahami kualitas pekerjaanmu.</p>
+        </div>
+        <a class="inline-flex items-center justify-center rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white hover:bg-violet-800"
+           href="{{ route('portfolios.create') }}">+ Tambah karya</a>
+    </header>
+
+    <section class="mt-8 grid gap-4 sm:grid-cols-2">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm text-slate-500">Total karya</p>
+            <p class="mt-1 text-3xl font-bold">{{ $portfolios->count() }}</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <p class="text-sm text-slate-500">Karya terkait jasa</p>
+            <p class="mt-1 text-3xl font-bold">{{ $portfolios->whereNotNull('service_id')->count() }}</p>
+        </div>
+    </section>
+
+    <section class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        @forelse ($portfolios as $portfolio)
+            <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                @if ($portfolio->imageUrl())
+                    <img class="aspect-[16/10] w-full object-cover" src="{{ $portfolio->imageUrl() }}"
+                         alt="{{ $portfolio->title ?? $portfolio->caption }}">
+                @else
+                    <div class="grid aspect-[16/10] place-items-center bg-gradient-to-br from-violet-100 to-indigo-50 text-3xl text-violet-700" aria-hidden="true">✦</div>
+                @endif
+                <div class="p-5">
+                    <h2 class="text-lg font-bold">{{ $portfolio->title ?? $portfolio->caption }}</h2>
+                    @if ($portfolio->description)
+                        <p class="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{{ $portfolio->description }}</p>
+                    @endif
+                    @if ($portfolio->service)
+                        <p class="mt-3 text-sm text-slate-500">Jasa terkait: {{ $portfolio->service->title }}</p>
+                    @endif
+                    @if ($portfolio->project_link)
+                        <a class="mt-3 inline-block text-sm font-semibold text-violet-700 hover:underline"
+                           href="{{ $portfolio->project_link }}" target="_blank" rel="noopener noreferrer">Lihat proyek ↗</a>
+                    @endif
+                    <div class="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                        <a class="text-sm font-semibold text-violet-700 hover:underline"
+                           href="{{ route('portfolios.edit', $portfolio) }}">Edit karya</a>
+                        <form action="{{ route('portfolios.destroy', $portfolio) }}" method="POST"
+                              onsubmit="return confirm('Hapus portofolio ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button class="text-sm font-semibold text-red-700 hover:underline" type="submit">Hapus</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        @empty
+            <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center sm:col-span-2 lg:col-span-3">
+                <h2 class="text-lg font-bold">Portofolio masih kosong</h2>
+                <p class="mt-2 text-slate-600">Tambahkan proyek pertamamu untuk mulai memamerkan hasil karya.</p>
+                <a class="mt-5 inline-flex rounded-lg bg-violet-700 px-4 py-2.5 font-semibold text-white hover:bg-violet-800"
+                   href="{{ route('portfolios.create') }}">Tambah karya pertama</a>
+            </div>
+        @endforelse
+    </section>
+</main>
+</body>
 </html>

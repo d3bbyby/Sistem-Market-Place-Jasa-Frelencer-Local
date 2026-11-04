@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -61,20 +62,36 @@ class OrderController extends Controller
     {
         abort_unless($request->user()->role === 'client', 403);
 
-        $service->load(['freelancer', 'category']);
+        $service->load([
+            'freelancer',
+            'category',
+            'freelancer.portfolios' => fn ($query) => $query->latest()->limit(4),
+        ]);
+        $packages = $service->packages();
 
-        return view('client.detail_jasa', compact('service'));
+        return view('client.detail_jasa', [
+            'service' => $service,
+            'packages' => $packages,
+            'mainImageUrl' => $service->mainImageUrl(),
+            'galleryImageUrls' => $service->galleryImageUrls(),
+        ]);
     }
 
     public function store(Request $request, Service $service): RedirectResponse
     {
         abort_unless($request->user()->role === 'client', 403);
         abort_if($service->freelancer_id === $request->user()->id, 403);
+        $data = $request->validate([
+            'package' => ['sometimes', 'required', Rule::in(['basic', 'plus', 'premium'])],
+        ]);
+        $packageName = $data['package'] ?? 'basic';
+        $package = $service->packages()[$packageName];
 
         Order::create([
             'client_id' => $request->user()->id,
             'service_id' => $service->id,
-            'total_price' => $service->price,
+            'package' => $packageName,
+            'total_price' => $package['price'],
             'status' => 'MENUNGGU',
         ]);
 

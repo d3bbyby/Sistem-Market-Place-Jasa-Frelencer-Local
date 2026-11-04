@@ -371,7 +371,7 @@
                                 <p style="font-weight: bold; color: #7047EB; margin-bottom: 12px;">
                                     Rp{{ number_format((float) $service->price, 0, ',', '.') }}
                                 </p>
-                                <a href="{{ route('client.orders.service', $service) }}" class="btn-lihat">
+                                <a href="{{ route('jasa.show', $service) }}" class="btn-lihat">
                                     Detail dan Pesan
                                 </a>
                             </div>

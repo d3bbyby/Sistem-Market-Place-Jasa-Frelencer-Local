@@ -46,7 +46,12 @@
                             <td>{{ $order->service?->title ?? 'Jasa telah dihapus' }}</td>
                             <td>{{ $order->client?->name ?? '-' }}</td>
                             <td>{{ $order->service?->freelancer?->name ?? '-' }}</td>
-                            <td>Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}</td>
+                            <td>
+                                @if ($order->package)
+                                    <span class="muted">Paket {{ ucfirst($order->package) }}</span><br>
+                                @endif
+                                Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}
+                            </td>
                             <td>{{ $order->status }}</td>
                             <td>
                                 <form method="POST" action="{{ route('admin.orders.updateStatus', $order) }}" style="display: flex; gap: 8px;">

@@ -3,25 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kategori - FreelanceHub</title>
-    <style>
-        :root { --ink:#18212b; --muted:#718096; --line:#e6e9ed; --dark:#17232b; --accent:#a94d25; } *{box-sizing:border-box} body{margin:0;color:var(--ink);background:radial-gradient(circle at 90% 0%,#fce7d9 0,transparent 30%),#f4f6f4;font-family:Arial,sans-serif}.app{display:flex;min-height:100vh}.sidebar{width:238px;padding:28px 18px;background:var(--dark);color:#fff}.brand{padding:0 14px 30px;font-size:21px;font-weight:700}.eyebrow{padding:0 14px 10px;color:#8fa0a8;font-size:11px;text-transform:uppercase;letter-spacing:1.5px}.nav a{display:block;padding:12px 14px;margin:4px 0;color:#cbd5d9;border-radius:8px;text-decoration:none;font-size:14px}.nav a:hover,.nav a.active{background:#30424a;color:#fff}.main{flex:1;padding:30px clamp(22px,5vw,70px)}.topbar,.heading{display:flex;align-items:center;justify-content:space-between;gap:16px}.topbar{margin-bottom:42px;color:var(--muted);font-size:14px}.profile{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:700}.avatar{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:#f1c6ad;color:#71391f}h1{margin:0;font-size:clamp(28px,4vw,42px);letter-spacing:-1px}.subtitle{margin:9px 0 0;color:var(--muted)}.button{display:inline-block;border:0;border-radius:7px;padding:12px 16px;color:#fff;background:var(--accent);text-decoration:none;font-size:14px;cursor:pointer}.stats{display:grid;grid-template-columns:220px;gap:14px;margin:30px 0}.stat,.panel{background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(24,33,43,.04)}.stat{padding:18px 20px}.stat strong{display:block;font-size:27px}.stat span{color:var(--muted);font-size:13px}.panel{overflow:hidden}.table{width:100%;border-collapse:collapse}.table th,.table td{padding:18px 20px;text-align:left;border-bottom:1px solid var(--line)}.table th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.6px}.table td{font-size:14px}.pill{display:inline-block;padding:6px 9px;border-radius:99px;background:#eef4ef;color:#477054;font-size:12px}.edit{color:var(--accent);font-weight:700;text-decoration:none;margin-right:14px}.delete{border:0;background:none;color:#b42318;cursor:pointer;font-size:13px}.alert{margin-bottom:18px;padding:13px 16px;border-radius:7px;background:#dff4e6;color:#21613a}.empty{text-align:center;color:var(--muted)}@media(max-width:760px){.sidebar{display:none}.main{padding:22px 16px}.heading{align-items:flex-start;flex-direction:column}.panel{overflow:auto}.table{min-width:600px}}
-        :root { --ink:#30264B; --muted:#89829E; --line:#E9E5F5; --dark:#fff; --accent:#7047EB; }
-        body { background:#F7F6FF; }
-        .sidebar { width:250px; background:#fff; border-right:1px solid var(--line); }
-        .brand { color:var(--accent); font-size:24px; }
-        .eyebrow { color:var(--muted); }
-        .nav a { color:#5D5577; transition:background .2s,color .2s; }
-        .nav a:hover,.nav a.active { background:var(--accent); color:#fff; }
-        .avatar { background:#F0EBFF; color:var(--accent); }
-        .button { background:var(--accent); border-radius:8px; }
-        .button:hover { background:#5030B5; }
-        .stat,.panel { border-radius:14px; box-shadow:0 8px 24px rgba(48,38,75,.04); }
-        .pill { background:#F0EBFF; color:#5D5577; }
-        .edit { color:var(--accent); }
-        .empty { color:var(--muted); }
-        @media(max-width:760px) { .sidebar { display:block; width:100%; min-height:auto; padding:18px; } .nav { display:flex; flex-wrap:wrap; gap:4px; } .nav a { margin:0; } .app { display:block; } .main { padding:22px 16px; } .topbar { margin-bottom:30px; } .panel { overflow:auto; } .table { min-width:600px; } }
-    </style>
+    <title>Manajemen Kategori - FreelanceHub</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body><div class="app"><aside class="sidebar"><div class="brand">FreelanceHub</div><div class="eyebrow">Workspace</div><nav class="nav"><a href="/freelancer/dashboard">Dashboard</a><a href="{{ route('jasa.index') }}">Jasa Saya</a><a href="{{ route('portfolios.index') }}">Portofolio</a><a class="active" href="{{ route('categories.index') }}">Kategori</a><a href="/freelancer/profil">Profil Saya</a></nav></aside><main class="main"><div class="topbar"><span>Workspace / Kategori</span><div class="profile"><span class="avatar">F</span> Freelancer</div></div>@if(session('success'))<div class="alert">{{ session('success') }}</div>@endif<div class="heading"><div><h1>Kategori</h1><p class="subtitle">Susun layanan berdasarkan keahlian yang kamu tawarkan.</p></div><a class="button" href="{{ route('categories.create') }}">+ Tambah Kategori</a></div><div class="stats"><div class="stat"><strong>{{ $categories->count() }}</strong><span>Total kategori</span></div></div><div class="panel"><table class="table"><thead><tr><th>Nama kategori</th><th>Slug</th><th>Aksi</th></tr></thead><tbody>@forelse($categories as $category)<tr><td><strong>{{ $category->category_name }}</strong></td><td><span class="pill">{{ $category->slug }}</span></td><td><a class="edit" href="{{ route('categories.edit', $category) }}">Edit</a><form style="display:inline" action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Hapus kategori ini?')">@csrf @method('DELETE')<button class="delete" type="submit">Hapus</button></form></td></tr>@empty<tr><td class="empty" colspan="3">Belum ada kategori. Tambahkan kategori pertama untuk mengelompokkan jasa.</td></tr>@endforelse</tbody></table></div></main></div></body>
+<body class="min-h-screen bg-slate-50 text-slate-900">
+<main class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:py-14">
+    <nav class="flex items-center justify-between gap-4">
+        <a class="text-xl font-extrabold tracking-tight text-violet-700" href="{{ url('/') }}">FreelanceHub</a>
+        @if (auth()->user()->role === 'admin')
+            <a class="text-sm font-semibold text-slate-600 hover:text-violet-700" href="{{ route('admin.dashboard') }}">Admin dashboard</a>
+        @elseif (auth()->user()->role === 'freelancer')
+            <a class="text-sm font-semibold text-slate-600 hover:text-violet-700" href="{{ route('freelancer.dashboard') }}">Dashboard freelancer</a>
+        @else
+            <a class="text-sm font-semibold text-slate-600 hover:text-violet-700" href="{{ route('client.orders.index') }}">Pesanan saya</a>
+        @endif
+    </nav>
+
+    @if (session('success'))
+        <div class="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800" role="status">{{ session('success') }}</div>
+    @endif
+    @if (session('error'))
+        <div class="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900" role="alert">{{ session('error') }}</div>
+    @endif
+
+    <header class="mt-10 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <p class="text-sm font-semibold uppercase tracking-wide text-violet-700">Pengelolaan marketplace</p>
+            <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Kategori jasa</h1>
+            <p class="mt-3 text-slate-600">Kelola kategori yang digunakan freelancer untuk mengelompokkan layanannya.</p>
+        </div>
+        @if (auth()->user()->role === 'admin')
+            <a class="inline-flex items-center justify-center rounded-xl bg-violet-700 px-5 py-3 font-semibold text-white hover:bg-violet-800"
+               href="{{ route('categories.create') }}">+ Tambah kategori</a>
+        @endif
+    </header>
+
+    <section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+            <h2 class="font-bold">Semua kategori</h2>
+            <span class="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-800">{{ $categories->count() }}</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full min-w-[620px] text-left text-sm">
+                <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
+                    <tr>
+                        <th class="px-5 py-4 font-semibold">Nama kategori</th>
+                        <th class="px-5 py-4 font-semibold">Slug</th>
+                        <th class="px-5 py-4 font-semibold">Jasa</th>
+                        @if (auth()->user()->role === 'admin')
+                            <th class="px-5 py-4 font-semibold">Aksi</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($categories as $category)
+                        <tr>
+                            <td class="px-5 py-4 font-semibold">{{ $category->category_name }}</td>
+                            <td class="px-5 py-4 text-slate-600">{{ $category->slug }}</td>
+                            <td class="px-5 py-4">
+                                <a class="font-semibold text-violet-700 hover:underline"
+                                   href="{{ route('categories.services', ['category' => $category->slug]) }}">
+                                    Lihat {{ $category->services_count }} jasa
+                                </a>
+                            </td>
+                            @if (auth()->user()->role === 'admin')
+                                <td class="px-5 py-4">
+                                    <div class="flex items-center gap-4">
+                                        <a class="font-semibold text-violet-700 hover:underline"
+                                           href="{{ route('categories.edit', $category) }}">Edit</a>
+                                        <form action="{{ route('categories.destroy', $category) }}" method="POST"
+                                              onsubmit="return confirm('Hapus kategori ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="font-semibold text-red-700 hover:underline" type="submit">Hapus</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td class="px-5 py-12 text-center text-slate-500" colspan="{{ auth()->user()->role === 'admin' ? 4 : 3 }}">
+                                Belum ada kategori. Tambahkan kategori pertama untuk mengelompokkan jasa.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
 </html>

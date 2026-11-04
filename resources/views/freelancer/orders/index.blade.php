@@ -59,7 +59,12 @@
                         <tr>
                             <td>{{ $order->service?->title ?? 'Jasa telah dihapus' }}</td>
                             <td>{{ $order->client?->name ?? '-' }}</td>
-                            <td>Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}</td>
+                            <td>
+                                @if ($order->package)
+                                    <span class="muted">Paket {{ ucfirst($order->package) }}</span><br>
+                                @endif
+                                Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}
+                            </td>
                             <td><span class="status">{{ $order->status }}</span></td>
                             <td>
                                 @if ($order->revision_notes)

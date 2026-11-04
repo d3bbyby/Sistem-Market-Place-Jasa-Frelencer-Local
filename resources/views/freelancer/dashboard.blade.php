@@ -595,11 +595,9 @@
                         <div class="stat-icon">
                             ▤
                         </div>
-                        <h3>
-                            8
-                        </h3>
+                        <h3>{{ $totalServices }}</h3>
                         <p>
-                            Total Jasa
+                            Total Jasa Saya
                         </p>
                     </div>
 
@@ -607,9 +605,7 @@
                         <div class="stat-icon">
                             ✓
                         </div>
-                        <h3>
-                            24
-                        </h3>
+                        <h3>{{ $completedOrdersCount }}</h3>
                         <p>
                             Pesanan Selesai
                         </p>
@@ -618,24 +614,17 @@
 
                     <div class="stat-card">
                         <div class="stat-icon">
-                            ☆
+                            ▧
                         </div>
-                        <h3>
-                            4.8
-                        </h3>
+                        <h3>{{ $totalOrders }}</h3>
                         <p>
-                            Total Rating
+                            Total Pesanan Masuk
                         </p>
                     </div>
 
-
                     <div class="stat-card">
-                        <div class="stat-icon">
-                            Rp
-                        </div>
-                        <h3>
-                            4,8 Jt
-                        </h3>
+                        <div class="stat-icon">Rp</div>
+                        <h3>Rp{{ number_format($totalIncome, 0, ',', '.') }}</h3>
                         <p>
                             Total Pendapatan
                         </p>
@@ -677,54 +666,37 @@
                                     </thead>
 
                                     <tbody>
-                                        <tr>
-                                            <td>
-                                                Deby
-                                            </td>
-                                            <td>
-                                                Desain Logo
-                                            </td>
-                                            <td>
-                                                08 Sep 2026
-                                            </td>
-                                            <td>
-                                                <span class="status pending">
-                                                    Menunggu
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Andi
-                                            </td>
-                                            <td>
-                                                Website Laravel
-                                            </td>
-                                            <td>
-                                                07 Sep 2026
-                                            </td>
-                                            <td>
-                                                <span class="status process">
-                                                    Diproses
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                Sinta
-                                            </td>
-                                            <td>
-                                                Editing Video
-                                            </td>
-                                            <td>
-                                                06 Sep 2026
-                                            </td>
-                                            <td>
-                                                <span class="status done">
-                                                    Selesai
-                                                </span>
-                                            </td>
-                                        </tr>
+                                        @forelse ($latestOrders as $order)
+                                            <tr>
+                                                <td>{{ $order->client?->name ?? 'Client tidak tersedia' }}</td>
+                                                <td>{{ $order->service?->title ?? 'Jasa tidak tersedia' }}</td>
+                                                <td>{{ $order->created_at->format('d M Y') }}</td>
+                                                <td>
+                                                    @php
+                                                        $statusClass = match ($order->status) {
+                                                            'MENUNGGU' => 'pending',
+                                                            'DIPROSES', 'SUBMITTED', 'REVISI' => 'process',
+                                                            'SELESAI' => 'done',
+                                                            default => 'pending',
+                                                        };
+
+                                                        $statusLabel = match ($order->status) {
+                                                            'MENUNGGU' => 'Menunggu',
+                                                            'DIPROSES' => 'Diproses',
+                                                            'SUBMITTED' => 'Menunggu Review',
+                                                            'REVISI' => 'Revisi',
+                                                            'SELESAI' => 'Selesai',
+                                                            default => $order->status,
+                                                        };
+                                                    @endphp
+                                                    <span class="status {{ $statusClass }}">{{ $statusLabel }}</span>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4">Belum ada pesanan masuk.</td>
+                                            </tr>
+                                        @endforelse
                                     </tbody>
                                 </table>
                             </div>
@@ -745,60 +717,18 @@
 
 
                         <div class="panel-body">
-                            <div class="service-item">
-                                <div class="service-image">
-                                    ▤
+                            @forelse ($services as $service)
+                                <div class="service-item">
+                                    <div class="service-image">▤</div>
+                                    <div class="item-info">
+                                        <strong>{{ $service->title }}</strong>
+                                        <span>Mulai Rp{{ number_format((float) $service->price, 0, ',', '.') }} · {{ $service->orders_count }} pesanan</span>
+                                    </div>
+                                    <a href="{{ route('jasa.show', $service) }}" class="item-link">Detail</a>
                                 </div>
-                                <div class="item-info">
-                                    <strong>
-                                        Desain Logo
-                                    </strong>
-                                    <span>
-                                        Rp150.000 · 12 pesanan
-                                    </span>
-                                </div>
-
-                                <a href="/freelancer/jasa" class="item-link">
-                                    Detail
-                                </a>
-                            </div>
-
-
-                            <div class="service-item">
-                                <div class="service-image">
-                                    ⌘
-                                </div>
-                                <div class="item-info">
-                                    <strong>
-                                        Website Laravel
-                                    </strong>
-                                    <span>
-                                        Rp750.000 · 8 pesanan
-                                    </span>
-                                </div>
-                                <a href="/freelancer/jasa" class="item-link">
-                                    Detail
-                                </a>
-                            </div>
-
-
-                            <div class="service-item">
-                                <div class="service-image">
-                                    ▣
-                                </div>
-                                <div class="item-info">
-                                    <strong>
-                                        Editing Video
-                                    </strong>
-                                    <span>
-                                        Rp250.000 · 6 pesanan
-                                    </span>
-                                </div>
-
-                                <a href="/freelancer/jasa" class="item-link">
-                                    Detail
-                                </a>
-                            </div>
+                            @empty
+                                <p>Belum ada jasa yang dibuat.</p>
+                            @endforelse
 
 
                             <a href="/freelancer/jasa/tambah" class="button">
@@ -818,48 +748,17 @@
 
 
                         <div class="panel-body">
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    ✓
+                            @forelse ($latestOrders->take(3) as $order)
+                                <div class="activity-item">
+                                    <div class="activity-icon">▧</div>
+                                    <div class="item-info">
+                                        <strong>Pesanan {{ strtolower($order->status) }}</strong>
+                                        <span>{{ $order->service?->title ?? 'Jasa tidak tersedia' }} · {{ $order->created_at->diffForHumans() }}</span>
+                                    </div>
                                 </div>
-                                <div class="item-info">
-                                    <strong>
-                                        Pesanan selesai
-                                    </strong>
-                                    <span>
-                                        Desain logo - 2 jam lalu
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    ☆
-                                </div>
-                                <div class="item-info">
-                                    <strong>
-                                        Mendapat rating baru
-                                    </strong>
-                                    <span>
-                                        Rating 5 dari Deby - Kemarin
-                                    </span>
-                                </div>
-                            </div>
-
-
-                            <div class="activity-item">
-                                <div class="activity-icon">
-                                    ▧
-                                </div>
-                                <div class="item-info">
-                                    <strong>
-                                        Pesanan baru masuk
-                                    </strong>
-                                    <span>
-                                        Website Laravel - 2 hari lalu
-                                    </span>
-                                </div>
-                            </div>
+                            @empty
+                                <p>Aktivitas pesanan akan muncul di sini.</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>

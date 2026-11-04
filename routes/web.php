@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FreelancerDashboardController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\OrderController;
@@ -66,9 +67,9 @@ Route::get('/client/pengaturan', function () {
 // DASHBOARD FREELANCER
 // ==============================
 
-Route::get('/freelancer/dashboard', function () {
-    return view('freelancer.dashboard');
-});
+Route::get('/freelancer/dashboard', FreelancerDashboardController::class)
+    ->middleware('auth')
+    ->name('freelancer.dashboard');
 
 // ==============================
 // DASHBOARD ADMIN
@@ -152,9 +153,12 @@ Route::redirect('/freelancer/jasa', '/jasa')->name('freelancer.jasa');
 Route::redirect('/freelancer/portofolio', '/portfolios')->name('freelancer.portofolio');
 Route::redirect('/freelancer/kelola-jasa/tambah', '/jasa/create')->name('freelancer.jasa.create');
 
-Route::resource('categories', KategoriController::class)->except('show');
-Route::resource('jasa', JasaController::class)->except('show');
-Route::resource('portfolios', PortfolioController::class)->except('show');
+Route::get('/kategori/{category:slug}', [JasaController::class, 'category'])
+    ->name('categories.services');
+Route::resource('categories', KategoriController::class)->except('show')->middleware('auth');
+Route::resource('jasa', JasaController::class)->except('show')->middleware('auth');
+Route::resource('portfolios', PortfolioController::class)->except('show')->middleware('auth');
+Route::get('/jasa/{service}', [JasaController::class, 'show'])->name('jasa.show');
 Route::resource('users', UserController::class);
 
 Route::get('/dashboard', function () {
@@ -188,6 +192,7 @@ Route::middleware(['auth'])->group(function () {
         if (auth()->user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
+
         return view('admin.dashboard');
     })->name('admin.dashboard');
 });

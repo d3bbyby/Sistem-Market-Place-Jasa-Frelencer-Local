@@ -34,4 +34,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Service::class, 'freelancer_id');
     }
+
+    public function portfolios(): HasMany
+    {
+        return $this->hasMany(Portfolio::class);
+    }
 }

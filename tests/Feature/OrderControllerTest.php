@@ -37,6 +37,43 @@ class OrderControllerTest extends TestCase
             ->assertSee('MENUNGGU');
     }
 
+    public function test_client_order_saves_the_selected_package_and_its_price_snapshot(): void
+    {
+        $client = User::factory()->create(['role' => 'client']);
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $service = $this->createService($freelancer);
+        $service->update([
+            'plus_price' => 2500000,
+            'premium_price' => 3500000,
+        ]);
+
+        $response = $this->actingAs($client)->post(route('client.orders.store', $service), [
+            'package' => 'premium',
+        ]);
+
+        $response->assertRedirect(route('client.orders.index'));
+        $this->assertDatabaseHas('orders', [
+            'client_id' => $client->id,
+            'service_id' => $service->id,
+            'package' => 'premium',
+            'total_price' => 3500000,
+        ]);
+    }
+
+    public function test_client_cannot_order_an_unknown_package(): void
+    {
+        $client = User::factory()->create(['role' => 'client']);
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $service = $this->createService($freelancer);
+
+        $this->actingAs($client)
+            ->from(route('jasa.show', $service))
+            ->post(route('client.orders.store', $service), ['package' => 'vip'])
+            ->assertSessionHasErrors('package');
+
+        $this->assertDatabaseCount('orders', 0);
+    }
+
     public function test_client_cannot_order_their_own_service(): void
     {
         $client = User::factory()->create(['role' => 'client']);
