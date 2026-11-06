@@ -7,220 +7,221 @@
     <title>Kelola User - FreelanceHub</title>
 
     <style>
-        * {
-            box-sizing: border-box;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
+    body {
+        margin: 0;
+        padding: 30px 20px;
+        font-family: Arial, sans-serif;
+        background: #F4F6FA;
+        color: #1E2C3D;
+    }
+
+    .container {
+        max-width: 1150px;
+        margin: auto;
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 5px 25px rgba(16, 39, 68, 0.08);
+    }
+
+    .back-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 20px;
+        margin-bottom: 25px;
+        background: linear-gradient(135deg, #1C3B60, #142B49);
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: bold;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(20, 43, 73, 0.2);
+        transition: 0.25s;
+    }
+
+    .back-button:hover {
+        background: #0F2036;
+        transform: translateY(-2px);
+    }
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #E1E6EE;
+        margin-bottom: 25px;
+    }
+
+    h1 {
+        margin: 0 0 10px;
+        color: #1E2C3D;
+        font-size: 28px;
+    }
+
+    .subtitle {
+        margin: 0;
+        color: #7A8798;
+        font-size: 14px;
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.2s;
+        font-family: inherit;
+    }
+
+    .btn-add {
+        background: #C49A45;
+        color: #142B49;
+    }
+
+    .btn-add:hover {
+        background: #A87922;
+        color: white;
+    }
+
+    .btn-detail {
+        background: #E9EFF6;
+        color: #36577E;
+    }
+
+    .btn-detail:hover {
+        background: #D8E2EE;
+    }
+
+    .btn-edit {
+        background: #F8F0DD;
+        color: #8C641E;
+    }
+
+    .btn-edit:hover {
+        background: #EBD9A9;
+    }
+
+    .btn-delete {
+        background: #C74747;
+        color: white;
+    }
+
+    .btn-delete:hover {
+        background: #A82E2E;
+    }
+
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px;
+    }
+
+    th {
+        padding: 16px;
+        background: #142B49;
+        color: white;
+        text-align: left;
+        font-size: 14px;
+    }
+
+    td {
+        padding: 16px;
+        border-bottom: 1px solid #E6EBF2;
+        font-size: 14px;
+    }
+
+    tbody tr:hover {
+        background: #F4F6FA;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .badge-admin {
+        background: #F8F0DD;
+        color: #A87922;
+    }
+
+    .badge-freelancer {
+        background: #E6EDF5;
+        color: #36577E;
+    }
+
+    .badge-client {
+        background: #E3EAF2;
+        color: #243B53;
+    }
+
+    .actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .actions form {
+        margin: 0;
+    }
+
+    .alert {
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        background: #E0F3E5;
+        color: #246C38;
+        border: 1px solid #B7E0C2;
+        border-radius: 8px;
+    }
+
+    .empty {
+        padding: 35px;
+        text-align: center;
+        color: #7A8798;
+    }
+
+    .footer {
+        margin-top: 30px;
+        padding-top: 18px;
+        border-top: 1px solid #E1E6EE;
+        text-align: center;
+        font-size: 12px;
+        color: #8B98A8;
+    }
+
+    @media (max-width: 600px) {
         body {
-            margin: 0;
-            padding: 30px 20px;
-            font-family: Arial, sans-serif;
-            background: #f5f1eb;
-            color: #3d3028;
+            padding: 15px;
         }
 
         .container {
-            max-width: 1150px;
-            margin: auto;
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.08);
-        }
-
-        .back-button {
-            display: inline-flex;
-            align-items: center;
-            padding: 12px 20px;
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, #8b6346, #5c3d2e);
-            color: white;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(92,61,46,0.25);
-            transition: 0.25s;
-        }
-
-        .back-button:hover {
-            background: #432b20;
-            transform: translateY(-2px);
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e8ded4;
-            margin-bottom: 25px;
+            padding: 20px 15px;
         }
 
         h1 {
-            margin: 0 0 10px;
-            color: #5c3d2e;
-            font-size: 28px;
+            font-size: 23px;
         }
-
-        .subtitle {
-            margin: 0;
-            color: #887568;
-            font-size: 14px;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 13px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            font-family: inherit;
-        }
-
-        .btn-add {
-            background: #6f4e37;
-            color: white;
-        }
-
-        .btn-add:hover {
-            background: #503725;
-        }
-
-        .btn-detail {
-            background: #e9dfd5;
-            color: #5c3d2e;
-        }
-
-        .btn-detail:hover {
-            background: #d8c7b8;
-        }
-
-        .btn-edit {
-            background: #e7b75d;
-            color: #4b3218;
-        }
-
-        .btn-edit:hover {
-            background: #dba03d;
-        }
-
-        .btn-delete {
-            background: #c74747;
-            color: white;
-        }
-
-        .btn-delete:hover {
-            background: #a82e2e;
-        }
-
-        .table-wrapper {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 700px;
-        }
-
-        th {
-            padding: 16px;
-            background: #6f4e37;
-            color: white;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        td {
-            padding: 16px;
-            border-bottom: 1px solid #eee5dd;
-            font-size: 14px;
-        }
-
-        tbody tr:hover {
-            background: #faf7f3;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 7px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .badge-admin {
-            background: #eadcf5;
-            color: #713e91;
-        }
-
-        .badge-freelancer {
-            background: #dff3e4;
-            color: #246c38;
-        }
-
-        .badge-client {
-            background: #e9dfd5;
-            color: #6f4e37;
-        }
-
-        .actions {
-            display: flex;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .actions form {
-            margin: 0;
-        }
-
-        .alert {
-            padding: 14px 18px;
-            margin-bottom: 20px;
-            background: #e0f3e5;
-            color: #246c38;
-            border: 1px solid #b7e0c2;
-            border-radius: 8px;
-        }
-
-        .empty {
-            padding: 35px;
-            text-align: center;
-            color: #887568;
-        }
-
-        .footer {
-            margin-top: 30px;
-            padding-top: 18px;
-            border-top: 1px solid #eee5dd;
-            text-align: center;
-            font-size: 12px;
-            color: #a39487;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 15px;
-            }
-
-            .container {
-                padding: 20px 15px;
-            }
-
-            h1 {
-                font-size: 23px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 
 <body>

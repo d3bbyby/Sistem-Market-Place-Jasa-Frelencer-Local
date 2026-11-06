@@ -127,21 +127,20 @@
         }
 
         .hero-image {
-            width: 400px;
-            height: 300px;
-            background: #EDE7FF;
-            border-radius: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 30px;
-        }
+    width: 400px;
+    height: 300px;
+    border-radius: 25px;
+    overflow: hidden;
+    padding: 0;
+    flex-shrink: 0;
+}
 
-        .hero-image h2 {
-            color: #7047EB;
-            font-size: 28px;
-        }
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
 
         .features {
             background: white;
@@ -343,11 +342,9 @@
             </div>
         </div>
 
-        <div class="hero-image">
-            <div>
-                <h2>Jasa Lokal<br>Untuk Kebutuhanmu</h2>
-                <p>Temukan freelancer sesuai keahlian yang kamu butuhkan.</p>
-            </div>
+      <div class="hero-image">
+        <img src="{{ asset('images/hero-freelancer.png') }}"
+         alt="Ilustrasi freelancer lokal">
         </div>
     </section>
 

@@ -7,211 +7,211 @@
     <title>Profil Freelancer</title>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+       * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
-        body {
-            background: #F7F6FF;
-            color: #30264B;
-        }
+body {
+    background: #F2FAF9;
+    color: #183B3A;
+}
 
-        .workspace {
-            display: flex;
-            min-height: 100vh;
-        }
+.workspace {
+    display: flex;
+    min-height: 100vh;
+}
 
-        .sidebar {
-            position: fixed;
-            inset: 0 auto 0 0;
-            width: 250px;
-            padding: 25px 18px;
-            background: #fff;
-            border-right: 1px solid #E9E5F5;
-        }
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 250px;
+    padding: 25px 18px;
+    background: #12514C;
+    border-right: 1px solid #0E403D;
+}
 
-        .logo {
-            padding: 0 15px;
-            margin-bottom: 35px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #7047EB;
-        }
+.logo {
+    padding: 0 15px;
+    margin-bottom: 35px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFFFFF;
+}
 
-        .menu-title {
-            margin: 0 15px 12px;
-            color: #89829E;
-            font-size: 12px;
-            text-transform: uppercase;
-        }
+.menu-title {
+    margin: 0 15px 12px;
+    color: #A9D4CE;
+    font-size: 12px;
+    text-transform: uppercase;
+}
 
-        .menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 6px;
-            padding: 13px 15px;
-            border-radius: 9px;
-            color: #5D5577;
-            text-decoration: none;
-            font-size: 14px;
-            transition: background .2s, color .2s;
-        }
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+    padding: 13px 15px;
+    border-radius: 9px;
+    color: #E0F0EE;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background .2s, color .2s;
+}
 
-        .menu a:hover,
-        .menu a.active {
-            background: #7047EB;
-            color: #fff;
-        }
+.menu a:hover,
+.menu a.active {
+    background: #D9F3EF;
+    color: #12514C;
+}
 
-        .menu-icon {
-            width: 20px;
-            text-align: center;
-        }
+.menu-icon {
+    width: 20px;
+    text-align: center;
+}
 
-        .profile-main {
-            flex: 1;
-            min-width: 0;
-            margin-left: 250px;
-            padding: 35px;
-        }
+.profile-main {
+    flex: 1;
+    min-width: 0;
+    margin-left: 250px;
+    padding: 35px;
+}
 
-        .container {
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto;
-        }
+.container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+}
 
-        .title {
-            margin-bottom: 30px;
-        }
+.title {
+    margin-bottom: 30px;
+}
 
-        .title h1 {
-            font-size: 30px;
-            margin-bottom: 8px;
-        }
+.title h1 {
+    font-size: 30px;
+    margin-bottom: 8px;
+}
 
-        .title p {
-            color: #89829E;
-        }
+.title p {
+    color: #72918D;
+}
 
-        .profile-card {
-            background: white;
-            border-radius: 18px;
-            padding: 35px;
-            border: 1px solid #E9E5F5;
-            box-shadow: 0 8px 24px rgba(48, 38, 75, 0.04);
-        }
+.profile-card {
+    background: white;
+    border-radius: 18px;
+    padding: 35px;
+    border: 1px solid #D8EAE7;
+    box-shadow: 0 8px 24px rgba(18, 81, 76, 0.06);
+}
 
-        .avatar {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 20px;
-            border-radius: 50%;
-            background: #7047EB;
-            color: white;
+.avatar {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: #0E756D;
+    color: white;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-            font-size: 38px;
-            font-weight: bold;
-        }
+    font-size: 38px;
+    font-weight: bold;
+}
 
-        .profile-name {
-            text-align: center;
-            font-size: 25px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
+.profile-name {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
 
-        .profile-role {
-            text-align: center;
-            color: #89829E;
-            margin-bottom: 30px;
-        }
+.profile-role {
+    text-align: center;
+    color: #72918D;
+    margin-bottom: 30px;
+}
 
-        .data-box {
-            background: #F7F6FF;
-            border-radius: 12px;
-            padding: 16px 20px;
-            margin-bottom: 15px;
-        }
+.data-box {
+    background: #F2FAF9;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 15px;
+}
 
-        .data-box small {
-            display: block;
-            color: #89829E;
-            margin-bottom: 5px;
-        }
+.data-box small {
+    display: block;
+    color: #72918D;
+    margin-bottom: 5px;
+}
 
-        .data-box strong {
-            font-size: 16px;
-            color: #30264B;
-        }
+.data-box strong {
+    font-size: 16px;
+    color: #183B3A;
+}
 
-        .status {
-            display: inline-block;
-            background: #e8f5e9;
-            color: #388e3c;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-        }
+.status {
+    display: inline-block;
+    background: #E0F5F1;
+    color: #0E756D;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
 
-        .btn {
-            display: block;
-            width: 100%;
-            margin-top: 25px;
-            padding: 13px;
-            text-align: center;
+.btn {
+    display: block;
+    width: 100%;
+    margin-top: 25px;
+    padding: 13px;
+    text-align: center;
 
-            background: #7047EB;
-            color: white;
-            text-decoration: none;
+    background: #0E756D;
+    color: white;
+    text-decoration: none;
 
-            border-radius: 10px;
-            font-weight: bold;
-        }
+    border-radius: 10px;
+    font-weight: bold;
+}
 
-        .btn:hover {
-            background: #5030B5;
-        }
+.btn:hover {
+    background: #12514C;
+}
 
-        @media (max-width: 760px) {
-            .workspace {
-                display: block;
-            }
+@media (max-width: 760px) {
+    .workspace {
+        display: block;
+    }
 
-            .sidebar {
-                position: static;
-                width: 100%;
-                padding: 18px;
-            }
+    .sidebar {
+        position: static;
+        width: 100%;
+        padding: 18px;
+    }
 
-            .menu {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 4px;
-            }
+    .menu {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
 
-            .menu a {
-                margin: 0;
-            }
+    .menu a {
+        margin: 0;
+    }
 
-            .profile-main {
-                margin-left: 0;
-                padding: 24px 16px;
-            }
+    .profile-main {
+        margin-left: 0;
+        padding: 24px 16px;
+    }
 
-            .profile-card {
-                padding: 24px;
-            }
-        }
+    .profile-card {
+        padding: 24px;
+    }
+}
     </style>
 </head>
 

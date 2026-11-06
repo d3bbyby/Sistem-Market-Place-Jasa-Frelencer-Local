@@ -1,5 +1,6 @@
 <?php
-
+use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FreelancerDashboardController;
@@ -12,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
 
 // ==============================
 // LANDING PAGE
@@ -51,10 +53,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // DASHBOARD CLIENT
 // ==============================
 
-Route::get('/client/dashboard', function () {
-    return view('client.dashboard');
-});
-
+Route::get('/client/dashboard', ClientDashboardController::class)
+    ->middleware(['auth', 'role:client'])
+    ->name('client.dashboard');
 // ==============================
 // PROFIL CLIENT
 // ==============================
@@ -68,17 +69,16 @@ Route::get('/client/pengaturan', function () {
 // ==============================
 
 Route::get('/freelancer/dashboard', FreelancerDashboardController::class)
-    ->middleware('auth')
+    ->middleware(['auth', 'role:freelancer'])
     ->name('freelancer.dashboard');
 
 // ==============================
 // DASHBOARD ADMIN
 // ==============================
 
-Route::get('/admin/dashboard', function () {
-    return view('admin.dashboard');
-});
-
+Route::get('/admin/dashboard', AdminDashboardController::class)
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.dashboard');
 // ==============================
 // PROFIL FREELANCER
 // ==============================
@@ -187,12 +187,7 @@ Route::get('/debug-login', function (Request $request) {
 
 // Route Admin dengan pengaman Middleware Login & Cek Role Admin
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        // Cek sederhana apakah user adalah admin
-        if (auth()->user()->role !== 'admin') {
-            abort(403, 'Unauthorized action.');
-        }
-
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    Route::get('/admin/dashboard', AdminDashboardController::class)
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.dashboard');
 });

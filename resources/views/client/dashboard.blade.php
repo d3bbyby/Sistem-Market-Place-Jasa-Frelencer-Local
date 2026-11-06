@@ -891,25 +891,25 @@
 
                     <div class="stat-card">
                         <div class="stat-icon">▧</div>
-                        <h3>12</h3>
+                        <h3>{{ $totalPesanan }}</h3>
                         <p>Total Pesanan</p>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">↻</div>
-                        <h3>3</h3>
+                        <h3>{{ $pesananDiproses }}</h3>
                         <p>Pesanan Diproses</p>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">✓</div>
-                        <h3>9</h3>
+                        <h3>{{ $pesananSelesai }}</h3>
                         <p>Pesanan Selesai</p>
                     </div>
 
                     <div class="stat-card">
                         <div class="stat-icon">Rp</div>
-                        <h3>2,5 Jt</h3>
+                        <h3>Rp {{ number_format($totalPembayaran, 0, ',', '.') }}</h3>
                         <p>Total Pembayaran</p>
                     </div>
 
@@ -940,42 +940,48 @@
                                         </tr>
                                     </thead>
 
-                                    <tbody>
+                                   
+<tbody>
+    @forelse ($pesananTerbaru as $pesanan)
+        <tr>
+            <td>
+                {{ $pesanan->service->freelancer->name ?? 'Freelancer tidak tersedia' }}
+            </td>
 
-                                        <tr>
-                                            <td>Andi Design</td>
-                                            <td>Desain Logo</td>
-                                            <td>08 Sep 2026</td>
-                                            <td>
-                                                <span class="status pending">
-                                                    Menunggu
-                                                </span>
-                                            </td>
-                                        </tr>
+            <td>
+                {{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}
+            </td>
 
-                                        <tr>
-                                            <td>Sinta Web</td>
-                                            <td>Website Laravel</td>
-                                            <td>07 Sep 2026</td>
-                                            <td>
-                                                <span class="status process">
-                                                    Diproses
-                                                </span>
-                                            </td>
-                                        </tr>
+            <td>
+                {{ $pesanan->created_at->format('d M Y') }}
+            </td>
 
-                                        <tr>
-                                            <td>Rizky Editor</td>
-                                            <td>Editing Video</td>
-                                            <td>05 Sep 2026</td>
-                                            <td>
-                                                <span class="status done">
-                                                    Selesai
-                                                </span>
-                                            </td>
-                                        </tr>
+            <td>
+                @php
+                    $status = strtoupper($pesanan->status);
 
-                                    </tbody>
+                    $statusClass = match ($status) {
+                        'MENUNGGU' => 'pending',
+                        'DIPROSES', 'SUBMITTED', 'REVISI' => 'process',
+                        'SELESAI' => 'done',
+                        default => 'pending',
+                    };
+                @endphp
+
+                <span class="status {{ $statusClass }}">
+                    {{ ucfirst(strtolower($status)) }}
+                </span>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4" class="empty">
+                Belum ada pesanan.
+            </td>
+        </tr>
+    @endforelse
+</tbody>
+
                                 </table>
 
                             </div>
