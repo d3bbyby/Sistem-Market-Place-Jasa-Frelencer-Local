@@ -41,13 +41,13 @@
     <section class="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
             <h2 class="font-bold">Semua kategori</h2>
-            <span class="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-800">{{ $categories->count() }}</span>
+            <span class="rounded-full bg-violet-50 px-3 py-1 text-sm font-semibold text-violet-800">{{ $categories->sum(fn ($category) => 1 + $category->children->count()) }}</span>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full min-w-[620px] text-left text-sm">
                 <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
-                        <th class="px-5 py-4 font-semibold">Nama kategori</th>
+                        <th class="px-5 py-4 font-semibold">Kategori / subkategori</th>
                         <th class="px-5 py-4 font-semibold">Slug</th>
                         <th class="px-5 py-4 font-semibold">Jasa</th>
                         @if (auth()->user()->role === 'admin')
@@ -58,7 +58,7 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($categories as $category)
                         <tr>
-                            <td class="px-5 py-4 font-semibold">{{ $category->category_name }}</td>
+                            <td class="px-5 py-4 font-semibold">{{ $category->category_name }} <span class="text-xs text-slate-500">(utama)</span></td>
                             <td class="px-5 py-4 text-slate-600">{{ $category->slug }}</td>
                             <td class="px-5 py-4">
                                 <a class="font-semibold text-violet-700 hover:underline"
@@ -81,6 +81,32 @@
                                 </td>
                             @endif
                         </tr>
+                        @foreach ($category->children as $child)
+                            <tr class="bg-slate-50/70">
+                                <td class="px-5 py-4 pl-10 font-medium text-slate-700">↳ {{ $child->category_name }}</td>
+                                <td class="px-5 py-4 text-slate-600">{{ $child->slug }}</td>
+                                <td class="px-5 py-4">
+                                    <a class="font-semibold text-violet-700 hover:underline"
+                                       href="{{ route('categories.services', ['category' => $child->slug]) }}">
+                                        Lihat {{ $child->services_count }} jasa
+                                    </a>
+                                </td>
+                                @if (auth()->user()->role === 'admin')
+                                    <td class="px-5 py-4">
+                                        <div class="flex items-center gap-4">
+                                            <a class="font-semibold text-violet-700 hover:underline"
+                                               href="{{ route('categories.edit', $child) }}">Edit</a>
+                                            <form action="{{ route('categories.destroy', $child) }}" method="POST"
+                                                  onsubmit="return confirm('Hapus subkategori ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="font-semibold text-red-700 hover:underline" type="submit">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
                     @empty
                         <tr>
                             <td class="px-5 py-12 text-center text-slate-500" colspan="{{ auth()->user()->role === 'admin' ? 4 : 3 }}">

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Portfolio;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -68,6 +69,54 @@ class FreelancerDashboardControllerTest extends TestCase
         $this->actingAs($client)
             ->get(route('freelancer.dashboard'))
             ->assertForbidden();
+    }
+
+    public function test_freelancer_dashboard_shows_only_ratings_for_their_portfolios(): void
+    {
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $otherFreelancer = User::factory()->create(['role' => 'freelancer']);
+        $client = User::factory()->create(['role' => 'client', 'name' => 'Portfolio Client']);
+        $otherClient = User::factory()->create(['role' => 'client', 'name' => 'Other Portfolio Client']);
+        $outsiderReviewer = User::factory()->create(['role' => 'client', 'name' => 'Outsider Reviewer']);
+        $service = $this->createService($freelancer, 'Landing Page Freelancer');
+        $otherService = $this->createService($otherFreelancer, 'Jasa Freelancer Lain');
+        $portfolio = Portfolio::create([
+            'user_id' => $freelancer->id,
+            'service_id' => $service->id,
+            'title' => 'Karya dashboard',
+            'caption' => 'Karya dashboard',
+        ]);
+        $otherPortfolio = Portfolio::create([
+            'user_id' => $otherFreelancer->id,
+            'service_id' => $otherService->id,
+            'title' => 'Karya privat freelancer lain',
+            'caption' => 'Karya privat freelancer lain',
+        ]);
+        $portfolio->ratings()->create([
+            'user_id' => $client->id,
+            'rating' => 5,
+            'comment' => 'Portofolio sangat bagus.',
+        ]);
+        $portfolio->ratings()->create([
+            'user_id' => $otherClient->id,
+            'rating' => 3,
+            'comment' => 'Portofolio cukup bagus.',
+        ]);
+        $otherPortfolio->ratings()->create([
+            'user_id' => $outsiderReviewer->id,
+            'rating' => 1,
+            'comment' => 'Ulasan milik freelancer lain.',
+        ]);
+
+        $response = $this->actingAs($freelancer)->get(route('freelancer.dashboard'));
+
+        $response->assertViewHas('portfolioRatingsCount', 2)
+            ->assertViewHas('averagePortfolioRating', 4.0)
+            ->assertSee('Rating &amp; Ulasan Portofolio', false)
+            ->assertSee('Portofolio sangat bagus.')
+            ->assertSee('Portofolio cukup bagus.')
+            ->assertDontSee('Ulasan milik freelancer lain.')
+            ->assertDontSee('Outsider Reviewer');
     }
 
     private function createService(User $freelancer, string $title): Service

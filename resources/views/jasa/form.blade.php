@@ -46,7 +46,7 @@
                     <option value="">Pilih kategori</option>
                     @foreach ($categories as $category)
                         <option value="{{ $category->id }}" @selected(old('category_id', $jasa?->category_id) == $category->id)>
-                            {{ $category->category_name }}
+                            {{ $category->parent ? $category->parent->category_name.' → ' : '' }}{{ $category->category_name }}
                         </option>
                     @endforeach
                 </select>

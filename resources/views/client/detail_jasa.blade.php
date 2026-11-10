@@ -27,6 +27,16 @@
     @if (session('error'))
         <div class="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-amber-900" role="alert">{{ session('error') }}</div>
     @endif
+    @if ($errors->any())
+        <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-red-800" role="alert">
+            <p class="font-semibold">Rating belum dapat disimpan:</p>
+            <ul class="mt-2 list-inside list-disc">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
     <a class="text-sm font-semibold text-violet-700 hover:text-violet-900" href="{{ url('/client/jasa') }}">← Kembali ke daftar jasa</a>
     <div class="mt-6 grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
@@ -97,6 +107,55 @@
                                     <h3 class="font-semibold">{{ $portfolio->title ?? $portfolio->caption }}</h3>
                                     @if ($portfolio->description)
                                         <p class="mt-2 line-clamp-3 text-sm text-slate-600">{{ $portfolio->description }}</p>
+                                    @endif
+                                    <div class="mt-3 flex items-center gap-2" aria-label="Rating portofolio">
+                                        <span class="text-amber-500" aria-hidden="true">★</span>
+                                        @if ($portfolio->ratings_count > 0)
+                                            <span class="font-bold text-slate-800">{{ number_format((float) $portfolio->ratings_avg_rating, 1) }}</span>
+                                            <span class="text-sm text-slate-500">({{ $portfolio->ratings_count }} rating)</span>
+                                        @else
+                                            <span class="text-sm text-slate-500">Belum ada rating</span>
+                                        @endif
+                                    </div>
+                                    @if ($portfolio->ratings->isNotEmpty())
+                                        <div class="mt-4 space-y-3 border-t border-slate-100 pt-4">
+                                            @foreach ($portfolio->ratings as $rating)
+                                                <blockquote class="text-sm text-slate-600">
+                                                    <p class="font-semibold text-amber-500" aria-label="{{ $rating->rating }} dari 5 bintang">
+                                                        {{ str_repeat('★', $rating->rating) }}{{ str_repeat('☆', 5 - $rating->rating) }}
+                                                    </p>
+                                                    <p class="mt-1">{{ $rating->comment }}</p>
+                                                    <footer class="mt-1 text-xs text-slate-500">— {{ $rating->user->name }}</footer>
+                                                </blockquote>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if ($canRatePortfolios)
+                                        @php
+                                            $myRating = $myPortfolioRatings->get($portfolio->id);
+                                        @endphp
+                                        <form class="mt-4 space-y-3 border-t border-slate-100 pt-4"
+                                              method="POST" action="{{ route('portfolios.ratings.store', $portfolio) }}">
+                                            @csrf
+                                            <label class="block text-sm font-semibold" for="rating-{{ $portfolio->id }}">
+                                                {{ $myRating ? 'Perbarui rating Anda' : 'Beri rating' }}
+                                            </label>
+                                            <select class="w-full rounded-lg border-slate-300 text-sm focus:border-violet-600 focus:ring-violet-600"
+                                                    name="rating" id="rating-{{ $portfolio->id }}" required>
+                                                <option value="">Pilih bintang</option>
+                                                @for ($star = 5; $star >= 1; $star--)
+                                                    <option value="{{ $star }}" @selected(old('rating', $myRating?->rating) == $star)>
+                                                        {{ str_repeat('★', $star) }}{{ str_repeat('☆', 5 - $star) }} ({{ $star }})
+                                                    </option>
+                                                @endfor
+                                            </select>
+                                            <label class="block text-sm font-semibold" for="comment-{{ $portfolio->id }}">Komentar</label>
+                                            <textarea class="w-full rounded-lg border-slate-300 text-sm focus:border-violet-600 focus:ring-violet-600"
+                                                      name="comment" id="comment-{{ $portfolio->id }}" rows="3" maxlength="1000"
+                                                      required>{{ old('comment', $myRating?->comment) }}</textarea>
+                                            <button class="rounded-lg bg-violet-700 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-800"
+                                                    type="submit">Simpan rating</button>
+                                        </form>
                                     @endif
                                 </div>
                             </article>

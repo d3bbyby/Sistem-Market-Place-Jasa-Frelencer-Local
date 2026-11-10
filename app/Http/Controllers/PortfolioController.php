@@ -22,6 +22,8 @@ class PortfolioController extends Controller
         $this->ensureFreelancer($request);
 
         $portfolios = Portfolio::with('service')
+            ->withAvg('ratings', 'rating')
+            ->withCount('ratings')
             ->where('user_id', $request->user()->id)
             ->latest()
             ->get();

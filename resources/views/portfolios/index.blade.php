@@ -59,6 +59,15 @@
                     @if ($portfolio->description)
                         <p class="mt-2 line-clamp-3 text-sm leading-6 text-slate-600">{{ $portfolio->description }}</p>
                     @endif
+                    <div class="mt-3 flex items-center gap-2" aria-label="Rating portofolio">
+                        <span class="font-semibold text-amber-500" aria-hidden="true">★</span>
+                        @if ($portfolio->ratings_count > 0)
+                            <span class="text-sm font-bold text-slate-800">{{ number_format((float) $portfolio->ratings_avg_rating, 1) }}</span>
+                            <span class="text-sm text-slate-500">dari {{ $portfolio->ratings_count }} rating</span>
+                        @else
+                            <span class="text-sm text-slate-500">Belum ada rating</span>
+                        @endif
+                    </div>
                     @if ($portfolio->service)
                         <p class="mt-3 text-sm text-slate-500">Jasa terkait: {{ $portfolio->service->title }}</p>
                     @endif

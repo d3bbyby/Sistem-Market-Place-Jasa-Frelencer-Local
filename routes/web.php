@@ -1,19 +1,20 @@
 <?php
-use App\Http\Controllers\ClientDashboardController;
+
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClientDashboardController;
 use App\Http\Controllers\FreelancerDashboardController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PortfolioController;
+use App\Http\Controllers\PortfolioRatingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
 
 // ==============================
 // LANDING PAGE
@@ -157,6 +158,9 @@ Route::get('/kategori/{category:slug}', [JasaController::class, 'category'])
     ->name('categories.services');
 Route::resource('categories', KategoriController::class)->except('show')->middleware('auth');
 Route::resource('jasa', JasaController::class)->except('show')->middleware('auth');
+Route::post('/portfolios/{portfolio}/ratings', [PortfolioRatingController::class, 'store'])
+    ->middleware('auth')
+    ->name('portfolios.ratings.store');
 Route::resource('portfolios', PortfolioController::class)->except('show')->middleware('auth');
 Route::get('/jasa/{service}', [JasaController::class, 'show'])->name('jasa.show');
 Route::resource('users', UserController::class);
@@ -188,6 +192,6 @@ Route::get('/debug-login', function (Request $request) {
 // Route Admin dengan pengaman Middleware Login & Cek Role Admin
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/dashboard', AdminDashboardController::class)
-    ->middleware(['auth', 'role:admin'])
-    ->name('admin.dashboard');
+        ->middleware(['auth', 'role:admin'])
+        ->name('admin.dashboard');
 });

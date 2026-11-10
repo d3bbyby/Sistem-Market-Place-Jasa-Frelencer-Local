@@ -10,10 +10,33 @@
 <main class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:py-14">
     <a class="text-sm font-semibold text-violet-700 hover:text-violet-900" href="{{ url('/') }}">← Beranda</a>
     <header class="mt-7">
-        <p class="text-sm font-semibold uppercase tracking-wide text-violet-700">Kategori jasa</p>
+        @if ($category->parent)
+            <a class="text-sm font-semibold text-violet-700 hover:text-violet-900"
+               href="{{ route('categories.services', ['category' => $category->parent->slug]) }}">
+                ← {{ $category->parent->category_name }}
+            </a>
+        @endif
+        <p class="mt-2 text-sm font-semibold uppercase tracking-wide text-violet-700">
+            {{ $category->parent ? $category->parent->category_name.' / ' : '' }}Kategori jasa
+        </p>
         <h1 class="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{{ $category->category_name }}</h1>
         <p class="mt-3 text-slate-600">Temukan freelancer dan layanan yang sesuai dengan kebutuhanmu.</p>
     </header>
+
+    @if ($category->children->isNotEmpty())
+        <section class="mt-8" aria-labelledby="subcategories-heading">
+            <h2 id="subcategories-heading" class="text-lg font-bold">Jelajahi subkategori</h2>
+            <div class="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach ($category->children as $child)
+                    <a class="flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-800 shadow-sm transition hover:border-violet-300 hover:text-violet-700"
+                       href="{{ route('categories.services', ['category' => $child->slug]) }}">
+                        <span>{{ $child->category_name }}</span>
+                        <span class="text-sm text-slate-500">{{ $child->services_count }} jasa →</span>
+                    </a>
+                @endforeach
+            </div>
+        </section>
+    @endif
 
     <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($services as $service)

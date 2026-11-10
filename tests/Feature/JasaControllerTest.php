@@ -145,12 +145,22 @@ class JasaControllerTest extends TestCase
     public function test_freelancer_can_open_the_service_form(): void
     {
         $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $parent = Category::create([
+            'category_name' => 'Desain Grafis',
+            'slug' => 'desain-grafis',
+        ]);
+        Category::create([
+            'category_name' => 'Desain Logo',
+            'slug' => 'desain-logo',
+            'parent_category_id' => $parent->id,
+        ]);
 
         $this->actingAs($freelancer)
             ->get(route('jasa.create'))
             ->assertOk()
             ->assertSee('Harga (Rp)')
-            ->assertSee('Galeri foto');
+            ->assertSee('Galeri foto')
+            ->assertSee('Desain Grafis → Desain Logo');
     }
 
     private function createService(): Service

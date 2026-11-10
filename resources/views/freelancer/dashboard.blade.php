@@ -177,7 +177,7 @@ body {
 
 .stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
     gap: 18px;
     margin-bottom: 30px;
 }
@@ -314,6 +314,70 @@ tr:last-child td {
 .service-item:last-child,
 .activity-item:last-child {
     border-bottom: none;
+}
+
+.rating-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #FFFAE8;
+}
+
+.rating-summary .stat-icon {
+    margin: 0;
+    background: #FFF0B8;
+    color: #A87300;
+}
+
+.rating-summary strong {
+    display: block;
+    color: #183B3A;
+    font-size: 20px;
+}
+
+.rating-summary span {
+    color: #72918D;
+    font-size: 12px;
+}
+
+.rating-item {
+    padding: 15px 0;
+    border-bottom: 1px solid #D8EAE7;
+}
+
+.rating-item:last-child {
+    border-bottom: none;
+}
+
+.rating-item-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.rating-stars {
+    color: #E5A900;
+    letter-spacing: 2px;
+    white-space: nowrap;
+}
+
+.rating-comment {
+    margin-top: 8px;
+    color: #45635F;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.rating-meta {
+    display: block;
+    margin-top: 7px;
+    color: #72918D;
+    font-size: 11px;
 }
 
 .service-image {
@@ -506,7 +570,7 @@ tr:last-child td {
                     <span class="menu-icon">▧</span>
                     Portofolio
                 </a>
-                <a href="/freelancer/rating">
+                <a href="#rating-ulasan">
                     <span class="menu-icon">☆</span>
                     Rating
                 </a>
@@ -626,6 +690,14 @@ tr:last-child td {
                         <h3>Rp{{ number_format($totalIncome, 0, ',', '.') }}</h3>
                         <p>
                             Total Pendapatan
+                        </p>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">★</div>
+                        <h3>{{ $portfolioRatingsCount > 0 ? number_format($averagePortfolioRating, 1).' / 5' : '—' }}</h3>
+                        <p>
+                            Rating Portofolio ({{ $portfolioRatingsCount }})
                         </p>
                     </div>
                 </div>
@@ -761,6 +833,43 @@ tr:last-child td {
                         </div>
                     </div>
                 </div>
+
+                <section class="panel" id="rating-ulasan" style="margin-top: 22px;">
+                    <div class="panel-header">
+                        <h2>Rating &amp; Ulasan Portofolio</h2>
+                        <a href="{{ route('portfolios.index') }}">Lihat portofolio</a>
+                    </div>
+                    <div class="panel-body">
+                        <div class="rating-summary">
+                            <div class="stat-icon" aria-hidden="true">★</div>
+                            <div>
+                                <strong>
+                                    {{ $portfolioRatingsCount > 0 ? number_format($averagePortfolioRating, 1).' / 5' : 'Belum ada rating' }}
+                                </strong>
+                                <span>{{ $portfolioRatingsCount }} ulasan dari klien untuk karya portofoliomu</span>
+                            </div>
+                        </div>
+
+                        @forelse ($latestPortfolioRatings as $portfolioRating)
+                            <article class="rating-item">
+                                <div class="rating-item-header">
+                                    <strong>{{ $portfolioRating->portfolio->title ?? $portfolioRating->portfolio->caption ?? 'Portofolio' }}</strong>
+                                    <span class="rating-stars" aria-label="{{ $portfolioRating->rating }} dari 5 bintang">
+                                        {{ str_repeat('★', $portfolioRating->rating) }}{{ str_repeat('☆', 5 - $portfolioRating->rating) }}
+                                    </span>
+                                </div>
+                                <p class="rating-comment">{{ $portfolioRating->comment }}</p>
+                                <span class="rating-meta">
+                                    Dari {{ $portfolioRating->user->name }} · {{ $portfolioRating->created_at->diffForHumans() }}
+                                </span>
+                            </article>
+                        @empty
+                            <p style="margin-top: 18px; color: #72918D;">
+                                Ulasan klien akan muncul di sini setelah portofoliomu diberi rating.
+                            </p>
+                        @endforelse
+                    </div>
+                </section>
             </section>
         </main>
     </div>

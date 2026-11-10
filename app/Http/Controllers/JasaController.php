@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\PortfolioRating;
 use App\Models\Service;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,28 +32,55 @@ class JasaController extends Controller
 
     public function category(Category $category): View
     {
+        $category->loadMissing(['parent', 'children' => fn ($query) => $query
+            ->withCount('services')
+            ->orderBy('category_name')]);
+
+        $categoryIds = collect([$category->getKey()])
+            ->merge($category->children->modelKeys());
+
         $services = Service::with(['category', 'freelancer'])
-            ->whereBelongsTo($category)
+            ->whereIn('category_id', $categoryIds)
             ->latest()
             ->paginate(12);
 
         return view('client.jasa-kategori', compact('category', 'services'));
     }
 
-    public function show(Service $service): View
+    public function show(Request $request, Service $service): View
     {
         $service->load([
             'category',
             'freelancer',
-            'freelancer.portfolios' => fn ($query) => $query->latest()->limit(4),
+            'freelancer.portfolios' => fn ($query) => $query
+                ->withAvg('ratings', 'rating')
+                ->withCount('ratings')
+                ->with(['ratings' => fn ($ratings) => $ratings->with('user')->latest()->limit(3)])
+                ->latest()
+                ->limit(4),
         ]);
         $packages = $service->packages();
+        $canRatePortfolios = $request->user()?->role === 'client'
+            && Order::query()
+                ->where('client_id', $request->user()->id)
+                ->where('status', 'SELESAI')
+                ->whereHas('service', fn ($query) => $query->where('freelancer_id', $service->freelancer_id))
+                ->exists();
+        $myPortfolioRatings = $canRatePortfolios
+            ? PortfolioRating::query()
+                ->where('user_id', $request->user()->id)
+                ->whereIn('portfolio_id', $service->freelancer->portfolios->modelKeys())
+                ->get()
+                ->keyBy('portfolio_id')
+            : collect();
 
         return view('client.detail_jasa', [
             'service' => $service,
             'packages' => $packages,
             'mainImageUrl' => $service->mainImageUrl(),
             'galleryImageUrls' => $service->galleryImageUrls(),
+            'canRatePortfolios' => $canRatePortfolios,
+            'myPortfolioRatings' => $myPortfolioRatings,
         ]);
     }
 
@@ -60,7 +89,7 @@ class JasaController extends Controller
         $this->ensureFreelancer($request);
 
         return view('jasa.create', [
-            'categories' => Category::orderBy('category_name')->get(),
+            'categories' => Category::with('parent')->orderBy('category_name')->get(),
         ]);
     }
 
@@ -91,7 +120,7 @@ class JasaController extends Controller
 
         return view('jasa.edit', [
             'jasa' => $jasa,
-            'categories' => Category::orderBy('category_name')->get(),
+            'categories' => Category::with('parent')->orderBy('category_name')->get(),
         ]);
     }
 

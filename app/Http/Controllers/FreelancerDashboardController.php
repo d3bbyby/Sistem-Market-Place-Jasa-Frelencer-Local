@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\PortfolioRating;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -39,6 +40,19 @@ class FreelancerDashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $portfolioRatings = PortfolioRating::query()
+            ->whereHas('portfolio', fn ($query) => $query->where('user_id', $freelancerId));
+
+        $portfolioRatingStats = (clone $portfolioRatings)
+            ->selectRaw('COUNT(*) as ratings_count, COALESCE(AVG(rating), 0) as average_rating')
+            ->first();
+
+        $latestPortfolioRatings = $portfolioRatings
+            ->with(['portfolio:id,user_id,title,caption', 'user:id,name'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
         return view('freelancer.dashboard', [
             'freelancer' => $freelancer,
             'totalServices' => $freelancer->services()->count(),
@@ -47,6 +61,9 @@ class FreelancerDashboardController extends Controller
             'totalOrders' => $totalOrders,
             'latestOrders' => $latestOrders,
             'services' => $services,
+            'portfolioRatingsCount' => (int) $portfolioRatingStats->ratings_count,
+            'averagePortfolioRating' => (float) $portfolioRatingStats->average_rating,
+            'latestPortfolioRatings' => $latestPortfolioRatings,
         ]);
     }
 }
