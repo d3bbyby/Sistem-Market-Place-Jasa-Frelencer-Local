@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -184,6 +185,7 @@
             max-width: 260px;
         }
 
+        /* FOTO PROFIL CLIENT */
         .profile-photo {
             width: 42px;
             height: 42px;
@@ -196,6 +198,14 @@
             justify-content: center;
             font-weight: bold;
             font-size: 17px;
+            overflow: hidden;
+        }
+
+        .profile-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 13px;
         }
 
         .profile-info {
@@ -767,19 +777,19 @@
                     Dashboard
                 </a>
 
+                <a href="{{ route('client.service-requests.index') }}">
+                   <span class="menu-icon">✚</span>
+                    Posting Kebutuhan Jasa
+                </a>
+
                 <a href="/client/jasa">
                     <span class="menu-icon">⌕</span>
-                     Cari Freelancer
+                    Cari Freelancer
                 </a>
 
                 <a href="/client/pesanan">
                     <span class="menu-icon">▧</span>
                     Pesanan Saya
-                </a>
-
-                <a href="/client/chat">
-                    <span class="menu-icon">▤</span>
-                    Chat
                 </a>
 
                 <a href="/client/favorit">
@@ -797,9 +807,9 @@
                     Pembayaran
                 </a>
 
-                <a href="/client/pengaturan">
+                <a href="{{ route('client.profile') }}">
                     <span class="menu-icon">⚙</span>
-                     Pengaturan Akun
+                    Pengaturan Akun
                 </a>
 
             </div>
@@ -807,15 +817,15 @@
             <div class="menu logout">
                 <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                     @csrf
-                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
-                    <span class="menu-icon">↪</span>
-                    Logout
+                    <a href="{{ route('logout') }}"
+                       onclick="event.preventDefault(); this.closest('form').submit();">
+                        <span class="menu-icon">↪</span>
+                        Logout
                     </a>
                 </form>
             </div>
 
         </aside>
-
 
         <!-- MAIN -->
         <main class="main">
@@ -835,7 +845,14 @@
 
                     <div class="profile-photo">
                         @auth
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            @if (Auth::user()->profile_photo)
+                                <img
+                                    src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
+                                    alt="Foto Profil"
+                                >
+                            @else
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            @endif
                         @else
                             C
                         @endauth
@@ -854,7 +871,6 @@
                 </div>
 
             </header>
-
 
             <!-- CONTENT -->
             <section class="content">
@@ -885,7 +901,6 @@
 
                 </div>
 
-
                 <!-- STATISTIK -->
                 <div class="stats">
 
@@ -915,7 +930,6 @@
 
                 </div>
 
-
                 <!-- GRID DASHBOARD -->
                 <div class="dashboard-grid">
 
@@ -940,47 +954,46 @@
                                         </tr>
                                     </thead>
 
-                                   
-<tbody>
-    @forelse ($pesananTerbaru as $pesanan)
-        <tr>
-            <td>
-                {{ $pesanan->service->freelancer->name ?? 'Freelancer tidak tersedia' }}
-            </td>
+                                    <tbody>
+                                        @forelse ($pesananTerbaru as $pesanan)
+                                            <tr>
+                                                <td>
+                                                    {{ $pesanan->service->freelancer->name ?? 'Freelancer tidak tersedia' }}
+                                                </td>
 
-            <td>
-                {{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}
-            </td>
+                                                <td>
+                                                    {{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}
+                                                </td>
 
-            <td>
-                {{ $pesanan->created_at->format('d M Y') }}
-            </td>
+                                                <td>
+                                                    {{ $pesanan->created_at->format('d M Y') }}
+                                                </td>
 
-            <td>
-                @php
-                    $status = strtoupper($pesanan->status);
+                                                <td>
+                                                    @php
+                                                        $status = strtoupper($pesanan->status);
 
-                    $statusClass = match ($status) {
-                        'MENUNGGU' => 'pending',
-                        'DIPROSES', 'SUBMITTED', 'REVISI' => 'process',
-                        'SELESAI' => 'done',
-                        default => 'pending',
-                    };
-                @endphp
+                                                        $statusClass = match ($status) {
+                                                            'MENUNGGU' => 'pending',
+                                                            'DIPROSES', 'SUBMITTED', 'REVISI' => 'process',
+                                                            'SELESAI' => 'done',
+                                                            default => 'pending',
+                                                        };
+                                                    @endphp
 
-                <span class="status {{ $statusClass }}">
-                    {{ ucfirst(strtolower($status)) }}
-                </span>
-            </td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="4" class="empty">
-                Belum ada pesanan.
-            </td>
-        </tr>
-    @endforelse
-</tbody>
+                                                    <span class="status {{ $statusClass }}">
+                                                        {{ ucfirst(strtolower($status)) }}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="empty">
+                                                    Belum ada pesanan.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
 
                                 </table>
 
@@ -988,7 +1001,6 @@
                         </div>
 
                     </div>
-
 
                     <!-- KOLOM KANAN -->
                     <div class="right-column">
@@ -1003,57 +1015,38 @@
 
                             <div class="panel-body">
 
-                                <div class="favorite-item">
+                                @forelse ($freelancerFavorit as $favorite)
+                                    @if ($favorite->freelancer)
+                                        <div class="favorite-item">
 
-                                    <div class="avatar">A</div>
+                                            <div class="avatar">
+                                                {{ strtoupper(substr($favorite->freelancer->name, 0, 1)) }}
+                                            </div>
 
-                                    <div class="item-info">
-                                        <strong>Andi Design</strong>
-                                        <span>Desain Grafis</span>
+                                            <div class="item-info">
+                                                <strong>
+                                                    {{ $favorite->freelancer->name }}
+                                                </strong>
+                                                <span>Freelancer Favorit</span>
+                                            </div>
+
+                                            <a href="/client/jasa" class="item-link">
+                                                Lihat
+                                            </a>
+
+                                        </div>
+                                    @endif
+                                @empty
+                                    <div class="empty">
+                                        Belum ada freelancer favorit.
+                                        <br>
+                                        Simpan freelancer favoritmu untuk melihatnya di sini.
                                     </div>
-
-                                    <a href="/client/jasa" class="item-link">
-                                        Lihat
-                                    </a>
-
-                                </div>
-
-
-                                <div class="favorite-item">
-
-                                    <div class="avatar">S</div>
-
-                                    <div class="item-info">
-                                        <strong>Sinta Web</strong>
-                                        <span>Web Developer</span>
-                                    </div>
-
-                                    <a href="/client/jasa" class="item-link">
-                                        Lihat
-                                    </a>
-
-                                </div>
-
-
-                                <div class="favorite-item">
-
-                                    <div class="avatar">R</div>
-
-                                    <div class="item-info">
-                                        <strong>Rizky Editor</strong>
-                                        <span>Video Editor</span>
-                                    </div>
-
-                                    <a href="/client/jasa" class="item-link">
-                                        Lihat
-                                    </a>
-
-                                </div>
+                                @endforelse
 
                             </div>
 
                         </div>
-
 
                         <!-- AKTIVITAS TERBARU -->
                         <div class="panel">
@@ -1064,40 +1057,31 @@
 
                             <div class="panel-body">
 
-                                <div class="activity-item">
+                                @forelse ($aktivitasTerbaru as $aktivitas)
+                                    <div class="activity-item">
 
-                                    <div class="activity-icon">✓</div>
+                                        <div class="activity-icon">
+                                            {{ $aktivitas['ikon'] }}
+                                        </div>
 
-                                    <div class="item-info">
-                                        <strong>Pesanan telah selesai</strong>
-                                        <span>Desain logo - 2 jam lalu</span>
+                                        <div class="item-info">
+                                            <strong>
+                                                {{ $aktivitas['judul'] }}
+                                            </strong>
+
+                                            <span>
+                                                {{ $aktivitas['keterangan'] }}
+                                                <br>
+                                                {{ $aktivitas['tanggal']->diffForHumans() }}
+                                            </span>
+                                        </div>
+
                                     </div>
-
-                                </div>
-
-
-                                <div class="activity-item">
-
-                                    <div class="activity-icon">★</div>
-
-                                    <div class="item-info">
-                                        <strong>Review berhasil diberikan</strong>
-                                        <span>Website Laravel - Kemarin</span>
+                                @empty
+                                    <div class="empty">
+                                        Belum ada aktivitas terbaru.
                                     </div>
-
-                                </div>
-
-
-                                <div class="activity-item">
-
-                                    <div class="activity-icon">▧</div>
-
-                                    <div class="item-info">
-                                        <strong>Pesanan baru dibuat</strong>
-                                        <span>Editing video - 2 hari lalu</span>
-                                    </div>
-
-                                </div>
+                                @endforelse
 
                             </div>
 

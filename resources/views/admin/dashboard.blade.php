@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -196,6 +197,14 @@
         justify-content: center;
         font-weight: bold;
         font-size: 17px;
+        overflow: hidden;
+    }
+
+    .profile-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     .profile-info {
@@ -553,21 +562,14 @@
         border-radius: 13px;
         font-weight: bold;
         font-size: 13px;
+        overflow: hidden;
     }
 
-    .user-item:nth-child(2) .user-photo {
-        background: #E9EFF6;
-        color: #36577E;
-    }
-
-    .user-item:nth-child(3) .user-photo {
-        background: #F8F0DD;
-        color: #A87922;
-    }
-
-    .user-item:nth-child(4) .user-photo {
-        background: #E9EFF6;
-        color: #49698D;
+    .user-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
     }
 
     .user-name {
@@ -745,274 +747,303 @@
             padding: 15px;
         }
     }
-</style>
+    </style>
 </head>
 <body>
 
-    <div class="layout">
+<div class="layout">
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
 
-            <div class="logo">
-                <span class="logo-mark">F</span>
-                FreelanceHub
-            </div>
+        <div class="logo">
+            <span class="logo-mark">F</span>
+            FreelanceHub
+        </div>
 
-            <p class="menu-title">Menu Utama</p>
+        <p class="menu-title">Menu Utama</p>
 
-            <div class="menu">
+        <div class="menu">
 
-                <a href="/admin/dashboard" class="active">
-                    <span class="menu-icon">▣</span>
-                    Dashboard
+            <a href="/admin/dashboard" class="active">
+                <span class="menu-icon">▣</span>
+                Dashboard
+            </a>
+
+            <a href="/users">
+                <span class="menu-icon">♙</span>
+                Pengguna
+            </a>
+
+            <a href="/users">
+                <span class="menu-icon">♧</span>
+                Client
+            </a>
+
+            <a href="/jasa">
+                <span class="menu-icon">▤</span>
+                Jasa
+            </a>
+
+            <a href="{{ route('admin.orders.index') }}">
+                <span class="menu-icon">▧</span>
+                Pesanan
+            </a>
+
+            <a href="/categories">
+                <span class="menu-icon">▦</span>
+                Kategori
+            </a>
+
+            <a href="{{ route('admin.freelancers.index') }}">
+                <span class="menu-icon">✓</span>
+                Verifikasi Freelancer
+            </a>
+
+            <a href="/admin/review">
+                <span class="menu-icon">☆</span>
+                Review dan Rating
+            </a>
+
+            <a href="/admin/laporan">
+                <span class="menu-icon">▥</span>
+                Laporan
+            </a>
+
+            <a href="/admin/profil">
+                <span class="menu-icon">⚙</span>
+                Pengaturan
+            </a>
+
+        </div>
+
+        <!-- LOGOUT -->
+        <div class="menu logout">
+            <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
+                @csrf
+                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
+                    <span class="menu-icon">↪</span>
+                    Logout
                 </a>
+            </form>
+        </div>
 
-                <a href="/users">
-                    <span class="menu-icon">♙</span>
-                    Pengguna
-                </a>
+    </aside>
 
-                <a href="/users">
-                    <span class="menu-icon">♧</span>
-                    Client
-                </a>
+    <!-- MAIN CONTENT -->
+    <main class="main">
 
-                <a href="/jasa">
-                    <span class="menu-icon">▤</span>
-                    Jasa
-                </a>
+        <!-- TOPBAR -->
+        <header class="topbar">
 
-                <a href="{{ route('admin.orders.index') }}">
-                    <span class="menu-icon">▧</span>
-                    Pesanan
-                </a>
-
-                <a href="/categories">
-                    <span class="menu-icon">▦</span>
-                    Kategori
-                </a>
-
-                <a href="{{ route('admin.freelancers.index') }}">
-                    <span class="menu-icon">✓</span>
-                    Verifikasi Freelancer
-                </a>
-
-                <a href="/admin/review">
-                    <span class="menu-icon">☆</span>
-                    Review dan Rating
-                </a>
-
-                <a href="/admin/laporan">
-                    <span class="menu-icon">▥</span>
-                    Laporan
-                </a>
-
-                <a href="/admin/profil">
-                    <span class="menu-icon">⚙</span>
-                    Pengaturan
-                </a>
-
-            </div>
-
-            <!-- LOGOUT -->
-            <div class="menu logout">
-                <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
-                    @csrf
-                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
-                        <span class="menu-icon">↪</span>
-                        Logout
-                    </a>
-                </form>
-            </div>
-
-        </aside>
-
-        <!-- MAIN CONTENT -->
-        <main class="main">
-
-            <!-- TOPBAR -->
-            <header class="topbar">
-
-                <div>
-                    <div class="page-title">Dashboard Admin</div>
-                    <div class="page-subtitle">
-                        Ringkasan aktivitas FreelanceHub
-                    </div>
+            <div>
+                <div class="page-title">Dashboard Admin</div>
+                <div class="page-subtitle">
+                    Ringkasan aktivitas FreelanceHub
                 </div>
+            </div>
 
-                <!-- PROFIL ADMIN -->
-                <div class="profile">
-                    <div class="profile-photo">
-                        @auth
+            <!-- PROFIL ADMIN -->
+            <div class="profile">
+                <div class="profile-photo">
+                    @auth
+                        @if (Auth::user()->profile_photo)
+                            <img
+                                src="{{ asset('storage/' . Auth::user()->profile_photo) }}"
+                                alt="Foto Profil Admin"
+                            >
+                        @else
                             {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        @else
-                            A
-                        @endauth
-                    </div>
-
-                    <div class="profile-info">
-                        @auth
-                            <strong>{{ Auth::user()->name }}</strong>
-                            <span>{{ ucfirst(Auth::user()->role) }}</span>
-                        @else
-                            <strong>Admin</strong>
-                            <span>Administrator</span>
-                        @endauth
-                    </div>
+                        @endif
+                    @else
+                        A
+                    @endauth
                 </div>
 
-            </header>
-
-            <!-- CONTENT -->
-            <section class="content">
-
-                <!-- WELCOME -->
-                <div class="welcome">
-                    <div class="welcome-copy">
-                        <span class="welcome-label">
-                            Panel Administrasi
-                        </span>
-
-                        @auth
-                            <h1>Selamat Datang, {{ Auth::user()->name }}!</h1>
-                        @else
-                            <h1>Selamat Datang, Admin!</h1>
-                        @endauth
-
-                        <p>
-                            Kelola aktivitas dan pantau ringkasan data
-                            FreelanceHub dari satu halaman.
-                        </p>
-                    </div>
-
-                    <div class="welcome-mark">✦</div>
+                <div class="profile-info">
+                    @auth
+                        <strong>{{ Auth::user()->name }}</strong>
+                        <span>{{ ucfirst(Auth::user()->role) }}</span>
+                    @else
+                        <strong>Admin</strong>
+                        <span>Administrator</span>
+                    @endauth
                 </div>
-
-                <!-- STATISTIK -->
-                <div class="section-heading">
-                    <div>
-                        <h2>Ringkasan Platform</h2>
-                        <p>Ikhtisar data pada marketplace</p>
-                    </div>
-                </div>
-
-                <div class="stats">
-                    <div class="stat-card">
-                        <div class="stat-top"><div class="stat-icon">♙</div></div>
-                        <h3 class="stat-number">{{ $totalPengguna }}</h3>
-                        <p>Total Pengguna</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-top"><div class="stat-icon">♧</div></div>
-                        <h3 class="stat-number">{{ $totalFreelancer }}</h3>
-                        <p>Total Freelancer</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-top"><div class="stat-icon">♙</div></div>
-                        <h3 class="stat-number">{{ $totalClient }}</h3>
-                        <p>Total Client</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-top"><div class="stat-icon">▤</div></div>
-                        <h3 class="stat-number">{{ $totalJasa }}</h3>
-                        <p>Total Jasa</p>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-top"><div class="stat-icon">▧</div></div>
-                        <h3 class="stat-number">{{ $totalPesanan }}</h3>
-                        <p>Total Pesanan</p>
-                    </div>
-                </div>
-
-                <!-- PESANAN DAN PENGGUNA -->
-                <div class="dashboard-grid">
-
-                    <!-- PESANAN TERBARU -->
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h2>Pesanan Terbaru</h2>
-                            <a href="{{ route('admin.orders.index') }}">Lihat semua →</a>
-                        </div>
-
-                        <div class="panel-body">
-                            <div class="table-wrapper">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Client</th>
-                                            <th>Jasa</th>
-                                            <th>Tanggal</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-    @forelse ($pesananTerbaru as $pesanan)
-        <tr>
-            <td>{{ $pesanan->client->name ?? 'Client tidak tersedia' }}</td>
-            <td>{{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}</td>
-            <td>{{ $pesanan->created_at->format('d M Y') }}</td>
-            <td>{{ ucfirst(strtolower($pesanan->status)) }}</td>
-        </tr>
-    @empty
-        <tr>
-            <td colspan="4" class="text-center">
-                Belum ada pesanan.
-            </td>
-        </tr>
-    @endforelse
-</tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                   
-<!-- PENGGUNA TERBARU -->
-<div class="panel">
-    <div class="panel-header">
-        <h2>Pengguna Terbaru</h2>
-        <a href="/admin/pengguna">Lihat semua →</a>
-    </div>
-
-    <div class="panel-body">
-        @forelse ($penggunaTerbaru as $pengguna)
-            <div class="user-item">
-                <div class="user-left">
-                    <div class="user-photo">
-                        {{ strtoupper(substr($pengguna->name, 0, 1)) }}
-                    </div>
-
-                    <div>
-                        <p class="user-name">{{ $pengguna->name }}</p>
-                        <p class="user-email">{{ $pengguna->email }}</p>
-                    </div>
-                </div>
-
-                <span class="role">
-                    {{ ucfirst($pengguna->role) }}
-                </span>
             </div>
-        @empty
-            <p class="text-center">
-                Belum ada pengguna.
-            </p>
-        @endforelse
-    </div>
-</div>
+
+        </header>
+
+        <!-- CONTENT -->
+        <section class="content">
+
+            <!-- WELCOME -->
+            <div class="welcome">
+                <div class="welcome-copy">
+                    <span class="welcome-label">
+                        Panel Administrasi
+                    </span>
+
+                    @auth
+                        <h1>Selamat Datang, {{ Auth::user()->name }}!</h1>
+                    @else
+                        <h1>Selamat Datang, Admin!</h1>
+                    @endauth
+
+                    <p>
+                        Kelola aktivitas dan pantau ringkasan data
+                        FreelanceHub dari satu halaman.
+                    </p>
+                </div>
+
+                <div class="welcome-mark">✦</div>
+            </div>
+
+            <!-- STATISTIK -->
+            <div class="section-heading">
+                <div>
+                    <h2>Ringkasan Platform</h2>
+                    <p>Ikhtisar data pada marketplace</p>
+                </div>
+            </div>
+
+            <div class="stats">
+
+                <div class="stat-card">
+                    <div class="stat-top"><div class="stat-icon">♙</div></div>
+                    <h3 class="stat-number">{{ $totalPengguna }}</h3>
+                    <p>Total Pengguna</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top"><div class="stat-icon">♧</div></div>
+                    <h3 class="stat-number">{{ $totalFreelancer }}</h3>
+                    <p>Total Freelancer</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top"><div class="stat-icon">♙</div></div>
+                    <h3 class="stat-number">{{ $totalClient }}</h3>
+                    <p>Total Client</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top"><div class="stat-icon">▤</div></div>
+                    <h3 class="stat-number">{{ $totalJasa }}</h3>
+                    <p>Total Jasa</p>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-top"><div class="stat-icon">▧</div></div>
+                    <h3 class="stat-number">{{ $totalPesanan }}</h3>
+                    <p>Total Pesanan</p>
+                </div>
+
+            </div>
+
+            <!-- PESANAN DAN PENGGUNA -->
+            <div class="dashboard-grid">
+
+                <!-- PESANAN TERBARU -->
+                <div class="panel">
+
+                    <div class="panel-header">
+                        <h2>Pesanan Terbaru</h2>
+                        <a href="{{ route('admin.orders.index') }}">Lihat semua →</a>
+                    </div>
+
+                    <div class="panel-body">
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Jasa</th>
+                                        <th>Tanggal</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @forelse ($pesananTerbaru as $pesanan)
+                                        <tr>
+                                            <td>{{ $pesanan->client->name ?? 'Client tidak tersedia' }}</td>
+                                            <td>{{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}</td>
+                                            <td>{{ $pesanan->created_at->format('d M Y') }}</td>
+                                            <td>{{ ucfirst(strtolower($pesanan->status)) }}</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" style="text-align: center;">
+                                                Belum ada pesanan.
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+
+                            </table>
+                        </div>
                     </div>
 
                 </div>
 
-            </section>
+                <!-- PENGGUNA TERBARU -->
+                <div class="panel">
 
-        </main>
+                    <div class="panel-header">
+                        <h2>Pengguna Terbaru</h2>
+                        <a href="/admin/pengguna">Lihat semua →</a>
+                    </div>
 
-    </div>
+                    <div class="panel-body">
+
+                        @forelse ($penggunaTerbaru as $pengguna)
+
+                            <div class="user-item">
+
+                                <div class="user-left">
+
+                                    <div class="user-photo">
+                                        @if ($pengguna->profile_photo)
+                                            <img
+                                                src="{{ asset('storage/' . $pengguna->profile_photo) }}"
+                                                alt="Foto {{ $pengguna->name }}"
+                                            >
+                                        @else
+                                            {{ strtoupper(substr($pengguna->name, 0, 1)) }}
+                                        @endif
+                                    </div>
+
+                                    <div>
+                                        <p class="user-name">{{ $pengguna->name }}</p>
+                                        <p class="user-email">{{ $pengguna->email }}</p>
+                                    </div>
+
+                                </div>
+
+                                <span class="role">
+                                    {{ ucfirst($pengguna->role) }}
+                                </span>
+
+                            </div>
+
+                        @empty
+
+                            <p style="text-align: center;">
+                                Belum ada pengguna.
+                            </p>
+
+                        @endforelse
+
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
 
 </body>
 </html>

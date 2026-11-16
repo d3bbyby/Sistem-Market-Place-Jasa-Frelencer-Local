@@ -301,6 +301,106 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+
+
+.service-requests {
+    padding: 60px 8%;
+    background: #FAF9FF;
+}
+
+.request-heading {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.request-heading h2 {
+    color: #7047EB;
+    margin-bottom: 10px;
+}
+
+.request-heading p {
+    color: #837B99;
+    line-height: 1.6;
+}
+
+.request-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+.request-card {
+    background: white;
+    border: 1px solid #E7E1F4;
+    border-radius: 14px;
+    padding: 25px;
+}
+
+.request-card h3 {
+    color: #30264B;
+    margin-top: 0;
+}
+
+.request-description {
+    color: #837B99;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.request-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    color: #625976;
+    font-size: 13px;
+    margin: 20px 0;
+}
+
+.request-deadline {
+    color: #837B99;
+    font-size: 13px;
+}
+
+.request-button {
+    display: block;
+    text-align: center;
+    background: #7047EB;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.request-button:hover {
+    background: #5030B5;
+}
+
+.empty-request {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #837B99;
+}
+
+.request-footer {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.request-footer a {
+    color: #7047EB;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+@media (max-width: 800px) {
+    .request-list {
+        grid-template-columns: 1fr;
+    }
+}
+
     </style>
 </head>
 
@@ -412,6 +512,54 @@
 
         </div>
     </section>
+
+
+<!-- Posting Kebutuhan Jasa -->
+<section class="service-requests">
+    <div class="request-heading">
+        <h2>Kebutuhan Jasa dari Client</h2>
+        <p>Lihat berbagai kebutuhan jasa dan temukan peluang proyek yang sesuai dengan keahlianmu.</p>
+    </div>
+
+    <div class="request-list">
+        @forelse ($serviceRequests as $item)
+            <div class="request-card">
+                <h3>{{ $item->title }}</h3>
+
+                <p class="request-description">
+                    {{ Str::limit($item->description, 120) }}
+                </p>
+
+                <div class="request-info">
+                    <span>👤 {{ $item->client->name ?? 'Client' }}</span>
+                    <span>📁 {{ $item->category ?? 'Umum' }}</span>
+                    <span>💰
+                        {{ $item->budget ? 'Rp ' . number_format($item->budget, 0, ',', '.') : 'Negosiasi' }}
+                    </span>
+                </div>
+
+                @if ($item->deadline)
+                    <p class="request-deadline">
+                        Batas waktu: {{ $item->deadline->format('d-m-Y') }}
+                    </p>
+                @endif
+
+                <a href="{{ route('login') }}" class="request-button">
+                    Login untuk Mengajukan
+                </a>
+            </div>
+        @empty
+            <p class="empty-request">
+                Belum ada kebutuhan jasa yang tersedia.
+            </p>
+        @endforelse
+    </div>
+
+    <div class="request-footer">
+        <a href="/register">Daftar dan Tawarkan Jasamu</a>
+    </div>
+</section>
+
 
     <!-- Call To Action -->
     <section class="cta">

@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -25,5 +25,15 @@ class Order extends Model
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
+    }
+
+    public function review(): HasOne
+    {
+    return $this->hasOne(Review::class);
+    }
+
+    public function payment(): HasOne
+    {
+    return $this->hasOne(Payment::class);
     }
 }

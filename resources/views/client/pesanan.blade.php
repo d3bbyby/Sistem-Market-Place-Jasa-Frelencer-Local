@@ -7,7 +7,7 @@
 
     <style>
         * {
-            box-sizing: border-box;j
+            box-sizing: border-box;
         }
 
         body {
@@ -214,34 +214,76 @@
                                     <span style="display: block; font-size: 12px; color: #837B99;">Paket {{ ucfirst($order->package) }}</span>
                                 @endif
                                 Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}
-                            </td>
-                            <td><span class="status">{{ $order->status }}</span></td>
                             <td>
-                                @if ($order->service)
-                                    <a href="{{ route('client.orders.service', $order->service) }}" class="btn">Detail</a>
-                                @endif
-                                @if ($order->work_result_file)
-                                    <a href="{{ route('orders.deliverable', $order) }}" class="btn">Unduh Hasil</a>
-                                @endif
-                                @if ($order->status === 'SUBMITTED')
-                                    <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="SELESAI">
-                                        <button class="btn" type="submit">Selesaikan</button>
-                                    </form>
-                                    <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="status" value="REVISI">
-                                        <input name="revision_notes" value="{{ old('revision_notes') }}" maxlength="2000" required placeholder="Jelaskan revisi yang diminta" aria-label="Catatan revisi" style="max-width: 220px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
-                                        <button class="btn" type="submit">Minta Revisi</button>
-                                    </form>
-                                    @error('revision_notes')
-                                        <p class="error">{{ $message }}</p>
-                                    @enderror
-                                @endif
-                            </td>
+    @if ($order->service)
+        <a href="{{ route('client.orders.service', $order->service) }}" class="btn">Detail</a>
+    @endif
+
+    @if ($order->work_result_file)
+        <a href="{{ route('orders.deliverable', $order) }}" class="btn">Unduh Hasil</a>
+    @endif
+
+    @if ($order->status === 'SUBMITTED')
+        <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="SELESAI">
+            <button class="btn" type="submit">Selesaikan</button>
+        </form>
+
+        <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
+            @csrf
+            @method('PATCH')
+            <input type="hidden" name="status" value="REVISI">
+            <input name="revision_notes" value="{{ old('revision_notes') }}" maxlength="2000" required placeholder="Jelaskan revisi yang diminta" aria-label="Catatan revisi" style="max-width: 220px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
+            <button class="btn" type="submit">Minta Revisi</button>
+        </form>
+
+        @error('revision_notes')
+            <p class="error">{{ $message }}</p>
+        @enderror
+    @endif
+
+    {{-- Fitur Review --}}
+    @if ($order->status === 'SELESAI')
+        @if ($order->review)
+            <p style="color: #28643A; font-size: 13px; margin-top: 10px;">
+                ✓ Sudah direview
+            </p>
+        @else
+            <form method="POST"
+                  action="{{ route('client.reviews.store', $order) }}"
+                  style="margin-top: 10px;">
+
+                @csrf
+
+                <label style="display: block; margin-bottom: 5px; font-weight: bold;">
+                    Berikan Rating
+                </label>
+
+                <select name="rating" required
+                        style="padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
+                    <option value="">Pilih Rating</option>
+                    <option value="5">5 - Sangat Baik</option>
+                    <option value="4">4 - Baik</option>
+                    <option value="3">3 - Cukup</option>
+                    <option value="2">2 - Kurang</option>
+                    <option value="1">1 - Sangat Kurang</option>
+                </select>
+
+                <textarea name="comment"
+                          placeholder="Tulis komentar kamu..."
+                          maxlength="1000"
+                          rows="3"
+                          style="display: block; width: 100%; max-width: 230px; margin-top: 8px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">{{ old('comment') }}</textarea>
+
+                <button type="submit" class="btn" style="margin-top: 8px;">
+                    Kirim Review
+                </button>
+            </form>
+        @endif
+    @endif
+</td>
                         </tr>
                     @empty
                         <tr>

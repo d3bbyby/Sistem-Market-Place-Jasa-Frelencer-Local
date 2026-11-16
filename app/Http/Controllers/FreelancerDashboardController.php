@@ -66,4 +66,25 @@ class FreelancerDashboardController extends Controller
             'latestPortfolioRatings' => $latestPortfolioRatings,
         ]);
     }
+    public function income(Request $request): View
+{
+    abort_unless($request->user()->role === 'freelancer', 403);
+
+    $freelancerId = $request->user()->id;
+
+    $completedOrders = Order::query()
+        ->where('status', 'SELESAI')
+        ->whereHas('service', function ($query) use ($freelancerId) {
+            $query->where('freelancer_id', $freelancerId);
+        })
+        ->with(['client:id,name', 'service:id,title'])
+        ->latest()
+        ->get();
+
+    return view('freelancer.pendapatan', [
+        'completedOrders' => $completedOrders,
+        'totalIncome' => $completedOrders->sum('total_price'),
+        'completedOrdersCount' => $completedOrders->count(),
+    ]);
+}
 }
