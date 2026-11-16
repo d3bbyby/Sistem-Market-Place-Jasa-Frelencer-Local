@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Service;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,6 +14,80 @@ use Illuminate\View\View;
 
 class KategoriController extends Controller
 {
+    public function adminIndex(Request $request): View
+    {
+        $this->ensureAdmin($request);
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $categories = Category::query()
+            ->whereNull('parent_category_id')
+            ->withCount('services')
+            ->with(['children' => fn ($query) => $query->withCount('services')->orderBy('category_name')])
+            ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->where('category_name', 'like', '%'.$search.'%')
+                        ->orWhere('slug', 'like', '%'.$search.'%')
+                        ->orWhereHas('children', fn (Builder $children) => $children
+                            ->where('category_name', 'like', '%'.$search.'%')
+                            ->orWhere('slug', 'like', '%'.$search.'%'));
+                });
+            })
+            ->orderBy('category_name')
+            ->get();
+
+        return view('admin.kategori', [
+            'categories' => $categories,
+            'filters' => $filters,
+            'mainCategoryCount' => Category::whereNull('parent_category_id')->count(),
+            'subcategoryCount' => Category::whereNotNull('parent_category_id')->count(),
+            'serviceCount' => Service::count(),
+        ]);
+    }
+
+    public function adminSubcategories(Request $request): View
+    {
+        $this->ensureAdmin($request);
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'parent_category_id' => ['nullable', 'integer', 'exists:categories,id'],
+        ]);
+        $parentCategoryId = $filters['parent_category_id'] ?? null;
+
+        if (
+            $parentCategoryId !== null &&
+            ! Category::query()->whereNull('parent_category_id')->whereKey($parentCategoryId)->exists()
+        ) {
+            throw ValidationException::withMessages([
+                'parent_category_id' => 'Pilih kategori utama yang valid.',
+            ]);
+        }
+
+        $subcategories = Category::query()
+            ->whereNotNull('parent_category_id')
+            ->with('parent')
+            ->withCount('services')
+            ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->where('category_name', 'like', '%'.$search.'%')
+                        ->orWhere('slug', 'like', '%'.$search.'%');
+                });
+            })
+            ->when($parentCategoryId, fn (Builder $query, int $parentId) => $query->where('parent_category_id', $parentId))
+            ->orderBy('category_name')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('admin.subkategori', [
+            'subcategories' => $subcategories,
+            'parentCategories' => Category::query()->whereNull('parent_category_id')->orderBy('category_name')->get(),
+            'filters' => $filters,
+            'subcategoryCount' => Category::whereNotNull('parent_category_id')->count(),
+            'serviceCount' => Service::whereHas('category', fn (Builder $query) => $query->whereNotNull('parent_category_id'))->count(),
+        ]);
+    }
+
     public function index(): View
     {
         $categories = Category::query()

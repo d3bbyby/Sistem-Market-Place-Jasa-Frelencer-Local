@@ -780,7 +780,7 @@
                 Client
             </a>
 
-            <a href="/jasa">
+            <a href="{{ route('admin.jasa.index') }}">
                 <span class="menu-icon">▤</span>
                 Jasa
             </a>
@@ -790,7 +790,7 @@
                 Pesanan
             </a>
 
-            <a href="/categories">
+            <a href="{{ route('admin.categories.index') }}">
                 <span class="menu-icon">▦</span>
                 Kategori
             </a>

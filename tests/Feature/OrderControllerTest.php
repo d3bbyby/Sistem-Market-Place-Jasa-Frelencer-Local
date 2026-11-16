@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Category;
 use App\Models\Order;
+use App\Models\Portfolio;
 use App\Models\Service;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,6 +21,12 @@ class OrderControllerTest extends TestCase
         $client = User::factory()->create(['role' => 'client']);
         $freelancer = User::factory()->create(['role' => 'freelancer']);
         $service = $this->createService($freelancer);
+        Portfolio::create([
+            'user_id' => $freelancer->id,
+            'service_id' => $service->id,
+            'title' => 'Karya landing page',
+            'caption' => 'Karya landing page',
+        ]);
 
         $response = $this->actingAs($client)->post(route('client.orders.store', $service), [
             'total_price' => 1,
@@ -34,6 +41,7 @@ class OrderControllerTest extends TestCase
 
         $this->get(route('client.orders.index'))
             ->assertSee('Landing Page')
+            ->assertSee('Karya landing page')
             ->assertSee('MENUNGGU');
     }
 
@@ -94,6 +102,37 @@ class OrderControllerTest extends TestCase
 
         $response->assertSee($service->title)
             ->assertSee('Detail dan Pesan');
+    }
+
+    public function test_marketplace_filters_services_by_category_and_price(): void
+    {
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $service = $this->createService($freelancer);
+        $otherCategory = Category::create([
+            'category_name' => 'Fotografi',
+            'slug' => 'fotografi',
+        ]);
+        $otherService = Service::create([
+            'freelancer_id' => $freelancer->id,
+            'category_id' => $otherCategory->id,
+            'title' => 'Foto produk',
+            'description' => 'Foto produk untuk toko daring.',
+            'price' => 300000,
+        ]);
+
+        $this->get(route('client.jasa', [
+            'category_id' => $service->category_id,
+            'min_price' => 1000000,
+        ]))
+            ->assertOk()
+            ->assertSee($service->title)
+            ->assertDontSee($otherService->title);
+    }
+
+    public function test_marketplace_rejects_a_maximum_price_below_the_minimum(): void
+    {
+        $this->get(route('client.jasa', ['min_price' => 1000000, 'max_price' => 500000]))
+            ->assertSessionHasErrors('max_price');
     }
 
     public function test_client_can_view_the_selected_service_details(): void

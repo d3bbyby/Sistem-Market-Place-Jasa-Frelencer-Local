@@ -57,10 +57,65 @@ class JasaControllerTest extends TestCase
         $service->setRelation('freelancer', null);
         $service->setRelation('category', null);
 
-        $response = $this->view('jasa.index', ['jasa' => collect([$service])]);
+        $response = $this->view('jasa.index', [
+            'jasa' => collect([$service]),
+            'categories' => collect(),
+            'filters' => [],
+        ]);
 
         $response->assertSee('Freelancer tidak tersedia')
             ->assertSee('Tanpa kategori');
+    }
+
+    public function test_freelancer_can_filter_their_services_by_search_and_price(): void
+    {
+        $service = $this->createService();
+        $otherService = Service::create([
+            'freelancer_id' => $service->freelancer_id,
+            'category_id' => $service->category_id,
+            'title' => 'Paket konsultasi',
+            'description' => 'Konsultasi bisnis.',
+            'price' => 500000,
+        ]);
+
+        $this->actingAs($service->freelancer)
+            ->get(route('jasa.index', ['q' => 'Landing', 'min_price' => 1000000]))
+            ->assertOk()
+            ->assertSee($service->title)
+            ->assertDontSee($otherService->title);
+    }
+
+    public function test_freelancer_service_filter_rejects_an_invalid_price_range(): void
+    {
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+
+        $this->actingAs($freelancer)
+            ->get(route('jasa.index', ['min_price' => 1000000, 'max_price' => 500000]))
+            ->assertSessionHasErrors('max_price');
+    }
+
+    public function test_admin_can_view_services_with_their_freelancer_and_category(): void
+    {
+        $service = $this->createService();
+        $admin = User::factory()->create(['role' => 'admin']);
+
+        $this->actingAs($admin)
+            ->get(route('admin.jasa.index'))
+            ->assertOk()
+            ->assertSee($service->title)
+            ->assertSee($service->freelancer->name)
+            ->assertSee($service->category->category_name)
+            ->assertSee('Dashboard')
+            ->assertSee('Kelola kategori');
+    }
+
+    public function test_non_admin_cannot_view_the_admin_service_list(): void
+    {
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+
+        $this->actingAs($freelancer)
+            ->get(route('admin.jasa.index'))
+            ->assertForbidden();
     }
 
     public function test_service_detail_shows_interactive_package_data_and_gallery(): void

@@ -38,12 +38,20 @@ class Portfolio extends Model
 
     public function imageUrl(): ?string
     {
-        if (! is_string($this->image) || $this->image === '') {
+        $image = $this->image;
+
+        if (! is_string($image) || trim($image) === '') {
+            $image = $this->file_path;
+        }
+
+        if (! is_string($image) || trim($image) === '') {
             return null;
         }
 
-        return Str::startsWith($this->image, ['http://', 'https://'])
-            ? $this->image
-            : Storage::disk('public')->url($this->image);
+        $image = trim($image);
+
+        return Str::startsWith($image, ['http://', 'https://'])
+            ? $image
+            : Storage::disk('public')->url($image);
     }
 }

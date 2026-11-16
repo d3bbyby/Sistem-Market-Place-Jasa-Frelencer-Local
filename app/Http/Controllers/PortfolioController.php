@@ -21,7 +21,7 @@ class PortfolioController extends Controller
     {
         $this->ensureFreelancer($request);
 
-        $portfolios = Portfolio::with('service')
+        $portfolios = Portfolio::with('service.category')
             ->withAvg('ratings', 'rating')
             ->withCount('ratings')
             ->where('user_id', $request->user()->id)
@@ -36,7 +36,8 @@ class PortfolioController extends Controller
         $this->ensureFreelancer($request);
 
         return view('portfolios.create', [
-            'services' => Service::where('freelancer_id', $request->user()->id)
+            'services' => Service::with('category')
+                ->where('freelancer_id', $request->user()->id)
                 ->orderBy('title')
                 ->get(),
         ]);
@@ -75,7 +76,8 @@ class PortfolioController extends Controller
 
         return view('portfolios.edit', [
             'portfolio' => $portfolio,
-            'services' => Service::where('freelancer_id', $request->user()->id)
+            'services' => Service::with('category')
+                ->where('freelancer_id', $request->user()->id)
                 ->orderBy('title')
                 ->get(),
         ]);
@@ -125,7 +127,7 @@ class PortfolioController extends Controller
     {
         return $request->validate([
             'service_id' => [
-                'nullable',
+                'required',
                 Rule::exists('services', 'id')
                     ->where(fn (QueryBuilder $query): QueryBuilder => $query->where('freelancer_id', $request->user()->id)),
             ],
@@ -138,6 +140,9 @@ class PortfolioController extends Controller
                 'mimes:jpg,jpeg,png,webp',
                 'max:5120',
             ],
+        ], [
+            'service_id.required' => 'Pilih jasa yang terkait dengan portofolio ini.',
+            'service_id.exists' => 'Jasa yang dipilih tidak tersedia atau bukan milik Anda.',
         ]);
     }
 

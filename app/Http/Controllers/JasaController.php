@@ -6,28 +6,137 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\PortfolioRating;
 use App\Models\Service;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use RuntimeException;
 
 class JasaController extends Controller
 {
+    public function adminIndex(Request $request): View
+    {
+        abort_unless($request->user()?->role === 'admin', 403);
+
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+        ]);
+
+        $services = Service::query()
+            ->with(['category', 'freelancer'])
+            ->withCount('orders')
+            ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%')
+                        ->orWhereHas('freelancer', fn (Builder $freelancer) => $freelancer
+                            ->where('name', 'like', '%'.$search.'%')
+                            ->orWhere('email', 'like', '%'.$search.'%'));
+                });
+            })
+            ->when(
+                $filters['category_id'] ?? null,
+                fn (Builder $query, int $categoryId) => $query->where('category_id', $categoryId),
+            )
+            ->latest()
+            ->paginate(15)
+            ->withQueryString();
+
+        $categories = Category::orderBy('category_name')->get();
+
+        return view('admin.jasa', compact('services', 'categories', 'filters'));
+    }
+
     public function index(Request $request): View
     {
         $this->ensureFreelancer($request);
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'min_price' => ['nullable', 'numeric', 'min:0'],
+            'max_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                Rule::when($request->filled('min_price'), ['gte:min_price']),
+            ],
+        ]);
 
-        $jasa = Service::with('category')
+        $services = Service::with('category')
             ->withCount('orders')
             ->where('freelancer_id', $request->user()->id)
+            ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%');
+                });
+            })
+            ->when($filters['category_id'] ?? null, function (Builder $query, int $categoryId): void {
+                $category = Category::with('children')->findOrFail($categoryId);
+                $categoryIds = collect([$category->id])->merge($category->children->modelKeys());
+                $query->whereIn('category_id', $categoryIds);
+            })
+            ->when(isset($filters['min_price']), fn (Builder $query) => $query->where('price', '>=', $filters['min_price']))
+            ->when(isset($filters['max_price']), fn (Builder $query) => $query->where('price', '<=', $filters['max_price']))
             ->latest()
             ->get();
 
-        return view('jasa.index', compact('jasa'));
+        $categories = Category::orderBy('category_name')->get();
+
+        return view('jasa.index', [
+            'jasa' => $services,
+            'categories' => $categories,
+            'filters' => $filters,
+        ]);
+    }
+
+    public function browse(Request $request): View
+    {
+        $filters = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'min_price' => ['nullable', 'numeric', 'min:0'],
+            'max_price' => [
+                'nullable',
+                'numeric',
+                'min:0',
+                Rule::when($request->filled('min_price'), ['gte:min_price']),
+            ],
+        ]);
+
+        $services = Service::query()
+            ->with(['category', 'freelancer'])
+            ->whereHas('freelancer', fn (Builder $query) => $query->where('role', 'freelancer'))
+            ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
+                $query->where(function (Builder $query) use ($search): void {
+                    $query->where('title', 'like', '%'.$search.'%')
+                        ->orWhere('description', 'like', '%'.$search.'%')
+                        ->orWhereHas('category', fn (Builder $categories) => $categories
+                            ->where('category_name', 'like', '%'.$search.'%'))
+                        ->orWhereHas('freelancer', fn (Builder $freelancer) => $freelancer
+                            ->where('name', 'like', '%'.$search.'%')
+                            ->orWhere('email', 'like', '%'.$search.'%'));
+                });
+            })
+            ->when($filters['category_id'] ?? null, function (Builder $query, int $categoryId): void {
+                $category = Category::with('children')->findOrFail($categoryId);
+                $categoryIds = collect([$category->id])->merge($category->children->modelKeys());
+                $query->whereIn('category_id', $categoryIds);
+            })
+            ->when(isset($filters['min_price']), fn (Builder $query) => $query->where('price', '>=', $filters['min_price']))
+            ->when(isset($filters['max_price']), fn (Builder $query) => $query->where('price', '<=', $filters['max_price']))
+            ->latest()
+            ->paginate(12)
+            ->withQueryString();
+        $categories = Category::orderBy('category_name')->get();
+
+        return view('client.jasa', compact('services', 'categories', 'filters'));
     }
 
     public function category(Category $category): View
@@ -52,7 +161,7 @@ class JasaController extends Controller
         $service->load([
             'category',
             'freelancer',
-            'freelancer.portfolios' => fn ($query) => $query
+            'portfolios' => fn ($query) => $query
                 ->withAvg('ratings', 'rating')
                 ->withCount('ratings')
                 ->with(['ratings' => fn ($ratings) => $ratings->with('user')->latest()->limit(3)])
@@ -64,12 +173,12 @@ class JasaController extends Controller
             && Order::query()
                 ->where('client_id', $request->user()->id)
                 ->where('status', 'SELESAI')
-                ->whereHas('service', fn ($query) => $query->where('freelancer_id', $service->freelancer_id))
+                ->where('service_id', $service->id)
                 ->exists();
         $myPortfolioRatings = $canRatePortfolios
             ? PortfolioRating::query()
                 ->where('user_id', $request->user()->id)
-                ->whereIn('portfolio_id', $service->freelancer->portfolios->modelKeys())
+                ->whereIn('portfolio_id', $service->portfolios->modelKeys())
                 ->get()
                 ->keyBy('portfolio_id')
             : collect();

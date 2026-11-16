@@ -1,17 +1,14 @@
 <?php
 
-use App\Models\ServiceRequest;
-use App\Http\Controllers\ServiceRequestApplicationController;
-use App\Http\Controllers\ServiceRequestController;
+use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\AdminLaporanController;
 use App\Http\Controllers\AdminReviewController;
-use App\Http\Controllers\FavoriteController;
-use App\Http\Controllers\ClientPaymentController;
-use App\Http\Controllers\ClientReviewController;
-use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ClientDashboardController;
+use App\Http\Controllers\ClientPaymentController;
+use App\Http\Controllers\ClientReviewController;
+use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\FreelancerDashboardController;
 use App\Http\Controllers\JasaController;
 use App\Http\Controllers\KategoriController;
@@ -19,8 +16,10 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PortfolioRatingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ServiceRequestApplicationController;
+use App\Http\Controllers\ServiceRequestController;
 use App\Http\Controllers\UserController;
-use App\Models\User;
+use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,7 +63,6 @@ Route::post('/register', [AuthController::class, 'register']);
 
 Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
-
 
 // ==============================
 // POSTING KEBUTUHAN JASA CLIENT
@@ -198,9 +196,8 @@ Route::middleware(['auth', 'role:freelancer'])->group(function () {
         ->name('freelancer.profile.deletePhoto');
 
     Route::patch('/freelancer/profil', [ProfileController::class, 'update'])
-    ->name('freelancer.profile.update');
+        ->name('freelancer.profile.update');
 });
-
 
 // ==============================
 // DASHBOARD ADMIN
@@ -209,6 +206,18 @@ Route::middleware(['auth', 'role:freelancer'])->group(function () {
 Route::get('/admin/dashboard', AdminDashboardController::class)
     ->middleware(['auth', 'role:admin'])
     ->name('admin.dashboard');
+
+Route::get('/admin/jasa', [JasaController::class, 'adminIndex'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.jasa.index');
+
+Route::get('/admin/kategori', [KategoriController::class, 'adminIndex'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.index');
+
+Route::get('/admin/subkategori', [KategoriController::class, 'adminSubcategories'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.subcategories.index');
 
 // ==============================
 // PROFIL ADMIN
@@ -248,28 +257,8 @@ Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])
 // PENCARIAN FREELANCER / JASA
 // ==============================
 
-Route::get('/client/jasa', function (Request $request) {
-    $query = $request->input('q');
-
-    $freelancers = User::where('role', 'freelancer')
-        ->with(['services.category'])
-        ->whereHas('services')
-        ->when($query, function ($q) use ($query) {
-            $q->where(function ($data) use ($query) {
-                $data->where('name', 'like', '%'.$query.'%')
-                    ->orWhere('email', 'like', '%'.$query.'%')
-                    ->orWhereHas('services', function ($services) use ($query) {
-                        $services->where('title', 'like', '%'.$query.'%')
-                            ->orWhereHas('category', function ($categories) use ($query) {
-                                $categories->where('category_name', 'like', '%'.$query.'%');
-                            });
-                    });
-            });
-        })
-        ->get();
-
-    return view('client.jasa', compact('freelancers', 'query'));
-});
+Route::get('/client/jasa', [JasaController::class, 'browse'])
+    ->name('client.jasa');
 
 // ==============================
 // ROUTE PESANAN
@@ -281,7 +270,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/client/pesanan', [OrderController::class, 'clientIndex'])
         ->name('client.orders.index');
 
-    Route::get('/client/jasa/{service}', [OrderController::class, 'showService'])
+    Route::get('/client/jasa/{service}', [JasaController::class, 'show'])
+        ->middleware('role:client')
         ->name('client.orders.service');
 
     Route::post('/client/jasa/{service}/pesan', [OrderController::class, 'store'])
@@ -329,6 +319,9 @@ Route::redirect('/freelancer/jasa', '/jasa')
 
 Route::redirect('/freelancer/portofolio', '/portfolios')
     ->name('freelancer.portofolio');
+
+Route::redirect('/freelancer/proyek', '/portfolios')
+    ->name('freelancer.proyek');
 
 Route::redirect('/freelancer/kelola-jasa/tambah', '/jasa/create')
     ->name('freelancer.jasa.create');

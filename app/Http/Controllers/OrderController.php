@@ -20,7 +20,7 @@ class OrderController extends Controller
     {
         abort_unless($request->user()->role === 'client', 403);
 
-        $orders = Order::with(['service.freelancer'])
+        $orders = Order::with(['service.freelancer', 'service.portfolios'])
             ->where('client_id', $request->user()->id)
             ->latest()
             ->get();
@@ -32,7 +32,7 @@ class OrderController extends Controller
     {
         abort_unless($request->user()->role === 'freelancer', 403);
 
-        $orders = Order::with(['client', 'service'])
+        $orders = Order::with(['client', 'service.portfolios'])
             ->whereHas('service', fn ($query) => $query->where('freelancer_id', $request->user()->id))
             ->latest()
             ->get();
@@ -56,25 +56,6 @@ class OrderController extends Controller
         $freelancers = User::where('role', 'freelancer')->latest()->get();
 
         return view('admin.freelancers.index', compact('freelancers'));
-    }
-
-    public function showService(Request $request, Service $service): View
-    {
-        abort_unless($request->user()->role === 'client', 403);
-
-        $service->load([
-            'freelancer',
-            'category',
-            'freelancer.portfolios' => fn ($query) => $query->latest()->limit(4),
-        ]);
-        $packages = $service->packages();
-
-        return view('client.detail_jasa', [
-            'service' => $service,
-            'packages' => $packages,
-            'mainImageUrl' => $service->mainImageUrl(),
-            'galleryImageUrls' => $service->galleryImageUrls(),
-        ]);
     }
 
     public function store(Request $request, Service $service): RedirectResponse

@@ -70,7 +70,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
+            min-width: 900px;
         }
 
         th {
@@ -105,6 +105,11 @@
             font-size: 13px;
             font-weight: bold;
             white-space: nowrap;
+        }
+
+        .muted {
+            color: #837B99;
+            font-size: 13px;
         }
 
         .btn {
@@ -196,6 +201,7 @@
                     <tr>
                         <th>No</th>
                         <th>Nama Jasa</th>
+                        <th>Portofolio terkait</th>
                         <th>Freelancer</th>
                         <th>Harga</th>
                         <th>Status</th>
@@ -208,12 +214,21 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $order->service?->title ?? 'Jasa telah dihapus' }}</td>
+                            <td>
+                                @forelse ($order->service?->portfolios ?? collect() as $portfolio)
+                                    <div>{{ $portfolio->title ?? $portfolio->caption }}</div>
+                                @empty
+                                    <span class="muted">Belum ada portofolio terkait</span>
+                                @endforelse
+                            </td>
                             <td>{{ $order->service?->freelancer?->name ?? '-' }}</td>
                             <td>
                                 @if ($order->package)
                                     <span style="display: block; font-size: 12px; color: #837B99;">Paket {{ ucfirst($order->package) }}</span>
                                 @endif
                                 Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}
+                            </td>
+                            <td><span class="status">{{ $order->status }}</span></td>
                             <td>
     @if ($order->service)
         <a href="{{ route('client.orders.service', $order->service) }}" class="btn">Detail</a>
@@ -287,7 +302,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 35px;">Kamu belum memiliki pesanan.</td>
+                            <td colspan="7" style="text-align: center; padding: 35px;">Kamu belum memiliki pesanan.</td>
                         </tr>
                     @endforelse
                 </tbody>

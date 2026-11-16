@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cari Freelancer - FreelanceHub</title>
+    <title>Cari Jasa - FreelanceHub</title>
 
     <style>
         * {
@@ -100,6 +100,50 @@
         .search-form {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-field {
+            min-width: 150px;
+            flex: 1;
+            padding: 13px 14px;
+            border: 1px solid #DCD4EF;
+            border-radius: 8px;
+            color: #30264B;
+            background: #FFFEFF;
+        }
+
+        .filter-field:focus {
+            border-color: #7047EB;
+            outline: 3px solid rgba(112, 71, 235, 0.1);
+        }
+
+        .service-card h3 {
+            overflow-wrap: anywhere;
+        }
+
+        .pagination {
+            margin-top: 24px;
+            color: #625976;
+            font-size: 14px;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            margin: 2px;
+            padding: 8px 11px;
+            border: 1px solid #E7E1F4;
+            border-radius: 6px;
+            background: white;
+            color: #7047EB;
+            text-decoration: none;
+        }
+
+        .error {
+            margin-top: 14px;
+            color: #A3344D;
+            font-size: 13px;
         }
 
         .search-input {
@@ -292,9 +336,9 @@
     <div class="container">
 
         <div class="page-title">
-            <h1>Cari Freelancer</h1>
+            <h1>Cari Jasa</h1>
             <p>
-                Temukan freelancer sesuai kebutuhanmu.
+                Temukan jasa dan freelancer sesuai kebutuhanmu.
             </p>
         </div>
 
@@ -310,72 +354,75 @@
                     type="text"
                     name="q"
                     class="search-input"
-                    placeholder="Cari nama freelancer..."
-                    value="{{ $query ?? '' }}"
+                placeholder="Cari nama jasa, deskripsi, kategori, atau freelancer..."
+                value="{{ $filters['q'] ?? '' }}"
                 >
-
+            <select class="filter-field" name="category_id" aria-label="Filter kategori">
+                <option value="">Semua kategori</option>
+                @foreach ($categories as $category)
+                    <option value="{{ $category->id }}" @selected(($filters['category_id'] ?? '') == $category->id)>
+                        {{ $category->category_name }}
+                    </option>
+                @endforeach
+            </select>
+            <input class="filter-field" type="number" name="min_price" min="0" step="1000"
+                   placeholder="Harga minimum" value="{{ $filters['min_price'] ?? '' }}">
+            <input class="filter-field" type="number" name="max_price" min="0" step="1000"
+                   placeholder="Harga maksimum" value="{{ $filters['max_price'] ?? '' }}">
                 <button
                     type="submit"
                     class="search-button"
                 >
-                    Cari
+                Cari & Filter
                 </button>
             </form>
+            @if ($errors->any())
+            <p class="error" role="alert">{{ $errors->first() }}</p>
+            @endif
         </div>
 
 
         <!-- HASIL -->
-        @if ($query)
+        @if ($filters['q'] ?? false)
             <h2 class="result-title">
-                Hasil pencarian: "{{ $query }}"
+                Hasil pencarian: "{{ $filters['q'] }}"
             </h2>
         @else
             <h2 class="result-title">
-                Freelancer Tersedia
+                Jasa Tersedia
             </h2>
         @endif
 
 
-        @if ($freelancers->count() > 0)
+        @if ($services->count() > 0)
 
             <div class="freelancer-grid">
 
-                @foreach ($freelancers as $freelancer)
+                @foreach ($services as $service)
 
-                    <div class="freelancer-card">
+                    <div class="freelancer-card service-card">
 
                         <div class="profile-phot">
-                            {{ strtoupper(substr($freelancer->name, 0, 1)) }}
+                            {{ strtoupper(substr($service->freelancer?->name ?? 'F', 0, 1)) }}
                         </div>
 
                         <h3>
-                            {{ $freelancer->name }}
+                            {{ $service->title }}
                         </h3>
 
                         <div class="role">
-                            Freelancer
+                            {{ $service->category?->category_name ?? 'Tanpa kategori' }}
                         </div>
 
                         <div class="email">
-                            {{ $freelancer->email }}
+                            Freelancer: {{ $service->freelancer?->name ?? 'Tidak tersedia' }}
                         </div>
-
-                        @foreach ($freelancer->services as $service)
-                            <div style="border-top: 1px solid #E7E1F4; padding: 16px 0;">
-                                <h4 style="margin-bottom: 7px; color: #30264B;">
-                                    {{ $service->title }}
-                                </h4>
-                                <p style="font-size: 13px; color: #837B99; margin-bottom: 8px;">
-                                    {{ $service->category?->category_name ?? 'Tanpa kategori' }}
-                                </p>
-                                <p style="font-weight: bold; color: #7047EB; margin-bottom: 12px;">
-                                    Rp{{ number_format((float) $service->price, 0, ',', '.') }}
-                                </p>
-                                <a href="{{ route('jasa.show', $service) }}" class="btn-lihat">
-                                    Detail dan Pesan
-                                </a>
-                            </div>
-                        @endforeach
+                        <p style="font-weight: bold; color: #7047EB; margin-bottom: 16px;">
+                            Rp{{ number_format((float) $service->price, 0, ',', '.') }}
+                        </p>
+                        <a href="{{ route('jasa.show', $service) }}" class="btn-lihat">
+                            Detail dan Pesan
+                        </a>
 
                     </div>
 
@@ -387,7 +434,7 @@
 
             <div class="empty">
                 <h3>
-                    Freelancer tidak ditemukan
+                    Jasa tidak ditemukan
                 </h3>
 
                 <p style="margin-top: 10px;">
@@ -396,6 +443,10 @@
             </div>
 
         @endif
+
+        <div class="pagination">
+            {{ $services->links() }}
+        </div>
 
     </div>
 

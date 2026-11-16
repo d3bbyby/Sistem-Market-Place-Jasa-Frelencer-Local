@@ -14,11 +14,15 @@ class PortfolioRatingController extends Controller
         abort_unless($request->user()?->role === 'client', 403);
         abort_unless($portfolio->user_id !== $request->user()->id, 403);
 
-        $hasCompletedOrder = Order::query()
-            ->where('client_id', $request->user()->id)
-            ->where('status', 'SELESAI')
-            ->whereHas('service', fn ($query) => $query->where('freelancer_id', $portfolio->user_id))
-            ->exists();
+        $hasCompletedOrder = $portfolio->service_id !== null
+            && $portfolio->service()
+                ->where('freelancer_id', $portfolio->user_id)
+                ->exists()
+            && Order::query()
+                ->where('client_id', $request->user()->id)
+                ->where('service_id', $portfolio->service_id)
+                ->where('status', 'SELESAI')
+                ->exists();
 
         abort_unless($hasCompletedOrder, 403);
 

@@ -138,6 +138,11 @@
             margin-bottom: 20px;
         }
 
+        .form-group input[type="file"] {
+            padding: 10px;
+            background: #FAF9FF;
+        }
+
         .btn {
             display: block;
             width: 100%;
@@ -198,6 +203,12 @@
                 </div>
             @endif
 
+            @if(session('status') === 'photo-deleted')
+                <div class="success">
+                    Foto profil berhasil dihapus!
+                </div>
+            @endif
+
             <div style="text-align: center;">
 
                 @if($user->profile_photo)
@@ -213,28 +224,28 @@
                 @endif
 
                 @if($user->profile_photo)
-    <form
-        action="{{ route('client.profile.deletePhoto') }}"
-        method="POST"
-        onsubmit="return confirm('Yakin ingin menghapus foto profil?')"
-        style="margin-bottom: 20px;"
-    >
-        @csrf
-        @method('DELETE')
+                    <form
+                        action="{{ route('client.profile.deletePhoto') }}"
+                        method="POST"
+                        onsubmit="return confirm('Yakin ingin menghapus foto profil?')"
+                        style="margin-bottom: 20px;"
+                    >
+                        @csrf
+                        @method('DELETE')
 
-        <button type="submit" style="
-            background: #fff0f0;
-            color: #dc2626;
-            border: none;
-            padding: 9px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        ">
-            Hapus Foto
-        </button>
-    </form>
-@endif
+                        <button type="submit" style="
+                            background: #fff0f0;
+                            color: #dc2626;
+                            border: none;
+                            padding: 9px 18px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            font-weight: bold;
+                        ">
+                            Hapus Foto
+                        </button>
+                    </form>
+                @endif
 
                 <div class="profile-name">
                     {{ $user->name }}
@@ -255,8 +266,9 @@
                 @method('PATCH')
 
                 <div class="form-group">
-                    <label>Nama Lengkap</label>
+                    <label for="name">Nama Lengkap</label>
                     <input
+                        id="name"
                         type="text"
                         name="name"
                         value="{{ old('name', $user->name) }}"
@@ -269,8 +281,9 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Email</label>
+                    <label for="email">Email</label>
                     <input
+                        id="email"
                         type="email"
                         name="email"
                         value="{{ old('email', $user->email) }}"
@@ -283,8 +296,25 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Foto Profil</label>
+                    <label for="whatsapp_number">Nomor WhatsApp</label>
                     <input
+                        id="whatsapp_number"
+                        type="tel"
+                        name="whatsapp_number"
+                        value="{{ old('whatsapp_number', $user->whatsapp_number) }}"
+                        maxlength="20"
+                        autocomplete="tel"
+                    >
+
+                    @error('whatsapp_number')
+                        <div class="error">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="form-group">
+                    <label for="profile_photo">Foto Profil</label>
+                    <input
+                        id="profile_photo"
                         type="file"
                         name="profile_photo"
                         accept=".jpg,.jpeg,.png,.webp"

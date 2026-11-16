@@ -46,7 +46,9 @@ class PortfolioControllerTest extends TestCase
         $this->get(route('portfolios.index'))
             ->assertOk()
             ->assertSee('Brand identity project')
-            ->assertSee('A visual identity for a local business.');
+            ->assertSee('A visual identity for a local business.')
+            ->assertSee('Jasa terkait: '.$service->title)
+            ->assertSee('Kategori: '.$service->category->category_name);
     }
 
     public function test_freelancer_cannot_update_another_freelancers_portfolio(): void
@@ -78,12 +80,56 @@ class PortfolioControllerTest extends TestCase
     public function test_freelancer_can_open_the_portfolio_form(): void
     {
         $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $this->createService($freelancer);
 
         $this->actingAs($freelancer)
             ->get(route('portfolios.create'))
             ->assertOk()
             ->assertSee('Judul karya')
-            ->assertSee('Gambar karya');
+            ->assertSee('Gambar karya')
+            ->assertSee('Jasa terkait')
+            ->assertSee('Desain');
+    }
+
+    public function test_freelancer_must_select_a_service_when_creating_a_portfolio(): void
+    {
+        Storage::fake('public');
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l2cAAAAASUVORK5CYII=';
+
+        $this->actingAs($freelancer)
+            ->from(route('portfolios.create'))
+            ->post(route('portfolios.store'), [
+                'title' => 'Karya tanpa jasa',
+                'image' => UploadedFile::fake()->createWithContent('portfolio.png', base64_decode($image)),
+            ])
+            ->assertRedirect(route('portfolios.create'))
+            ->assertSessionHasErrors([
+                'service_id' => 'Pilih jasa yang terkait dengan portofolio ini.',
+            ]);
+
+        $this->assertDatabaseCount('portfolios', 0);
+    }
+
+    public function test_freelancer_cannot_link_a_portfolio_to_another_freelancers_service(): void
+    {
+        Storage::fake('public');
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $otherFreelancer = User::factory()->create(['role' => 'freelancer']);
+        $service = $this->createService($otherFreelancer);
+        $image = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l2cAAAAASUVORK5CYII=';
+
+        $this->actingAs($freelancer)
+            ->from(route('portfolios.create'))
+            ->post(route('portfolios.store'), [
+                'service_id' => $service->id,
+                'title' => 'Karya jasa lain',
+                'image' => UploadedFile::fake()->createWithContent('portfolio.png', base64_decode($image)),
+            ])
+            ->assertRedirect(route('portfolios.create'))
+            ->assertSessionHasErrors('service_id');
+
+        $this->assertDatabaseCount('portfolios', 0);
     }
 
     public function test_client_with_a_completed_order_can_rate_a_freelancers_portfolio(): void
@@ -167,6 +213,69 @@ class PortfolioControllerTest extends TestCase
             'rating' => 4,
             'comment' => 'Revisi rating.',
         ]);
+    }
+
+    public function test_service_detail_shows_only_portfolios_linked_to_that_service(): void
+    {
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $service = $this->createService($freelancer);
+        $unrelatedService = Service::create([
+            'freelancer_id' => $freelancer->id,
+            'category_id' => $service->category_id,
+            'title' => 'Desain ilustrasi',
+            'description' => 'Jasa desain ilustrasi.',
+            'price' => 200000,
+        ]);
+        $linkedPortfolio = Portfolio::create([
+            'user_id' => $freelancer->id,
+            'service_id' => $service->id,
+            'title' => 'Karya desain logo',
+            'caption' => 'Karya desain logo',
+        ]);
+        $unrelatedPortfolio = Portfolio::create([
+            'user_id' => $freelancer->id,
+            'service_id' => $unrelatedService->id,
+            'title' => 'Karya desain ilustrasi',
+            'caption' => 'Karya desain ilustrasi',
+        ]);
+
+        $this->get(route('jasa.show', $service))
+            ->assertSee($linkedPortfolio->title)
+            ->assertDontSee($unrelatedPortfolio->title);
+    }
+
+    public function test_client_cannot_rate_a_portfolio_after_ordering_a_different_service_from_same_freelancer(): void
+    {
+        $client = User::factory()->create(['role' => 'client']);
+        $freelancer = User::factory()->create(['role' => 'freelancer']);
+        $portfolioService = $this->createService($freelancer);
+        $orderedService = Service::create([
+            'freelancer_id' => $freelancer->id,
+            'category_id' => $portfolioService->category_id,
+            'title' => 'Desain ilustrasi',
+            'description' => 'Jasa desain ilustrasi.',
+            'price' => 200000,
+        ]);
+        $portfolio = Portfolio::create([
+            'user_id' => $freelancer->id,
+            'service_id' => $portfolioService->id,
+            'title' => 'Karya desain logo',
+            'caption' => 'Karya desain logo',
+        ]);
+        Order::create([
+            'client_id' => $client->id,
+            'service_id' => $orderedService->id,
+            'status' => 'SELESAI',
+        ]);
+
+        $this->actingAs($client)
+            ->post(route('portfolios.ratings.store', $portfolio), [
+                'rating' => 5,
+                'comment' => 'Saya memesan jasa yang berbeda.',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('portfolio_ratings', 0);
     }
 
     public function test_client_without_a_completed_order_cannot_rate_a_portfolio(): void

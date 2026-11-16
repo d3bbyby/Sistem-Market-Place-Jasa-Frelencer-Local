@@ -581,11 +581,6 @@
                     <span>Pesanan Masuk</span>
                 </a>
 
-                <a href="/freelancer/proyek">
-                    <span class="menu-icon">▦</span>
-                    Proyek Saya
-                </a>
-
                 <a href="/freelancer/portofolio">
                     <span class="menu-icon">▧</span>
                     Portofolio
@@ -798,9 +793,6 @@
                                 <p>Belum ada jasa yang dibuat.</p>
                             @endforelse
 
-                            <a href="/freelancer/jasa/tambah" class="button">
-                                + Tambah Jasa
-                            </a>
                         </div>
                     </div>
 

@@ -94,11 +94,11 @@
                 <div class="mt-3 whitespace-pre-line leading-7 text-slate-700">{{ $service->description }}</div>
             </section>
 
-            @if ($service->freelancer?->portfolios?->isNotEmpty())
+            @if ($service->portfolios->isNotEmpty())
                 <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-                    <h2 class="text-xl font-bold">Karya freelancer</h2>
+                    <h2 class="text-xl font-bold">Portofolio terkait jasa ini</h2>
                     <div class="mt-5 grid gap-4 sm:grid-cols-2">
-                        @foreach ($service->freelancer->portfolios->take(4) as $portfolio)
+                        @foreach ($service->portfolios as $portfolio)
                             <article class="overflow-hidden rounded-xl border border-slate-200">
                                 @if ($portfolio->imageUrl())
                                     <img class="aspect-[16/10] w-full object-cover" src="{{ $portfolio->imageUrl() }}" alt="{{ $portfolio->title ?? $portfolio->caption }}">
