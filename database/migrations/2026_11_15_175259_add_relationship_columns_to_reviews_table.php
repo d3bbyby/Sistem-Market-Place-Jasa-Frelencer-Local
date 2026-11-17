@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -9,19 +10,19 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->foreignId('order_id')
-                ->after('id')
-                ->constrained('orders')
+            $table->foreign('order_id')
+                ->references('id')
+                ->on('orders')
                 ->cascadeOnDelete();
 
-            $table->foreignId('client_id')
-                ->after('order_id')
-                ->constrained('users')
+            $table->foreign('client_id')
+                ->references('id')
+                ->on('users')
                 ->cascadeOnDelete();
 
-            $table->foreignId('freelancer_id')
-                ->after('client_id')
-                ->constrained('users')
+            $table->foreign('freelancer_id')
+                ->references('id')
+                ->on('users')
                 ->cascadeOnDelete();
 
             $table->unique('order_id');
@@ -32,9 +33,9 @@ return new class extends Migration
     {
         Schema::table('reviews', function (Blueprint $table) {
             $table->dropUnique(['order_id']);
-            $table->dropConstrainedForeignId('freelancer_id');
-            $table->dropConstrainedForeignId('client_id');
-            $table->dropConstrainedForeignId('order_id');
+            $table->dropForeign(['freelancer_id']);
+            $table->dropForeign(['client_id']);
+            $table->dropForeign(['order_id']);
         });
     }
 };

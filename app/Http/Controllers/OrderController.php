@@ -1,3 +1,4 @@
+61
 <?php
 
 namespace App\Http\Controllers;
@@ -58,26 +59,46 @@ class OrderController extends Controller
         return view('admin.freelancers.index', compact('freelancers'));
     }
 
-    public function store(Request $request, Service $service): RedirectResponse
-    {
-        abort_unless($request->user()->role === 'client', 403);
-        abort_if($service->freelancer_id === $request->user()->id, 403);
-        $data = $request->validate([
-            'package' => ['sometimes', 'required', Rule::in(['basic', 'plus', 'premium'])],
-        ]);
-        $packageName = $data['package'] ?? 'basic';
-        $package = $service->packages()[$packageName];
 
-        Order::create([
-            'client_id' => $request->user()->id,
-            'service_id' => $service->id,
-            'package' => $packageName,
-            'total_price' => $package['price'],
-            'status' => 'MENUNGGU',
-        ]);
+public function store(Request $request, Service $service): RedirectResponse
+{
+    abort_unless($request->user()->role === 'client', 403);
+    abort_if($service->freelancer_id === $request->user()->id, 403);
 
-        return redirect()->route('client.orders.index')->with('success', 'Pesanan berhasil dibuat.');
+    // Pastikan freelancer sudah diverifikasi admin
+    $freelancer = $service->freelancer;
+
+    if (
+        !$freelancer ||
+        $freelancer->role !== 'freelancer' ||
+        $freelancer->verification_status !== 'verified'
+    ) {
+        return back()->with(
+            'error',
+            'Jasa belum dapat dipesan karena freelancer belum diverifikasi admin.'
+        );
     }
+
+    $data = $request->validate([
+        'package' => ['sometimes', 'required', Rule::in(['basic', 'plus', 'premium'])],
+    ]);
+
+    $packageName = $data['package'] ?? 'basic';
+    $package = $service->packages()[$packageName];
+
+    Order::create([
+        'client_id' => $request->user()->id,
+        'service_id' => $service->id,
+        'package' => $packageName,
+        'total_price' => $package['price'],
+        'status' => 'MENUNGGU',
+    ]);
+
+    return redirect()
+        ->route('client.orders.index')
+        ->with('success', 'Pesanan berhasil dibuat.');
+}
+
 
     public function updateStatus(Request $request, Order $order): RedirectResponse
     {

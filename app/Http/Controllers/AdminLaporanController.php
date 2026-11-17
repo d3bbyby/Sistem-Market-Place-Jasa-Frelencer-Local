@@ -17,17 +17,16 @@ class AdminLaporanController extends Controller
 
         $totalPesanan = Order::count();
 
-        $pesananSelesai = Order::where('status', 'selesai')->count();
+        $pesananSelesai = Order::where('status', 'SELESAI')->count();
 
-        $pesananDibatalkan = Order::where('status', 'dibatalkan')->count();
+        $pesananDibatalkan = 0;
 
-        $totalPendapatan = Order::where('status', 'selesai')
+        $totalPendapatan = Order::where('status', 'SELESAI')
             ->sum('total_price');
 
-        $orders = Order::with([
-            'client',
-            'service'
-        ])->latest()->get();
+        $orders = Order::with(['client', 'service'])
+            ->latest()
+            ->get();
 
         return view('admin.laporan', compact(
             'totalPengguna',

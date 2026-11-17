@@ -775,11 +775,6 @@
                 Pengguna
             </a>
 
-            <a href="/users">
-                <span class="menu-icon">♧</span>
-                Client
-            </a>
-
             <a href="{{ route('admin.jasa.index') }}">
                 <span class="menu-icon">▤</span>
                 Jasa

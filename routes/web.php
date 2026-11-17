@@ -253,6 +253,14 @@ Route::get('/admin/laporan', [AdminLaporanController::class, 'index'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.laporan');
 
+Route::get('/admin/laporan/export-pdf', [AdminLaporanController::class, 'exportPdf'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.laporan.pdf');
+
+Route::get('/admin/laporan/export-excel', [AdminLaporanController::class, 'exportExcel'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.laporan.excel');
+
 // ==============================
 // PENCARIAN FREELANCER / JASA
 // ==============================

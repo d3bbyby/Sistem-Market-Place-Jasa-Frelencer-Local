@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -8,20 +9,21 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
-            $table->id();
-
-            // Relasi akan ditambahkan setelah struktur tabel diperiksa
-
-            $table->unsignedTinyInteger('rating');
-            $table->text('comment')->nullable();
-
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('reviews')) {
+            Schema::create('reviews', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('order_id');
+                $table->unsignedBigInteger('client_id');
+                $table->unsignedBigInteger('freelancer_id');
+                $table->unsignedTinyInteger('rating');
+                $table->text('comment')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        // Jangan hapus tabel reviews yang mungkin sudah berisi data.
     }
 };

@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -8,32 +9,23 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('services', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('order_id')
-                ->constrained('orders')
-                ->cascadeOnDelete();
-
-            $table->foreignId('client_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
-
             $table->foreignId('freelancer_id')
                 ->constrained('users')
-                ->cascadeOnDelete();
-
-            $table->unsignedTinyInteger('rating');
-            $table->text('comment')->nullable();
-
+                ->restrictOnDelete();
+            $table->foreignId('category_id')
+                ->constrained('categories')
+                ->restrictOnDelete();
+            $table->string('title');
+            $table->text('description');
+            $table->decimal('price', 12, 2);
             $table->timestamps();
-
-            $table->unique('order_id');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('services');
     }
 };
