@@ -101,9 +101,13 @@ class OrderController extends Controller
     {
         $user = $request->user();
         $attributes = [];
+        $successMessage = 'Status pesanan berhasil diperbarui.';
 
         if ($user->role === 'freelancer') {
-            abort_unless($order->service()->where('freelancer_id', $user->id)->exists(), 403);
+            abort_unless(
+                $order->service()->where('freelancer_id', $user->id)->exists(),
+                403
+            );
 
             $data = $request->validate([
                 'status' => ['required', 'in:DIPROSES,SUBMITTED'],
@@ -125,42 +129,72 @@ class OrderController extends Controller
                 'REVISI' => 'DIPROSES',
             ];
 
-            abort_unless(($allowedTransitions[$order->status] ?? null) === $data['status'], 403);
+            abort_unless(
+                ($allowedTransitions[$order->status] ?? null) === $data['status'],
+                403
+            );
 
             $attributes['status'] = $data['status'];
 
             if ($data['status'] === 'SUBMITTED') {
-                $newFilePath = $request->file('work_result_file')->store('order-deliverables', 'local');
+                $newFilePath = $request->file('work_result_file')
+                    ->store('order-deliverables', 'local');
 
                 if (! is_string($newFilePath)) {
                     throw new RuntimeException('File hasil pesanan gagal disimpan.');
                 }
 
                 $previousFilePath = $order->work_result_file;
+
                 $attributes['work_result_file'] = $newFilePath;
                 $attributes['revision_notes'] = null;
+
+                // Freelancer mengonfirmasi pekerjaan dengan mengirim hasil.
+                $attributes['freelancer_confirmed'] = true;
+                $attributes['client_confirmed'] = false;
             }
+
         } elseif ($user->role === 'client') {
             abort_unless($order->client_id === $user->id, 403);
 
             $data = $request->validate([
                 'status' => ['required', 'in:REVISI,SELESAI'],
-                'revision_notes' => ['required_if:status,REVISI', 'nullable', 'string', 'max:2000'],
+                'revision_notes' => [
+                    'required_if:status,REVISI',
+                    'nullable',
+                    'string',
+                    'max:2000',
+                ],
             ], [
                 'revision_notes.required_if' => 'Tuliskan catatan agar freelancer mengetahui revisi yang diperlukan.',
             ]);
 
-            $allowedTransitions = [
-                'SUBMITTED' => ['REVISI', 'SELESAI'],
-            ];
-
-            abort_unless(in_array($data['status'], $allowedTransitions[$order->status] ?? [], true), 403);
+            abort_unless($order->status === 'SUBMITTED', 403);
 
             $attributes['status'] = $data['status'];
 
             if ($data['status'] === 'REVISI') {
                 $attributes['revision_notes'] = $data['revision_notes'];
+
+                // Konfirmasi diulang setelah revisi dikirim.
+                $attributes['freelancer_confirmed'] = false;
+                $attributes['client_confirmed'] = false;
+
+                $successMessage = 'Permintaan revisi berhasil dikirim.';
             }
+
+            if ($data['status'] === 'SELESAI') {
+                $attributes['client_confirmed'] = true;
+
+                if ($order->freelancer_confirmed) {
+                    $attributes['status'] = 'SELESAI';
+                    $successMessage = 'Pesanan selesai. Sekarang kamu bisa memberikan rating.';
+                } else {
+                    $attributes['status'] = 'SUBMITTED';
+                    $successMessage = 'Konfirmasi berhasil disimpan. Menunggu konfirmasi freelancer.';
+                }
+            }
+
         } else {
             abort(403);
         }
@@ -176,14 +210,18 @@ class OrderController extends Controller
             }
         }
 
-        return back()->with('success', 'Status pesanan berhasil diperbarui.');
+        return back()->with('success', $successMessage);
     }
 
     public function downloadDeliverable(Request $request, Order $order): StreamedResponse
     {
-        abort_unless(is_string($order->work_result_file) && $order->work_result_file !== '', 404);
+        abort_unless(
+            is_string($order->work_result_file) && $order->work_result_file !== '',
+            404
+        );
 
         $user = $request->user();
+
         $isAuthorized = match ($user->role) {
             'admin' => true,
             'client' => $order->client_id === $user->id,
@@ -195,7 +233,10 @@ class OrderController extends Controller
 
         abort_unless($isAuthorized, 404);
 
-        abort_unless(Storage::disk('local')->exists($order->work_result_file), 404);
+        abort_unless(
+            Storage::disk('local')->exists($order->work_result_file),
+            404
+        );
 
         return Storage::disk('local')->download(
             $order->work_result_file,

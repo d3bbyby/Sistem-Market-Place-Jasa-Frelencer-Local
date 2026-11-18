@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Favorite;
 use App\Models\Review;
+use App\Models\UserActivity;
 use Illuminate\Http\Request;
 
 class ClientDashboardController extends Controller
@@ -82,11 +83,9 @@ class ClientDashboardController extends Controller
         foreach ($daftarFavorit as $item) {
             if ($item->freelancer_id) {
                 $nama = $item->freelancer->name ?? 'Freelancer';
-
                 $keterangan = 'Freelancer: ' . $nama;
             } else {
                 $nama = $item->service->title ?? 'Jasa';
-
                 $keterangan = 'Jasa: ' . $nama;
             }
 
@@ -112,6 +111,22 @@ class ClientDashboardController extends Controller
                 'ikon' => '★',
                 'judul' => 'Review berhasil diberikan',
                 'keterangan' => 'Jasa: ' . $namaJasa,
+                'tanggal' => $item->created_at,
+            ]);
+        }
+
+        // Aktivitas dari tabel user_activities
+        $daftarAktivitas = UserActivity::where('user_id', $clientId)
+            ->where('role', 'client')
+            ->latest()
+            ->take(10)
+            ->get();
+
+        foreach ($daftarAktivitas as $item) {
+            $aktivitasTerbaru->push([
+                'ikon' => '⌕',
+                'judul' => $item->title,
+                'keterangan' => $item->description ?? '',
                 'tanggal' => $item->created_at,
             ]);
         }

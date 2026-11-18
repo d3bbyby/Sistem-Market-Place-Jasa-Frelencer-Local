@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -23,10 +22,6 @@
         --background: #F4F6FA;
         --border: #E1E6EE;
         --white: #FFFFFF;
-        --peach: #E8D4A7;
-        --blue: #A9BAD0;
-        --mint: #D8E1EC;
-        --yellow: #F1D99F;
     }
 
     body {
@@ -240,12 +235,7 @@
         padding: 27px 28px;
         border-radius: 20px;
         border: 1px solid #E8D9B6;
-        background: linear-gradient(
-            115deg,
-            #F8F1DF,
-            #F7F5EF 70%,
-            #FFF9E8
-        );
+        background: linear-gradient(115deg, #F8F1DF, #F7F5EF 70%, #FFF9E8);
         position: relative;
         overflow: hidden;
     }
@@ -343,21 +333,10 @@
         transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .stat-card:nth-child(2) {
-        border-top-color: #49698D;
-    }
-
-    .stat-card:nth-child(3) {
-        border-top-color: #D6B66B;
-    }
-
-    .stat-card:nth-child(4) {
-        border-top-color: #8EA5C1;
-    }
-
-    .stat-card:nth-child(5) {
-        border-top-color: #A87922;
-    }
+    .stat-card:nth-child(2) { border-top-color: #49698D; }
+    .stat-card:nth-child(3) { border-top-color: #D6B66B; }
+    .stat-card:nth-child(4) { border-top-color: #8EA5C1; }
+    .stat-card:nth-child(5) { border-top-color: #A87922; }
 
     .stat-card:hover {
         transform: translateY(-4px);
@@ -388,7 +367,8 @@
         color: #36577E;
     }
 
-    .stat-card:nth-child(3) .stat-icon {
+    .stat-card:nth-child(3) .stat-icon,
+    .stat-card:nth-child(5) .stat-icon {
         background: #F8F0DD;
         color: #A87922;
     }
@@ -396,11 +376,6 @@
     .stat-card:nth-child(4) .stat-icon {
         background: #E9EFF6;
         color: #49698D;
-    }
-
-    .stat-card:nth-child(5) .stat-icon {
-        background: #FBF3DE;
-        color: #A87922;
     }
 
     .stat-number {
@@ -500,30 +475,6 @@
         border-bottom: none;
     }
 
-    .status {
-        display: inline-block;
-        padding: 6px 9px;
-        border-radius: 20px;
-        font-size: 10px;
-        font-weight: bold;
-        white-space: nowrap;
-    }
-
-    .status.pending {
-        background: #FFF3D6;
-        color: #996C0D;
-    }
-
-    .status.process {
-        background: #E4F4FF;
-        color: #2479B5;
-    }
-
-    .status.done {
-        background: #E0F8EC;
-        color: #17835A;
-    }
-
     /* USER LIST */
     .user-item {
         display: flex;
@@ -534,10 +485,7 @@
         border-bottom: 1px solid #E8EDF3;
     }
 
-    .user-item:first-child {
-        padding-top: 2px;
-    }
-
+    .user-item:first-child { padding-top: 2px; }
     .user-item:last-child {
         border-bottom: none;
         padding-bottom: 2px;
@@ -594,6 +542,85 @@
         border-radius: 15px;
     }
 
+    /* AKTIVITAS TERBARU */
+    .activity-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 14px 0;
+        border-bottom: 1px solid #E8EDF3;
+    }
+
+    .activity-item:first-child {
+        padding-top: 2px;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+        padding-bottom: 2px;
+    }
+
+    .activity-icon {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #F8F0DD;
+        color: #A87922;
+        border-radius: 11px;
+        font-size: 15px;
+    }
+
+    .activity-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .activity-info strong {
+        display: block;
+        font-size: 12px;
+        color: #1E2C3D;
+        margin-bottom: 5px;
+    }
+
+    .activity-info p {
+        font-size: 11px;
+        color: #7A8798;
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+
+    .activity-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 7px;
+        align-items: center;
+    }
+
+    .activity-role {
+        background: #E9EFF6;
+        color: #36577E;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: bold;
+    }
+
+    .activity-time {
+        color: #8995A5;
+        font-size: 10px;
+    }
+
+    .activity-empty {
+        text-align: center;
+        color: #7A8798;
+        font-size: 12px;
+        padding: 20px 0;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1250px) {
         .stats {
@@ -602,32 +629,20 @@
     }
 
     @media (max-width: 950px) {
-        .sidebar {
-            width: 220px;
-        }
+        .sidebar { width: 220px; }
 
         .main {
             margin-left: 220px;
             width: calc(100% - 220px);
         }
 
-        .content {
-            padding: 25px 22px;
-        }
-
-        .topbar {
-            padding: 14px 22px;
-        }
-
-        .dashboard-grid {
-            grid-template-columns: 1fr;
-        }
+        .content { padding: 25px 22px; }
+        .topbar { padding: 14px 22px; }
+        .dashboard-grid { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 650px) {
-        .layout {
-            display: block;
-        }
+        .layout { display: block; }
 
         .sidebar {
             position: relative;
@@ -636,9 +651,7 @@
             padding: 20px 16px 78px;
         }
 
-        .logo {
-            margin-bottom: 22px;
-        }
+        .logo { margin-bottom: 22px; }
 
         .menu {
             display: grid;
@@ -646,9 +659,7 @@
             gap: 4px;
         }
 
-        .menu-title {
-            margin-top: 0;
-        }
+        .menu-title { margin-top: 0; }
 
         .menu a {
             margin-bottom: 0;
@@ -661,9 +672,7 @@
             bottom: 16px;
         }
 
-        .logout a {
-            padding: 10px 12px;
-        }
+        .logout a { padding: 10px 12px; }
 
         .main {
             margin-left: 0;
@@ -675,13 +684,8 @@
             padding: 12px 17px;
         }
 
-        .page-title {
-            font-size: 17px;
-        }
-
-        .page-subtitle {
-            font-size: 11px;
-        }
+        .page-title { font-size: 17px; }
+        .page-subtitle { font-size: 11px; }
 
         .profile {
             padding: 5px;
@@ -694,25 +698,13 @@
             height: 38px;
         }
 
-        .profile-info {
-            display: none;
-        }
+        .profile-info { display: none; }
 
-        .content {
-            padding: 20px 15px 28px;
-        }
+        .content { padding: 20px 15px 28px; }
 
-        .welcome {
-            padding: 21px 19px;
-        }
-
-        .welcome h1 {
-            font-size: 21px;
-        }
-
-        .welcome p {
-            font-size: 12px;
-        }
+        .welcome { padding: 21px 19px; }
+        .welcome h1 { font-size: 21px; }
+        .welcome p { font-size: 12px; }
 
         .welcome-mark {
             width: 48px;
@@ -731,24 +723,15 @@
             min-height: 125px;
         }
 
-        .stat-number {
-            font-size: 22px;
-        }
+        .stat-number { font-size: 22px; }
+        .stat-card p { font-size: 11px; }
 
-        .stat-card p {
-            font-size: 11px;
-        }
-
-        .panel-header {
-            padding: 16px;
-        }
-
-        .panel-body {
-            padding: 15px;
-        }
+        .panel-header { padding: 16px; }
+        .panel-body { padding: 15px; }
     }
     </style>
 </head>
+
 <body>
 
 <div class="layout">
@@ -816,7 +799,8 @@
         <div class="menu logout">
             <form method="POST" action="{{ route('logout') }}" style="margin: 0;">
                 @csrf
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); this.closest('form').submit();">
                     <span class="menu-icon">↪</span>
                     Logout
                 </a>
@@ -904,31 +888,41 @@
             <div class="stats">
 
                 <div class="stat-card">
-                    <div class="stat-top"><div class="stat-icon">♙</div></div>
+                    <div class="stat-top">
+                        <div class="stat-icon">♙</div>
+                    </div>
                     <h3 class="stat-number">{{ $totalPengguna }}</h3>
                     <p>Total Pengguna</p>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-top"><div class="stat-icon">♧</div></div>
+                    <div class="stat-top">
+                        <div class="stat-icon">♧</div>
+                    </div>
                     <h3 class="stat-number">{{ $totalFreelancer }}</h3>
                     <p>Total Freelancer</p>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-top"><div class="stat-icon">♙</div></div>
+                    <div class="stat-top">
+                        <div class="stat-icon">♙</div>
+                    </div>
                     <h3 class="stat-number">{{ $totalClient }}</h3>
                     <p>Total Client</p>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-top"><div class="stat-icon">▤</div></div>
+                    <div class="stat-top">
+                        <div class="stat-icon">▤</div>
+                    </div>
                     <h3 class="stat-number">{{ $totalJasa }}</h3>
                     <p>Total Jasa</p>
                 </div>
 
                 <div class="stat-card">
-                    <div class="stat-top"><div class="stat-icon">▧</div></div>
+                    <div class="stat-top">
+                        <div class="stat-icon">▧</div>
+                    </div>
                     <h3 class="stat-number">{{ $totalPesanan }}</h3>
                     <p>Total Pesanan</p>
                 </div>
@@ -961,10 +955,21 @@
                                 <tbody>
                                     @forelse ($pesananTerbaru as $pesanan)
                                         <tr>
-                                            <td>{{ $pesanan->client->name ?? 'Client tidak tersedia' }}</td>
-                                            <td>{{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}</td>
-                                            <td>{{ $pesanan->created_at->format('d M Y') }}</td>
-                                            <td>{{ ucfirst(strtolower($pesanan->status)) }}</td>
+                                            <td>
+                                                {{ $pesanan->client->name ?? 'Client tidak tersedia' }}
+                                            </td>
+
+                                            <td>
+                                                {{ $pesanan->service->title ?? 'Jasa tidak tersedia' }}
+                                            </td>
+
+                                            <td>
+                                                {{ $pesanan->created_at->format('d M Y') }}
+                                            </td>
+
+                                            <td>
+                                                {{ ucfirst(strtolower($pesanan->status)) }}
+                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -1032,6 +1037,71 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- AKTIVITAS TERBARU -->
+            <div class="panel" style="margin-top: 20px;">
+
+                <div class="panel-header">
+                    <div>
+                        <h2>Aktivitas Terbaru</h2>
+                        <p style="font-size: 11px; color: #7A8798; margin-top: 5px;">
+                            Riwayat aktivitas pengguna FreelanceHub
+                        </p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+
+                    @forelse ($aktivitasTerbaru as $aktivitas)
+
+                        <div class="activity-item">
+
+                            <div class="activity-icon">
+                                @if ($aktivitas['role'] === 'client')
+                                    ♙
+                                @elseif ($aktivitas['role'] === 'freelancer')
+                                    ♧
+                                @else
+                                    ⚙
+                                @endif
+                            </div>
+
+                            <div class="activity-info">
+
+                                <strong>
+                                    {{ $aktivitas['judul'] }}
+                                </strong>
+
+                                <p>
+                                    {{ $aktivitas['keterangan'] }}
+                                </p>
+
+                                <div class="activity-meta">
+
+                                    <span class="activity-role">
+                                        {{ ucfirst($aktivitas['role']) }}
+                                    </span>
+
+                                    <span class="activity-time">
+                                        {{ $aktivitas['tanggal']->diffForHumans() }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    @empty
+
+                        <div class="activity-empty">
+                            Belum ada aktivitas terbaru.
+                        </div>
+
+                    @endforelse
+
+                </div>
             </div>
 
         </section>

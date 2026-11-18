@@ -5,7 +5,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Dashboard Freelancer - Freelance Lokal</title>
 
     <style>
@@ -126,7 +125,6 @@
             gap: 12px;
         }
 
-        /* Foto profil di dashboard */
         .profile-photo {
             width: 40px;
             height: 40px;
@@ -401,6 +399,7 @@
 
         .item-info {
             flex: 1;
+            min-width: 0;
         }
 
         .item-info strong {
@@ -412,6 +411,7 @@
         .item-info span {
             font-size: 11px;
             color: #72918D;
+            overflow-wrap: anywhere;
         }
 
         .item-link {
@@ -551,9 +551,7 @@
                 FreelanceHub
             </div>
 
-            <p class="menu-title">
-                Menu Utama
-            </p>
+            <p class="menu-title">Menu Utama</p>
 
             <div class="menu">
                 <a href="/freelancer/dashboard" class="active">
@@ -572,9 +570,9 @@
                 </a>
 
                 <a href="{{ route('freelancer.service-requests.index') }}">
-                   <span class="menu-icon">▦</span>
-                   Posting Kebutuhan Client
-                </a> 
+                    <span class="menu-icon">▦</span>
+                    Posting Kebutuhan Client
+                </a>
 
                 <a href="{{ route('freelancer.orders.index') }}">
                     <span class="menu-icon">▧</span>
@@ -639,12 +637,8 @@
 
                     <div class="profile-info">
                         @auth
-                            <strong>
-                                {{ Auth::user()->name }}
-                            </strong>
-                            <span>
-                                {{ ucfirst(Auth::user()->role) }}
-                            </span>
+                            <strong>{{ Auth::user()->name }}</strong>
+                            <span>{{ ucfirst(Auth::user()->role) }}</span>
                         @else
                             <strong>Freelancer</strong>
                             <span>Penyedia Jasa</span>
@@ -657,9 +651,7 @@
 
                 <div class="welcome">
                     @auth
-                        <h1>
-                            Selamat Datang, {{ Auth::user()->name }}!
-                        </h1>
+                        <h1>Selamat Datang, {{ Auth::user()->name }}!</h1>
                     @else
                         <h1>Selamat Datang, Freelancer!</h1>
                     @endauth
@@ -696,12 +688,12 @@
                     </div>
 
                     <div class="stat-card">
-                        <div class="stat-icon">★</div>
-                        <h3>
-                            {{ $portfolioRatingsCount > 0 ? number_format($averagePortfolioRating, 1).' / 5' : '—' }}
-                        </h3>
-                        <p>Rating Portofolio ({{ $portfolioRatingsCount }})</p>
-                    </div>
+    <div class="stat-icon">★</div>
+    <h3>
+        {{ $ratingsCount > 0 ? number_format($averageRating, 1).' / 5' : '—' }}
+    </h3>
+    <p>Rating Proyek ({{ $ratingsCount }})</p>
+</div>
 
                 </div>
 
@@ -710,7 +702,7 @@
                     <div class="panel">
                         <div class="panel-header">
                             <h2>Pesanan Masuk</h2>
-                            <a href="/freelancer/pesanan">Lihat semua</a>
+                           <a href="{{ route('freelancer.orders.index') }}">Lihat semua</a>
                         </div>
 
                         <div class="panel-body">
@@ -726,40 +718,47 @@
                                     </thead>
 
                                     <tbody>
-                                        @forelse ($latestOrders as $order)
-                                            <tr>
-                                                <td>{{ $order->client?->name ?? 'Client tidak tersedia' }}</td>
-                                                <td>{{ $order->service?->title ?? 'Jasa tidak tersedia' }}</td>
-                                                <td>{{ $order->created_at->format('d M Y') }}</td>
-                                                <td>
-                                                    @php
-                                                        $statusClass = match ($order->status) {
-                                                            'MENUNGGU' => 'pending',
-                                                            'DIPROSES', 'SUBMITTED', 'REVISI' => 'process',
-                                                            'SELESAI' => 'done',
-                                                            default => 'pending',
-                                                        };
+                                        <tbody>
+    @forelse ($latestOrders as $order)
+        @php
+            $status = strtoupper($order->status ?? '');
 
-                                                        $statusLabel = match ($order->status) {
-                                                            'MENUNGGU' => 'Menunggu',
-                                                            'DIPROSES' => 'Diproses',
-                                                            'SUBMITTED' => 'Menunggu Review',
-                                                            'REVISI' => 'Revisi',
-                                                            'SELESAI' => 'Selesai',
-                                                            default => $order->status,
-                                                        };
-                                                    @endphp
+            $statusClass = match ($status) {
+                'MENUNGGU' => 'pending',
+                'DIPROSES', 'SUBMITTED', 'REVISI' => 'process',
+                'SELESAI' => 'done',
+                default => 'pending',
+            };
 
-                                                    <span class="status {{ $statusClass }}">
-                                                        {{ $statusLabel }}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="4">Belum ada pesanan masuk.</td>
-                                            </tr>
-                                        @endforelse
+            $statusLabel = match ($status) {
+                'MENUNGGU' => 'Menunggu',
+                'DIPROSES' => 'Diproses',
+                'SUBMITTED' => 'Menunggu Review',
+                'REVISI' => 'Revisi',
+                'SELESAI' => 'Selesai',
+                default => $status ?: 'Tidak diketahui',
+            };
+        @endphp
+
+        <tr>
+            <td>{{ optional($order->client)->name ?? 'Client tidak tersedia' }}</td>
+
+            <td>{{ optional($order->service)->title ?? 'Jasa tidak tersedia' }}</td>
+
+            <td>{{ optional($order->created_at)->format('d M Y') ?? '-' }}</td>
+
+            <td>
+                <span class="status {{ $statusClass }}">
+                    {{ $statusLabel }}
+                </span>
+            </td>
+        </tr>
+    @empty
+        <tr>
+            <td colspan="4">Belum ada pesanan masuk.</td>
+        </tr>
+    @endforelse
+</tbody>
                                     </tbody>
                                 </table>
                             </div>
@@ -792,7 +791,6 @@
                             @empty
                                 <p>Belum ada jasa yang dibuat.</p>
                             @endforelse
-
                         </div>
                     </div>
 
@@ -802,86 +800,98 @@
                         </div>
 
                         <div class="panel-body">
-                            @forelse ($latestOrders->take(3) as $order)
+                            @forelse ($aktivitasTerbaru as $aktivitas)
                                 <div class="activity-item">
-                                    <div class="activity-icon">▧</div>
+                                    <div class="activity-icon">
+                                        {{ $aktivitas['ikon'] }}
+                                    </div>
 
                                     <div class="item-info">
                                         <strong>
-                                            Pesanan {{ strtolower($order->status) }}
+                                            {{ $aktivitas['judul'] }}
                                         </strong>
+
                                         <span>
-                                            {{ $order->service?->title ?? 'Jasa tidak tersedia' }}
-                                            · {{ $order->created_at->diffForHumans() }}
+                                            {{ $aktivitas['keterangan'] }}
+                                            <br>
+{{ optional($aktivitas['tanggal'] ?? null)->diffForHumans() ?? '-' }}
                                         </span>
                                     </div>
                                 </div>
                             @empty
-                                <p>Aktivitas pesanan akan muncul di sini.</p>
+                                <p>Belum ada aktivitas terbaru.</p>
                             @endforelse
                         </div>
                     </div>
 
                 </div>
 
-                <section class="panel" id="rating-ulasan" style="margin-top: 22px;">
+                
+<section class="panel" id="rating-ulasan" style="margin-top: 22px;">
 
-                    <div class="panel-header">
-                        <h2>Rating &amp; Ulasan Portofolio</h2>
-                        <a href="{{ route('portfolios.index') }}">
-                            Lihat portofolio
-                        </a>
-                    </div>
+    <div class="panel-header">
+        <h2>Rating &amp; Ulasan Proyek</h2>
+        <span>Ulasan dari Client</span>
+    </div>
 
-                    <div class="panel-body">
+    <div class="panel-body">
 
-                        <div class="rating-summary">
-                            <div class="stat-icon" aria-hidden="true">★</div>
+        <div class="rating-summary">
+            <div class="stat-icon" aria-hidden="true">★</div>
 
-                            <div>
-                                <strong>
-                                    {{ $portfolioRatingsCount > 0 ? number_format($averagePortfolioRating, 1).' / 5' : 'Belum ada rating' }}
-                                </strong>
+            <div>
+                <strong>
+                    {{ $ratingsCount > 0
+                        ? number_format($averageRating, 1).' / 5'
+                        : 'Belum ada rating' }}
+                </strong>
 
-                                <span>
-                                    {{ $portfolioRatingsCount }} ulasan dari klien untuk karya portofoliomu
-                                </span>
-                            </div>
-                        </div>
+                <span>
+                    {{ $ratingsCount }} ulasan dari client untuk proyekmu
+                </span>
+            </div>
+        </div>
 
-                        @forelse ($latestPortfolioRatings as $portfolioRating)
-                            <article class="rating-item">
+        @forelse ($latestRatings as $rating)
 
-                                <div class="rating-item-header">
-                                    <strong>
-                                        {{ $portfolioRating->portfolio->title ?? $portfolioRating->portfolio->caption ?? 'Portofolio' }}
-                                    </strong>
+            @php
+                $nilaiRating = max(0, min(5, (int) $rating->rating));
+            @endphp
 
-                                    <span class="rating-stars"
-                                          aria-label="{{ $portfolioRating->rating }} dari 5 bintang">
-                                        {{ str_repeat('★', $portfolioRating->rating) }}{{ str_repeat('☆', 5 - $portfolioRating->rating) }}
-                                    </span>
-                                </div>
+            <article class="rating-item">
 
-                                <p class="rating-comment">
-                                    {{ $portfolioRating->comment }}
-                                </p>
+                <div class="rating-item-header">
+                    <strong>
+                        {{ optional(optional($rating->order)->service)->title ?? 'Proyek' }}
+                    </strong>
 
-                                <span class="rating-meta">
-                                    Dari {{ $portfolioRating->user->name }}
-                                    · {{ $portfolioRating->created_at->diffForHumans() }}
-                                </span>
+                    <span class="rating-stars"
+                          aria-label="{{ $nilaiRating }} dari 5 bintang">
+                        {{ str_repeat('★', $nilaiRating) }}{{ str_repeat('☆', 5 - $nilaiRating) }}
+                    </span>
+                </div>
 
-                            </article>
-                        @empty
-                            <p style="margin-top: 18px; color: #72918D;">
-                                Ulasan klien akan muncul di sini setelah portofoliomu diberi rating.
-                            </p>
-                        @endforelse
+                <p class="rating-comment">
+                    {{ $rating->review ?? 'Client tidak memberikan komentar.' }}
+                </p>
 
-                    </div>
-                </section>
+                <span class="rating-meta">
+                    Dari {{ optional($rating->reviewer)->name ?? 'Client' }}
+                    · {{ optional($rating->created_at)->diffForHumans() ?? '-' }}
+                </span>
 
+            </article>
+
+        @empty
+
+            <p style="margin-top: 18px; color: #72918D;">
+                Ulasan proyek akan muncul di sini setelah client memberikan rating pada pesanan yang selesai.
+            </p>
+
+        @endforelse
+
+    </div>
+</section>
             </section>
         </main>
     </div>

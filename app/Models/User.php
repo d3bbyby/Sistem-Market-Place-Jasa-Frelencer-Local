@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne; // Ditambahkan untuk relasi freelancer
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,11 +18,6 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -56,7 +51,6 @@ class User extends Authenticatable
         return $this->hasMany(ServiceRequestApplication::class, 'freelancer_id');
     }
 
-    // --- TAMBAHAN RELASI BARU ---
     public function freelancer(): HasOne
     {
         return $this->hasOne(Freelancer::class, 'user_id');
@@ -65,5 +59,17 @@ class User extends Authenticatable
     public function ordersAsClient(): HasMany
     {
         return $this->hasMany(Order::class, 'client_id');
+    }
+
+    // Rating yang diterima pengguna
+    public function ratingsReceived(): HasMany
+    {
+        return $this->hasMany(Rating::class, 'reviewed_id');
+    }
+
+    // Rating yang diberikan pengguna
+    public function ratingsGiven(): HasMany
+    {
+        return $this->hasMany(Rating::class, 'reviewer_id');
     }
 }

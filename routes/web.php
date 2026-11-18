@@ -15,6 +15,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\PortfolioRatingController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ServiceRequestApplicationController;
 use App\Http\Controllers\ServiceRequestController;
@@ -295,8 +296,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/freelancer/orders/{order}/status', [OrderController::class, 'updateStatus'])
         ->name('freelancer.orders.updateStatus');
 
+    // Download Hasil Pesanan
     Route::get('/orders/{order}/deliverable', [OrderController::class, 'downloadDeliverable'])
         ->name('orders.deliverable');
+
+    // Rating Client dan Freelancer
+    Route::post('/orders/{order}/ratings', [RatingController::class, 'store'])
+        ->name('ratings.store');
 
     // Pesanan Admin
     Route::get('/admin/orders', [OrderController::class, 'adminIndex'])
@@ -317,7 +323,6 @@ Route::middleware('auth')->group(function () {
         ->name('admin.freelancers.updateVerification');
 
 });
-
 // ==============================
 // REDIRECT FREELANCER
 // ==============================

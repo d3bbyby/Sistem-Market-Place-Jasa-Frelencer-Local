@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\PortfolioRating;
+use App\Models\Rating;
 use App\Models\Service;
+use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,6 +18,7 @@ class FreelancerDashboardController extends Controller
         $freelancer = $request->user();
         $freelancerId = $freelancer->id;
 
+        // DATA JASA FREELANCER
         $services = Service::query()
             ->where('freelancer_id', $freelancerId)
             ->withCount('orders')
@@ -24,8 +26,11 @@ class FreelancerDashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // DATA PESANAN
         $freelancerOrders = fn () => Order::query()
-            ->whereHas('service', fn ($query) => $query->where('freelancer_id', $freelancerId));
+            ->whereHas('service', fn ($query) =>
+                $query->where('freelancer_id', $freelancerId)
+            );
 
         $completedOrderStats = $freelancerOrders()
             ->where('status', 'SELESAI')
@@ -40,18 +45,38 @@ class FreelancerDashboardController extends Controller
             ->limit(5)
             ->get();
 
-        $portfolioRatings = PortfolioRating::query()
-            ->whereHas('portfolio', fn ($query) => $query->where('user_id', $freelancerId));
+        // DATA RATING PROYEK DARI CLIENT
+        $ratings = Rating::query()
+            ->where('reviewed_id', $freelancerId)
+            ->whereHas('order', function ($query) {
+                $query->where('status', 'SELESAI');
+            });
 
-        $portfolioRatingStats = (clone $portfolioRatings)
+        $ratingStats = (clone $ratings)
             ->selectRaw('COUNT(*) as ratings_count, COALESCE(AVG(rating), 0) as average_rating')
             ->first();
 
-        $latestPortfolioRatings = $portfolioRatings
-            ->with(['portfolio:id,user_id,title,caption', 'user:id,name'])
+        $latestRatings = $ratings
+            ->with(['reviewer:id,name', 'order.service:id,title'])
             ->latest()
             ->limit(5)
             ->get();
+
+        // AKTIVITAS TERBARU FREELANCER
+        $aktivitasTerbaru = UserActivity::query()
+            ->where('user_id', $freelancerId)
+            ->where('role', 'freelancer')
+            ->latest()
+            ->take(5)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'ikon' => '●',
+                    'judul' => $item->title,
+                    'keterangan' => $item->description ?? '',
+                    'tanggal' => $item->created_at,
+                ];
+            });
 
         return view('freelancer.dashboard', [
             'freelancer' => $freelancer,
@@ -61,30 +86,36 @@ class FreelancerDashboardController extends Controller
             'totalOrders' => $totalOrders,
             'latestOrders' => $latestOrders,
             'services' => $services,
-            'portfolioRatingsCount' => (int) $portfolioRatingStats->ratings_count,
-            'averagePortfolioRating' => (float) $portfolioRatingStats->average_rating,
-            'latestPortfolioRatings' => $latestPortfolioRatings,
+
+            // RATING PROYEK
+            'ratingsCount' => (int) $ratingStats->ratings_count,
+            'averageRating' => (float) $ratingStats->average_rating,
+            'latestRatings' => $latestRatings,
+
+            'aktivitasTerbaru' => $aktivitasTerbaru,
         ]);
     }
+
+    // HALAMAN PENDAPATAN
     public function income(Request $request): View
-{
-    abort_unless($request->user()->role === 'freelancer', 403);
+    {
+        abort_unless($request->user()->role === 'freelancer', 403);
 
-    $freelancerId = $request->user()->id;
+        $freelancerId = $request->user()->id;
 
-    $completedOrders = Order::query()
-        ->where('status', 'SELESAI')
-        ->whereHas('service', function ($query) use ($freelancerId) {
-            $query->where('freelancer_id', $freelancerId);
-        })
-        ->with(['client:id,name', 'service:id,title'])
-        ->latest()
-        ->get();
+        $completedOrders = Order::query()
+            ->where('status', 'SELESAI')
+            ->whereHas('service', function ($query) use ($freelancerId) {
+                $query->where('freelancer_id', $freelancerId);
+            })
+            ->with(['client:id,name', 'service:id,title'])
+            ->latest()
+            ->get();
 
-    return view('freelancer.pendapatan', [
-        'completedOrders' => $completedOrders,
-        'totalIncome' => $completedOrders->sum('total_price'),
-        'completedOrdersCount' => $completedOrders->count(),
-    ]);
-}
+        return view('freelancer.pendapatan', [
+            'completedOrders' => $completedOrders,
+            'totalIncome' => $completedOrders->sum('total_price'),
+            'completedOrdersCount' => $completedOrders->count(),
+        ]);
+    }
 }

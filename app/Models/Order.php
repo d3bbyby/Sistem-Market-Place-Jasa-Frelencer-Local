@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Models;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,17 @@ class Order extends Model
         'status',
         'work_result_file',
         'revision_notes',
+        'freelancer_confirmed',
+        'client_confirmed',
     ];
+
+    protected function casts(): array
+    {
+    return [
+        'freelancer_confirmed' => 'boolean',
+        'client_confirmed' => 'boolean',
+    ];
+    }
 
     public function client(): BelongsTo
     {
@@ -35,5 +46,10 @@ class Order extends Model
     public function payment(): HasOne
     {
     return $this->hasOne(Payment::class);
+    }
+
+    public function ratings(): HasMany
+    {
+    return $this->hasMany(Rating::class);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Service;
 use App\Models\User;
+use App\Models\UserActivity;
 
 class AdminDashboardController extends Controller
 {
@@ -19,50 +20,67 @@ class AdminDashboardController extends Controller
         $totalJasa = Service::count();
 
         $totalPesanan = Order::count();
-// Total omzet dari pesanan yang sudah selesai
-$totalOmzet = Order::where('status', 'SELESAI')
-    ->sum('total_price');
 
-// Rekap status pesanan
-$pesananStatus = [
-    'MENUNGGU' => Order::where('status', 'MENUNGGU')->count(),
-    'DIPROSES' => Order::where('status', 'DIPROSES')->count(),
-    'SUBMITTED' => Order::where('status', 'SUBMITTED')->count(),
-    'REVISI' => Order::where('status', 'REVISI')->count(),
-    'SELESAI' => Order::where('status', 'SELESAI')->count(),
-];
-
-    // Rekap performa setiap freelancer
-$rekapFreelancer = User::where('role', 'freelancer')
-    ->withCount([
-        'services as total_jasa',
-    ])
-    ->get()
-    ->map(function ($freelancer) {
-        $orders = Order::whereHas('service', function ($query) use ($freelancer) {
-            $query->where('freelancer_id', $freelancer->id);
-        });
-
-        $freelancer->total_pesanan = (clone $orders)->count();
-
-        $freelancer->pesanan_selesai = (clone $orders)
-            ->where('status', 'SELESAI')
-            ->count();
-
-        $freelancer->total_pendapatan = (clone $orders)
-            ->where('status', 'SELESAI')
+        // Total omzet dari pesanan yang sudah selesai
+        $totalOmzet = Order::where('status', 'SELESAI')
             ->sum('total_price');
 
-        return $freelancer;
-    });
+        // Rekap status pesanan
+        $pesananStatus = [
+            'MENUNGGU' => Order::where('status', 'MENUNGGU')->count(),
+            'DIPROSES' => Order::where('status', 'DIPROSES')->count(),
+            'SUBMITTED' => Order::where('status', 'SUBMITTED')->count(),
+            'REVISI' => Order::where('status', 'REVISI')->count(),
+            'SELESAI' => Order::where('status', 'SELESAI')->count(),
+        ];
+
+        // Rekap performa setiap freelancer
+        $rekapFreelancer = User::where('role', 'freelancer')
+            ->withCount([
+                'services as total_jasa',
+            ])
+            ->get()
+            ->map(function ($freelancer) {
+                $orders = Order::whereHas('service', function ($query) use ($freelancer) {
+                    $query->where('freelancer_id', $freelancer->id);
+                });
+
+                $freelancer->total_pesanan = (clone $orders)->count();
+
+                $freelancer->pesanan_selesai = (clone $orders)
+                    ->where('status', 'SELESAI')
+                    ->count();
+
+                $freelancer->total_pendapatan = (clone $orders)
+                    ->where('status', 'SELESAI')
+                    ->sum('total_price');
+
+                return $freelancer;
+            });
+
+        // Pesanan terbaru
         $pesananTerbaru = Order::with(['client', 'service'])
             ->latest()
             ->take(4)
             ->get();
 
+        // Pengguna terbaru
         $penggunaTerbaru = User::latest()
             ->take(4)
             ->get();
+
+        // Aktivitas terbaru dari database
+        $aktivitasTerbaru = UserActivity::latest()
+            ->take(10)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'judul' => $item->title,
+                    'keterangan' => $item->description ?? '',
+                    'role' => $item->role,
+                    'tanggal' => $item->created_at,
+                ];
+            });
 
         return view('admin.dashboard', compact(
             'totalPengguna',
@@ -70,11 +88,12 @@ $rekapFreelancer = User::where('role', 'freelancer')
             'totalClient',
             'totalJasa',
             'totalPesanan',
-            'totalOmzet',      // Ditambahkan ke view
-            'pesananStatus',   // Ditambahkan ke view
-            'rekapFreelancer', // Ditambahkan ke view
+            'totalOmzet',
+            'pesananStatus',
+            'rekapFreelancer',
             'pesananTerbaru',
-            'penggunaTerbaru'
+            'penggunaTerbaru',
+            'aktivitasTerbaru'
         ));
     }
 }

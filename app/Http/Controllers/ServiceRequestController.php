@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServiceRequest;
+use App\Models\UserActivity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ServiceRequestController extends Controller
 {
-    // Menampilkan posting kebutuhan jasa milik client
+    // Menampilkan posting kebutuhan jasa milik Client
     public function index()
     {
         $serviceRequests = ServiceRequest::with('client')
@@ -40,14 +41,23 @@ class ServiceRequestController extends Controller
         $validated['client_id'] = Auth::id();
         $validated['status'] = 'open';
 
-        ServiceRequest::create($validated);
+        // Simpan posting kebutuhan jasa
+        $serviceRequest = ServiceRequest::create($validated);
+
+        // Catat aktivitas Client
+        UserActivity::create([
+            'user_id' => Auth::id(),
+            'role' => 'client',
+            'title' => 'Membuat posting kebutuhan jasa',
+            'description' => 'Posting: ' . $serviceRequest->title,
+        ]);
 
         return redirect()
             ->route('client.service-requests.index')
             ->with('success', 'Posting kebutuhan jasa berhasil dibuat.');
     }
 
-    // Menghapus posting milik client
+    // Menghapus posting milik Client
     public function destroy(ServiceRequest $serviceRequest)
     {
         if ($serviceRequest->client_id !== Auth::id()) {
@@ -58,14 +68,16 @@ class ServiceRequestController extends Controller
 
         return back()->with('success', 'Posting berhasil dihapus.');
     }
-    public function freelancerIndex()
-{
-    $serviceRequests = ServiceRequest::with('client')
-        ->withCount('applications')
-        ->where('status', 'open')
-        ->latest()
-        ->paginate(10);
 
-    return view('freelancer.service_requests.index', compact('serviceRequests'));
-}
+    // Menampilkan posting terbuka untuk Freelancer
+    public function freelancerIndex()
+    {
+        $serviceRequests = ServiceRequest::with('client')
+            ->withCount('applications')
+            ->where('status', 'open')
+            ->latest()
+            ->paginate(10);
+
+        return view('freelancer.service_requests.index', compact('serviceRequests'));
+    }
 }

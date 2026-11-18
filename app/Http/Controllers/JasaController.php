@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UserActivity;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\PortfolioRating;
@@ -56,6 +57,7 @@ class JasaController extends Controller
     public function index(Request $request): View
     {
         $this->ensureFreelancer($request);
+
         $filters = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
             'category_id' => ['nullable', 'integer', 'exists:categories,id'],
@@ -96,6 +98,7 @@ class JasaController extends Controller
         ]);
     }
 
+    // Pencarian jasa dan freelancer oleh Client
     public function browse(Request $request): View
     {
         $filters = $request->validate([
@@ -110,8 +113,29 @@ class JasaController extends Controller
             ],
         ]);
 
+        // Catat pencarian Client jika memasukkan kata kunci
+        if (
+            $request->user()?->role === 'client'
+            && $request->filled('q')
+            && !$request->has('page')
+        ) {
+            UserActivity::create([
+                'user_id' => $request->user()->id,
+                'role' => 'client',
+                'title' => 'Mencari freelancer',
+                'description' => 'Kata kunci pencarian: '.$filters['q'],
+            ]);
+        }
+
+        // Ambil jasa beserta rating dan jumlah ulasan Freelancer
         $services = Service::query()
-            ->with(['category', 'freelancer'])
+            ->with([
+                'category',
+                'freelancer' => function ($query) {
+                    $query->withAvg('ratingsReceived', 'rating')
+                          ->withCount('ratingsReceived');
+                },
+            ])
             ->whereHas('freelancer', fn (Builder $query) => $query->where('role', 'freelancer'))
             ->when($filters['q'] ?? null, function (Builder $query, string $search): void {
                 $query->where(function (Builder $query) use ($search): void {
@@ -134,6 +158,7 @@ class JasaController extends Controller
             ->latest()
             ->paginate(12)
             ->withQueryString();
+
         $categories = Category::orderBy('category_name')->get();
 
         return view('client.jasa', compact('services', 'categories', 'filters'));
@@ -141,9 +166,12 @@ class JasaController extends Controller
 
     public function category(Category $category): View
     {
-        $category->loadMissing(['parent', 'children' => fn ($query) => $query
-            ->withCount('services')
-            ->orderBy('category_name')]);
+        $category->loadMissing([
+            'parent',
+            'children' => fn ($query) => $query
+                ->withCount('services')
+                ->orderBy('category_name'),
+        ]);
 
         $categoryIds = collect([$category->getKey()])
             ->merge($category->children->modelKeys());
@@ -168,13 +196,16 @@ class JasaController extends Controller
                 ->latest()
                 ->limit(4),
         ]);
+
         $packages = $service->packages();
+
         $canRatePortfolios = $request->user()?->role === 'client'
             && Order::query()
                 ->where('client_id', $request->user()->id)
                 ->where('status', 'SELESAI')
                 ->where('service_id', $service->id)
                 ->exists();
+
         $myPortfolioRatings = $canRatePortfolios
             ? PortfolioRating::query()
                 ->where('user_id', $request->user()->id)
@@ -301,7 +332,7 @@ class JasaController extends Controller
     }
 
     /**
-     * @param  array<string, mixed>  $data
+     * @param array<string, mixed> $data
      * @return array<string, mixed>
      */
     private function serviceAttributes(array $data): array
@@ -331,7 +362,7 @@ class JasaController extends Controller
     }
 
     /**
-     * @param  array<int, mixed>  $images
+     * @param array<int, mixed> $images
      */
     private function deleteStoredImages(array $images): void
     {

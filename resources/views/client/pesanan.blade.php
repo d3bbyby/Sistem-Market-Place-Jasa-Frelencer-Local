@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -117,9 +118,11 @@
             background: #7047EB;
             color: white;
             padding: 9px 15px;
+            border: none;
             border-radius: 7px;
             text-decoration: none;
             font-size: 14px;
+            cursor: pointer;
             transition: 0.2s;
         }
 
@@ -139,6 +142,65 @@
             color: #A3344D;
             font-size: 13px;
             margin: 8px 0;
+        }
+
+        .rating-box {
+            margin-top: 12px;
+            padding: 12px;
+            background: #FAF8FF;
+            border: 1px solid #E7E1F4;
+            border-radius: 10px;
+        }
+
+        .rating-box label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .rating-box select,
+        .rating-box textarea,
+        .review-form select,
+        .review-form textarea {
+            padding: 8px;
+            border: 1px solid #DCD4EF;
+            border-radius: 7px;
+            font-family: Arial, sans-serif;
+        }
+
+        .rating-box select {
+            width: 100%;
+        }
+
+        .rating-box textarea {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            resize: vertical;
+        }
+
+        .rating-done {
+            color: #28643A;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .review-form {
+            margin-top: 12px;
+        }
+
+        .review-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .review-form textarea {
+            display: block;
+            width: 100%;
+            max-width: 230px;
+            margin-top: 8px;
+            resize: vertical;
         }
 
         @media (max-width: 700px) {
@@ -172,14 +234,19 @@
             <a href="/client/dashboard">Dashboard</a>
             <a href="/client/jasa">Cari Jasa</a>
             <a href="/client/profil">Profil</a>
+
             <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                 @csrf
-                <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();">Logout</a>
+                <a href="{{ route('logout') }}"
+                   onclick="event.preventDefault(); this.closest('form').submit();">
+                    Logout
+                </a>
             </form>
         </div>
     </nav>
 
     <main class="container">
+
         <h1>Pesanan Saya</h1>
 
         <p class="subtitle">
@@ -187,15 +254,20 @@
         </p>
 
         @if (session('success'))
-            <div class="alert">{{ session('success') }}</div>
+            <div class="alert">
+                {{ session('success') }}
+            </div>
         @endif
+
         @if ($errors->any())
-            <div class="alert" role="alert" style="background: #FFF1DC; color: #805515;">
+            <div class="alert" role="alert"
+                 style="background: #FFF1DC; color: #805515;">
                 {{ $errors->first() }}
             </div>
         @endif
 
         <div class="table-box">
+
             <table>
                 <thead>
                     <tr>
@@ -210,103 +282,236 @@
                 </thead>
 
                 <tbody>
+
                     @forelse ($orders as $order)
+
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $order->service?->title ?? 'Jasa telah dihapus' }}</td>
+
+                            <td>
+                                {{ $order->service?->title ?? 'Jasa telah dihapus' }}
+                            </td>
+
                             <td>
                                 @forelse ($order->service?->portfolios ?? collect() as $portfolio)
-                                    <div>{{ $portfolio->title ?? $portfolio->caption }}</div>
+                                    <div>
+                                        {{ $portfolio->title ?? $portfolio->caption }}
+                                    </div>
                                 @empty
-                                    <span class="muted">Belum ada portofolio terkait</span>
+                                    <span class="muted">
+                                        Belum ada portofolio terkait
+                                    </span>
                                 @endforelse
                             </td>
-                            <td>{{ $order->service?->freelancer?->name ?? '-' }}</td>
+
+                            <td>
+                                {{ $order->service?->freelancer?->name ?? '-' }}
+                            </td>
+
                             <td>
                                 @if ($order->package)
-                                    <span style="display: block; font-size: 12px; color: #837B99;">Paket {{ ucfirst($order->package) }}</span>
+                                    <span style="display: block; font-size: 12px; color: #837B99;">
+                                        Paket {{ ucfirst($order->package) }}
+                                    </span>
                                 @endif
+
                                 Rp{{ number_format((float) ($order->total_price ?? $order->service?->price ?? 0), 0, ',', '.') }}
                             </td>
-                            <td><span class="status">{{ $order->status }}</span></td>
+
                             <td>
-    @if ($order->service)
-        <a href="{{ route('client.orders.service', $order->service) }}" class="btn">Detail</a>
-    @endif
+                                <span class="status">
+                                    {{ $order->status }}
+                                </span>
+                            </td>
 
-    @if ($order->work_result_file)
-        <a href="{{ route('orders.deliverable', $order) }}" class="btn">Unduh Hasil</a>
-    @endif
+                            <td>
 
-    @if ($order->status === 'SUBMITTED')
-        <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
-            @csrf
-            @method('PATCH')
-            <input type="hidden" name="status" value="SELESAI">
-            <button class="btn" type="submit">Selesaikan</button>
-        </form>
+                                {{-- Detail Pesanan --}}
+                                @if ($order->service)
+                                    <a href="{{ route('client.orders.service', $order->service) }}"
+                                       class="btn">
+                                        Detail
+                                    </a>
+                                @endif
 
-        <form method="POST" action="{{ route('client.orders.updateStatus', $order) }}" style="display: inline-block; margin-top: 8px;">
-            @csrf
-            @method('PATCH')
-            <input type="hidden" name="status" value="REVISI">
-            <input name="revision_notes" value="{{ old('revision_notes') }}" maxlength="2000" required placeholder="Jelaskan revisi yang diminta" aria-label="Catatan revisi" style="max-width: 220px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
-            <button class="btn" type="submit">Minta Revisi</button>
-        </form>
+                                {{-- Unduh Hasil --}}
+                                @if ($order->work_result_file)
+                                    <a href="{{ route('orders.deliverable', $order) }}"
+                                       class="btn">
+                                        Unduh Hasil
+                                    </a>
+                                @endif
 
-        @error('revision_notes')
-            <p class="error">{{ $message }}</p>
-        @enderror
-    @endif
+                                {{-- Konfirmasi atau Revisi --}}
+                                @if ($order->status === 'SUBMITTED')
 
-    {{-- Fitur Review --}}
-    @if ($order->status === 'SELESAI')
-        @if ($order->review)
-            <p style="color: #28643A; font-size: 13px; margin-top: 10px;">
-                ✓ Sudah direview
-            </p>
-        @else
-            <form method="POST"
-                  action="{{ route('client.reviews.store', $order) }}"
-                  style="margin-top: 10px;">
+                                    <form method="POST"
+                                          action="{{ route('client.orders.updateStatus', $order) }}"
+                                          style="margin-top: 8px;">
 
-                @csrf
+                                        @csrf
+                                        @method('PATCH')
 
-                <label style="display: block; margin-bottom: 5px; font-weight: bold;">
-                    Berikan Rating
-                </label>
+                                        <input type="hidden" name="status" value="SELESAI">
 
-                <select name="rating" required
-                        style="padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
-                    <option value="">Pilih Rating</option>
-                    <option value="5">5 - Sangat Baik</option>
-                    <option value="4">4 - Baik</option>
-                    <option value="3">3 - Cukup</option>
-                    <option value="2">2 - Kurang</option>
-                    <option value="1">1 - Sangat Kurang</option>
-                </select>
+                                        <button class="btn" type="submit">
+                                            Konfirmasi Selesai
+                                        </button>
+                                    </form>
 
-                <textarea name="comment"
-                          placeholder="Tulis komentar kamu..."
-                          maxlength="1000"
-                          rows="3"
-                          style="display: block; width: 100%; max-width: 230px; margin-top: 8px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">{{ old('comment') }}</textarea>
+                                    <form method="POST"
+                                          action="{{ route('client.orders.updateStatus', $order) }}"
+                                          style="margin-top: 8px;">
 
-                <button type="submit" class="btn" style="margin-top: 8px;">
-                    Kirim Review
-                </button>
-            </form>
-        @endif
-    @endif
-</td>
+                                        @csrf
+                                        @method('PATCH')
+
+                                        <input type="hidden" name="status" value="REVISI">
+
+                                        <input
+                                            name="revision_notes"
+                                            value="{{ old('revision_notes') }}"
+                                            maxlength="2000"
+                                            required
+                                            placeholder="Jelaskan revisi yang diminta"
+                                            aria-label="Catatan revisi"
+                                            style="max-width: 220px; padding: 8px; border: 1px solid #DCD4EF; border-radius: 7px;">
+
+                                        <button class="btn" type="submit">
+                                            Minta Revisi
+                                        </button>
+                                    </form>
+
+                                    @error('revision_notes')
+                                        <p class="error">{{ $message }}</p>
+                                    @enderror
+
+                                @endif
+
+                                {{-- RATING UNTUK FREELANCER --}}
+                                @if ($order->status === 'SELESAI')
+
+                                    @php
+                                        $clientRating = $order->ratings
+                                            ->firstWhere('reviewer_id', auth()->id());
+                                    @endphp
+
+                                    <div class="rating-box">
+
+                                        @if ($clientRating)
+
+                                            <p class="rating-done">
+                                                ✓ Kamu sudah memberikan rating kepada Freelancer.
+                                            </p>
+
+                                            <p style="font-size: 13px;">
+                                                Rating kamu: {{ $clientRating->rating }} ⭐
+                                            </p>
+
+                                        @else
+
+                                            <form method="POST"
+                                                  action="{{ route('ratings.store', $order) }}">
+
+                                                @csrf
+
+                                                <label>
+                                                    Rating untuk Freelancer
+                                                </label>
+
+                                                <select name="rating" required>
+                                                    <option value="">Pilih Rating</option>
+                                                    <option value="5">5 - Sangat Baik ⭐</option>
+                                                    <option value="4">4 - Baik ⭐</option>
+                                                    <option value="3">3 - Cukup ⭐</option>
+                                                    <option value="2">2 - Kurang ⭐</option>
+                                                    <option value="1">1 - Sangat Kurang ⭐</option>
+                                                </select>
+
+                                                <textarea
+                                                    name="review"
+                                                    placeholder="Tulis ulasan untuk Freelancer (opsional)..."
+                                                    maxlength="1000"
+                                                    rows="3">{{ old('review') }}</textarea>
+
+                                                <button type="submit"
+                                                        class="btn"
+                                                        style="margin-top: 8px;">
+                                                    Kirim Rating
+                                                </button>
+
+                                            </form>
+
+                                        @endif
+
+                                    </div>
+
+                                    {{-- REVIEW LAMA TETAP DIPERTAHANKAN --}}
+                                    <div class="review-form">
+
+                                        @if ($order->review)
+
+                                            <p style="color: #28643A; font-size: 13px;">
+                                                ✓ Review pesanan sudah dikirim.
+                                            </p>
+
+                                        @else
+
+                                            <form method="POST"
+                                                  action="{{ route('client.reviews.store', $order) }}">
+
+                                                @csrf
+
+                                                <label>
+                                                    Review Pesanan
+                                                </label>
+
+                                                <select name="rating" required>
+                                                    <option value="">Pilih Rating</option>
+                                                    <option value="5">5 - Sangat Baik</option>
+                                                    <option value="4">4 - Baik</option>
+                                                    <option value="3">3 - Cukup</option>
+                                                    <option value="2">2 - Kurang</option>
+                                                    <option value="1">1 - Sangat Kurang</option>
+                                                </select>
+
+                                                <textarea
+                                                    name="comment"
+                                                    placeholder="Tulis komentar kamu..."
+                                                    maxlength="1000"
+                                                    rows="3">{{ old('comment') }}</textarea>
+
+                                                <button type="submit"
+                                                        class="btn"
+                                                        style="margin-top: 8px;">
+                                                    Kirim Review
+                                                </button>
+
+                                            </form>
+
+                                        @endif
+
+                                    </div>
+
+                                @endif
+
+                            </td>
                         </tr>
+
                     @empty
+
                         <tr>
-                            <td colspan="7" style="text-align: center; padding: 35px;">Kamu belum memiliki pesanan.</td>
+                            <td colspan="7"
+                                style="text-align: center; padding: 35px;">
+                                Kamu belum memiliki pesanan.
+                            </td>
                         </tr>
+
                     @endforelse
+
                 </tbody>
             </table>
+
         </div>
     </main>
 

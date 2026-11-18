@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -118,34 +119,6 @@
             outline: 3px solid rgba(112, 71, 235, 0.1);
         }
 
-        .service-card h3 {
-            overflow-wrap: anywhere;
-        }
-
-        .pagination {
-            margin-top: 24px;
-            color: #625976;
-            font-size: 14px;
-        }
-
-        .pagination a,
-        .pagination span {
-            display: inline-block;
-            margin: 2px;
-            padding: 8px 11px;
-            border: 1px solid #E7E1F4;
-            border-radius: 6px;
-            background: white;
-            color: #7047EB;
-            text-decoration: none;
-        }
-
-        .error {
-            margin-top: 14px;
-            color: #A3344D;
-            font-size: 13px;
-        }
-
         .search-input {
             flex: 1;
             padding: 14px 16px;
@@ -180,6 +153,12 @@
 
         .search-button:hover {
             background: #5030B5;
+        }
+
+        .error {
+            margin-top: 14px;
+            color: #A3344D;
+            font-size: 13px;
         }
 
         /* HASIL */
@@ -230,19 +209,44 @@
             font-size: 18px;
             margin-bottom: 7px;
             color: #30264B;
+            overflow-wrap: anywhere;
         }
 
         .role {
             color: #7047EB;
             font-size: 14px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .email {
             font-size: 13px;
             color: #837B99;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow-wrap: anywhere;
+        }
+
+        /* RATING */
+        .rating-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+
+        .rating-star {
+            color: #F4B400;
+            font-weight: bold;
+        }
+
+        .rating-count {
+            color: #837B99;
+        }
+
+        .no-rating {
+            color: #A39BB6;
+            font-size: 13px;
+            margin-bottom: 16px;
         }
 
         .btn-lihat {
@@ -275,6 +279,24 @@
 
         .empty h3 {
             color: #30264B;
+        }
+
+        .pagination {
+            margin-top: 24px;
+            color: #625976;
+            font-size: 14px;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-block;
+            margin: 2px;
+            padding: 8px 11px;
+            border: 1px solid #E7E1F4;
+            border-radius: 6px;
+            background: white;
+            color: #7047EB;
+            text-decoration: none;
         }
 
         /* RESPONSIVE */
@@ -321,16 +343,13 @@
         </div>
 
         <div class="nav-menu">
-            <a href="/">
-                Beranda
-            </a>
+            <a href="/">Beranda</a>
 
             <a href="/client/dashboard" class="btn-dashboard">
                 Dashboard
             </a>
         </div>
     </nav>
-
 
     <!-- CONTENT -->
     <div class="container">
@@ -342,41 +361,37 @@
             </p>
         </div>
 
-
         <!-- SEARCH BOX -->
         <div class="search-box">
-            <form
-                action="/client/jasa"
-                method="GET"
-                class="search-form"
-            >
+            <form action="/client/jasa" method="GET" class="search-form">
+
                 <input
                     type="text"
                     name="q"
                     class="search-input"
-                placeholder="Cari nama jasa, deskripsi, kategori, atau freelancer..."
-                value="{{ $filters['q'] ?? '' }}"
+                    placeholder="Cari nama jasa, deskripsi, kategori, atau freelancer..."
+                    value="{{ $filters['q'] ?? '' }}"
                 >
-            <select class="filter-field" name="category_id" aria-label="Filter kategori">
-                <option value="">Semua kategori</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->id }}" @selected(($filters['category_id'] ?? '') == $category->id)>
-                        {{ $category->category_name }}
-                    </option>
-                @endforeach
-            </select>
-                <button
-                    type="submit"
-                    class="search-button"
-                >
-                Cari & Filter
+
+                <select class="filter-field" name="category_id" aria-label="Filter kategori">
+                    <option value="">Semua kategori</option>
+
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" @selected(($filters['category_id'] ?? '') == $category->id)>
+                            {{ $category->category_name }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <button type="submit" class="search-button">
+                    Cari & Filter
                 </button>
             </form>
+
             @if ($errors->any())
-            <p class="error" role="alert">{{ $errors->first() }}</p>
+                <p class="error" role="alert">{{ $errors->first() }}</p>
             @endif
         </div>
-
 
         <!-- HASIL -->
         @if ($filters['q'] ?? false)
@@ -388,7 +403,6 @@
                 Jasa Tersedia
             </h2>
         @endif
-
 
         @if ($services->count() > 0)
 
@@ -413,9 +427,28 @@
                         <div class="email">
                             Freelancer: {{ $service->freelancer?->name ?? 'Tidak tersedia' }}
                         </div>
+
+                        <!-- RATING FREELANCER -->
+                        @if ($service->freelancer && $service->freelancer->ratings_received_count > 0)
+                            <div class="rating-info">
+                                <span class="rating-star">
+                                    ★ {{ number_format((float) $service->freelancer->ratings_received_avg_rating, 1) }}
+                                </span>
+
+                                <span class="rating-count">
+                                    ({{ $service->freelancer->ratings_received_count }} ulasan)
+                                </span>
+                            </div>
+                        @else
+                            <div class="no-rating">
+                                Belum ada ulasan
+                            </div>
+                        @endif
+
                         <p style="font-weight: bold; color: #7047EB; margin-bottom: 16px;">
                             Rp{{ number_format((float) $service->price, 0, ',', '.') }}
                         </p>
+
                         <a href="{{ route('jasa.show', $service) }}" class="btn-lihat">
                             Detail dan Pesan
                         </a>
