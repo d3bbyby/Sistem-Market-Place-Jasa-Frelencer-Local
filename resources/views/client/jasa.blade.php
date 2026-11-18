@@ -365,10 +365,6 @@
                     </option>
                 @endforeach
             </select>
-            <input class="filter-field" type="number" name="min_price" min="0" step="1000"
-                   placeholder="Harga minimum" value="{{ $filters['min_price'] ?? '' }}">
-            <input class="filter-field" type="number" name="max_price" min="0" step="1000"
-                   placeholder="Harga maksimum" value="{{ $filters['max_price'] ?? '' }}">
                 <button
                     type="submit"
                     class="search-button"

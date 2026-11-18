@@ -104,6 +104,14 @@ class OrderControllerTest extends TestCase
             ->assertSee('Detail dan Pesan');
     }
 
+    public function test_service_search_does_not_display_minimum_or_maximum_price_fields(): void
+    {
+        $this->get(route('client.jasa'))
+            ->assertOk()
+            ->assertDontSee('Harga minimum')
+            ->assertDontSee('Harga maksimum');
+    }
+
     public function test_marketplace_filters_services_by_category_and_price(): void
     {
         $freelancer = User::factory()->create(['role' => 'freelancer']);
